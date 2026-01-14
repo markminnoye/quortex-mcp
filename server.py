@@ -1,7 +1,8 @@
 import logging
 import os
+import time
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 import httpx
 import yaml
@@ -13,6 +14,51 @@ from fastmcp.tools.tool_transform import ArgTransformConfig, ToolTransformConfig
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("quortex-mcp")
+
+class QuortexAuth(httpx.Auth):
+    """
+    Custom HTTPX Auth class that automatically fetches and refreshes 
+    the Quortex Access Token using an API Key Secret.
+    """
+    def __init__(self, api_key_secret: str):
+        self.api_key_secret = api_key_secret
+        self.access_token: Optional[str] = None
+        self.expiry: float = 0
+        self.token_url = "https://api.quortex.io/1.0/token/"
+
+    async def async_auth_flow(self, request: httpx.Request):
+        now = time.time()
+        
+        # Refresh token if missing or expiring soon (within 60s)
+        if not self.access_token or now > self.expiry - 60:
+            logger.info("🔑 Refreshing Quortex access token...")
+            async with httpx.AsyncClient() as client:
+                try:
+                    response = await client.post(
+                        self.token_url,
+                        json={"api_key_secret": self.api_key_secret.strip()}
+                    )
+                    response.raise_for_status()
+                    data = response.json()
+                    
+                    self.access_token = data["access_token"]
+                    # If expires_at is provided, parse it, otherwise default to 24h
+                    expires_at_str = data.get("expires_at")
+                    if expires_at_str:
+                        # Assuming ISO format from API
+                        from datetime import datetime
+                        dt = datetime.fromisoformat(expires_at_str.replace("Z", "+00:00"))
+                        self.expiry = dt.timestamp()
+                    else:
+                        self.expiry = now + (24 * 60 * 60)
+                        
+                    logger.info(f"✅ Token refreshed. Expires at: {time.ctime(self.expiry)}")
+                except Exception as e:
+                    logger.error(f"❌ Failed to fetch Quortex token: {e}")
+                    raise
+
+        request.headers["Authorization"] = f"Bearer {self.access_token}"
+        yield request
 
 def load_yaml(path):
     with open(path, 'r') as f:
@@ -97,45 +143,55 @@ def create_mcp_server():
         RouteMap(methods=["POST", "PUT", "DELETE", "PATCH"], mcp_type=MCPType.TOOL),
     ]
 
-    # Configure client headers with auth token if available
-    client_headers = {}
-    auth_token = os.environ.get("QUORTEX_API_TOKEN")
-    if auth_token:
-        logger.info("Configuring API client with QUORTEX_API_TOKEN")
-        client_headers["Authorization"] = f"Bearer {auth_token}"
+    # Configure authentication for outgoing API requests
+    api_auth = None
+    api_key = os.environ.get("QUORTEX_API_KEY")
+    if api_key:
+        logger.info("Using QUORTEX_API_KEY for automatic token management")
+        api_auth = QuortexAuth(api_key)
     else:
-        logger.warning("QUORTEX_API_TOKEN not found. API calls may fail if authentication is required.")
+        # Fallback to direct token if provided
+        auth_token = os.environ.get("QUORTEX_API_TOKEN")
+        if auth_token:
+            logger.info("Using QUORTEX_API_TOKEN for static authentication")
+            # We can use a simple dict for headers or a custom auth for static token
+            api_auth = httpx.Auth() # dummy for now, handled below
+        else:
+            logger.warning("Neither QUORTEX_API_KEY nor QUORTEX_API_TOKEN found. API calls may fail.")
 
-    # Configure Auth Provider
-    auth_provider = None
+    # Configure client
+    client_kwargs = {}
+    if api_auth and isinstance(api_auth, QuortexAuth):
+        client_kwargs["auth"] = api_auth
+    elif os.environ.get("QUORTEX_API_TOKEN"):
+        client_kwargs["headers"] = {"Authorization": f"Bearer {os.environ['QUORTEX_API_TOKEN']}"}
+
+    # Configure Auth Provider for MCP Server access
+    mcp_auth_provider = None
     google_client_id = os.environ.get("GOOGLE_CLIENT_ID")
     google_client_secret = os.environ.get("GOOGLE_CLIENT_SECRET")
     
     if google_client_id and google_client_secret:
-        logger.info("Configuring Google OAuth Provider")
-        auth_provider = GoogleProvider(
+        logger.info("Configuring Google OAuth Provider for MCP Server")
+        mcp_auth_provider = GoogleProvider(
             client_id=google_client_id,
             client_secret=google_client_secret,
-            base_url="http://localhost:8000"  # Default base URL, should match your server config
+            base_url="http://localhost:8000"
         )
 
     # httpx client is required for making requests
     mcp = FastMCP.from_openapi(
         merged_spec,
-        client=httpx.AsyncClient(headers=client_headers),
+        client=httpx.AsyncClient(**client_kwargs),
         route_maps=route_maps,
         name="Quortex MCP",
-        auth=auth_provider
+        auth=mcp_auth_provider
     )
 
     # Apply global transformations
     default_org = os.environ.get("QUORTEX_ORG")
     if default_org:
         logger.info(f"Applying global 'org' transformation with default: {default_org}")
-        
-        # We need to wait for the tools to be loaded if from_openapi is async, 
-        # but here it returns the mcp instance and tools are already parsed from spec.
-        # Actually, from_openapi (FastMCPOpenAPI) parses the spec immediately in __init__.
         
         for tool_name, tool in mcp._tool_manager._tools.items():
             if "org" in tool.parameters.get("properties", {}):
@@ -154,7 +210,6 @@ def create_mcp_server():
     return mcp
 
 # Create the MCP server instance globally
-# This allows 'fastmcp run server.py' to find the 'mcp' object automatically
 mcp = create_mcp_server()
 
 def main():
