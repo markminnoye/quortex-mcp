@@ -33,6 +33,10 @@ Run the server:
 python server.py
 ```
 
+### Configuration
+
+- `QUORTEX_ORG`: (Optional) Set this environment variable to your Quortex Organization UUID. If set, the `org` parameter will be hidden from the AI assistant and automatically supplied to all API calls.
+
 ### Adding New APIs
 
 To add more Quortex services, simply drop the valid OpenAPI YAML file into the `api/` directory. The server will automatically pick it up and merge it on the next restart.

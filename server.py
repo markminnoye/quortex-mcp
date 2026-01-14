@@ -1,8 +1,13 @@
-import yaml
 import logging
+import os
 from pathlib import Path
-from fastmcp import FastMCP
+from typing import Any
+
 import httpx
+import yaml
+from fastmcp import FastMCP
+from fastmcp.server.openapi import MCPType, RouteMap
+from fastmcp.tools.tool_transform import ArgTransformConfig, ToolTransformConfig
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -47,21 +52,21 @@ def merge_specs(base_spec, new_spec):
 
     return merged
 
-def main():
+def create_mcp_server():
     # Define paths to specs relative to this script
     base_path = Path(__file__).parent
     api_dir = base_path / "api"
 
     if not api_dir.exists():
         logger.error(f"Could not find API directory at {api_dir}")
-        return
+        return None
 
     # Find all YAML files in the api directory
     yaml_files = list(api_dir.glob("*.yaml"))
     
     if not yaml_files:
         logger.error("No YAML files found in api directory.")
-        return
+        return None
 
     logger.info(f"Found {len(yaml_files)} API specs: {[f.name for f in yaml_files]}")
 
@@ -82,9 +87,6 @@ def main():
 
     logger.info("Initializing FastMCP server...")
     
-    # Configure RouteMaps to define how OpenAPI operations are exposed
-    from fastmcp.server.openapi import RouteMap, MCPType
-    
     route_maps = [
         # Map GET requests with path parameters to Resource Templates
         RouteMap(methods=["GET"], pattern=r".*\{.*\}.*", mcp_type=MCPType.RESOURCE_TEMPLATE),
@@ -102,8 +104,36 @@ def main():
         name="Quortex MCP"
     )
 
-    logger.info("Starting Quortex MCP server...")
-    mcp.run()
+    # Apply global transformations
+    default_org = os.environ.get("QUORTEX_ORG")
+    if default_org:
+        logger.info(f"Applying global 'org' transformation with default: {default_org}")
+        
+        # We need to wait for the tools to be loaded if from_openapi is async, 
+        # but here it returns the mcp instance and tools are already parsed from spec.
+        # Actually, from_openapi (FastMCPOpenAPI) parses the spec immediately in __init__.
+        
+        for tool_name, tool in mcp._tool_manager._tools.items():
+            if "org" in tool.parameters.get("properties", {}):
+                mcp.add_tool_transformation(
+                    tool_name,
+                    ToolTransformConfig(
+                        arguments={
+                            "org": ArgTransformConfig(
+                                hide=True,
+                                default=default_org
+                            )
+                        }
+                    )
+                )
+
+    return mcp
+
+def main():
+    mcp = create_mcp_server()
+    if mcp:
+        logger.info("Starting Quortex MCP server...")
+        mcp.run()
 
 if __name__ == "__main__":
     main()
