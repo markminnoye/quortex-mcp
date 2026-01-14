@@ -6,6 +6,7 @@ from typing import Any
 import httpx
 import yaml
 from fastmcp import FastMCP
+from fastmcp.server.auth.providers.google import GoogleProvider
 from fastmcp.server.openapi import MCPType, RouteMap
 from fastmcp.tools.tool_transform import ArgTransformConfig, ToolTransformConfig
 
@@ -96,12 +97,35 @@ def create_mcp_server():
         RouteMap(methods=["POST", "PUT", "DELETE", "PATCH"], mcp_type=MCPType.TOOL),
     ]
 
+    # Configure client headers with auth token if available
+    client_headers = {}
+    auth_token = os.environ.get("QUORTEX_API_TOKEN")
+    if auth_token:
+        logger.info("Configuring API client with QUORTEX_API_TOKEN")
+        client_headers["Authorization"] = f"Bearer {auth_token}"
+    else:
+        logger.warning("QUORTEX_API_TOKEN not found. API calls may fail if authentication is required.")
+
+    # Configure Auth Provider
+    auth_provider = None
+    google_client_id = os.environ.get("GOOGLE_CLIENT_ID")
+    google_client_secret = os.environ.get("GOOGLE_CLIENT_SECRET")
+    
+    if google_client_id and google_client_secret:
+        logger.info("Configuring Google OAuth Provider")
+        auth_provider = GoogleProvider(
+            client_id=google_client_id,
+            client_secret=google_client_secret,
+            base_url="http://localhost:8000"  # Default base URL, should match your server config
+        )
+
     # httpx client is required for making requests
     mcp = FastMCP.from_openapi(
         merged_spec,
-        client=httpx.AsyncClient(),
+        client=httpx.AsyncClient(headers=client_headers),
         route_maps=route_maps,
-        name="Quortex MCP"
+        name="Quortex MCP",
+        auth=auth_provider
     )
 
     # Apply global transformations
