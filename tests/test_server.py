@@ -1,12 +1,32 @@
 import pytest
 from fastmcp.client import Client
 from fastmcp.server.openapi import MCPType
-from server import main, merge_specs, load_yaml
+from server import create_mcp_server, merge_specs, load_yaml
 from pathlib import Path
+import asyncio
 
-# Note: server.py main() runs the server directly, which blocks. 
-# Ideally we should refactor server.py to expose the 'mcp' object without running it.
-# For now, we will verify the spec merging and configuration logic.
+@pytest.fixture
+def mcp_server():
+    return create_mcp_server()
+
+@pytest.mark.asyncio
+async def test_org_transformation(monkeypatch):
+    # Set the environment variable
+    monkeypatch.setenv("QUORTEX_ORG", "test-org-uuid")
+    
+    # Create the server with the environment variable set
+    mcp_server = create_mcp_server()
+    
+    async with Client(mcp_server) as client:
+        tools = await client.list_tools()
+        
+        # Find a tool that originally had an 'org' parameter
+        # We know ingest_inputs_create has it
+        ingest_tool = next((t for t in tools if t.name == "ingest_inputs_create"), None)
+        assert ingest_tool is not None
+        
+        # Verify 'org' is NOT in the input schema properties
+        assert "org" not in ingest_tool.inputSchema.get("properties", {})
 
 @pytest.fixture
 def sample_spec():
