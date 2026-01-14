@@ -1,0 +1,4366 @@
+openapi: 3.0.3
+info:
+  title: Quortex User API
+  version: 1.0.0
+  x-logo:
+    url: https://storage.googleapis.com/logo-quortex/Logo%20Quortex.svg
+paths:
+  /1.0/events/:
+    get:
+      operationId: events_list
+      description: Return the list of events. [This route can be paginated](#section/Lists-and-pagination).
+      summary: Gets the list of events.
+      parameters:
+      - in: query
+        name: application
+        schema:
+          type: string
+          enum:
+          - admin
+          - billing
+          - ingest
+          - link
+          - organization
+          - play
+          - switch
+          - user
+        description: 'Only display events belonging to this application.<br />Play
+          / Link / Switch: for events regarding the corresponding product usage<br
+          />Organization: for events regarding organizations status and members<br
+          />Billing: for events regarding invoices and billing'
+      - in: query
+        name: in_message
+        schema:
+          type: string
+        description: Only returns events containing this string in its message. Case
+          insensitive.
+      - name: page
+        required: false
+        in: query
+        description: When pagination is enabled, select the page to get.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Enable pagination and set the page size.
+        schema:
+          type: integer
+      - in: query
+        name: pool_uuid
+        schema:
+          type: string
+        description: Only display events belonging to this pool.
+      - in: query
+        name: resource_uuid
+        schema:
+          type: string
+        description: Only display events belonging to this resource.
+      - in: query
+        name: workspace_uuid
+        schema:
+          type: string
+        description: Only display events belonging to this workspace.
+      tags:
+      - events
+      security:
+      - Bearer: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEventList'
+          description: List of events successfully retrieved.
+        '403':
+          description: You do not have permission to see these events.
+        '404':
+          description: Pool, application or organization not found.
+  /1.0/invitation/{code}/:
+    get:
+      operationId: invitation_retrieve
+      description: Before accepting an invitation code using the POST method, users
+        are encouraged to check that the invitation is correct. When a code is used,
+        it becomes unusable again.
+      summary: Check invitation code information.
+      parameters:
+      - in: path
+        name: code
+        schema:
+          type: string
+          pattern: ^[\w]+$
+        required: true
+      tags:
+      - invitation
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvitationCode'
+          description: Invitation code information.
+    post:
+      operationId: invitation_create
+      description: Link the organization with the current account.
+      summary: Use an invitation code to get access to an organization.
+      parameters:
+      - in: path
+        name: code
+        schema:
+          type: string
+          pattern: ^[\w]+$
+        required: true
+      tags:
+      - invitation
+      security:
+      - Bearer: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvitationCode'
+          description: Code succesfully used.
+  /1.0/news/:
+    get:
+      operationId: news_list
+      description: API endpoint that allows news to be viewed by main app users.
+      summary: Get all published news
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: When pagination is enabled, select the page to get.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Enable pagination and set the page size.
+        schema:
+          type: integer
+      tags:
+      - news
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNewsDetailList'
+          description: List of news.
+  /1.0/organization/:
+    post:
+      operationId: organization_create
+      description: Create a brand new organization, without any relation to any existing
+        organizations. You will be granted administrator permission on that organization.
+      summary: Create a new organization
+      parameters:
+      - in: query
+        name: x-amzn-marketplace-token
+        schema:
+          type: string
+        description: Provide the aws marketplace token.
+      tags:
+      - organization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationCreationRequest'
+      security:
+      - Bearer: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationInfo'
+          description: Information of the newly created organization.
+  /1.0/organization/api_key/:
+    get:
+      operationId: organization_api_key_list
+      description: Return the list of organization API keys. For security reason,
+        the API secrets are not shown here.
+      summary: Gets the list of organization API keys.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: When pagination is enabled, select the page to get.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Enable pagination and set the page size.
+        schema:
+          type: integer
+      tags:
+      - org api keys
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedApiKeyList'
+          description: List of organization API keys successfully retrieved.
+    post:
+      operationId: organization_api_key_create
+      description: Create new organization API key.
+      summary: Creates an organization API key.
+      tags:
+      - org api keys
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiKeyRequest'
+        required: true
+      security:
+      - Bearer: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+          description: organization API key created.
+  /1.0/organization/api_key/{uuid}/:
+    get:
+      operationId: organization_api_key_retrieve
+      description: Return the organization API key container identified by the given
+        uuid, including its secret.
+      summary: Gets a single organization API key container, including its secret.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - org api keys
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetailedApiKey'
+          description: organization API key successfully retrieved.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetailedApiKey'
+          description: Failed to get the organization API key (probably because it
+            does not exist).
+    patch:
+      operationId: organization_api_key_partial_update
+      description: Update an organization API key identified by the given uuid.
+      summary: Update an organization API key.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - org api keys
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDetailedApiKeyRequest'
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetailedApiKey'
+          description: organization API key update done.
+    delete:
+      operationId: organization_api_key_destroy
+      description: Deletes the organization API key identified by the given uuid.
+      summary: Deletes a single organization API key.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - org api keys
+      security:
+      - Bearer: []
+      responses:
+        '204':
+          description: API key deleted.
+  /1.0/organization/api_key/rotate/{uuid}/:
+    patch:
+      operationId: organization_api_key_rotate_partial_update
+      description: Rotate organization API key secret identified by the given uuid.
+        The old API key secret will no longer be available.
+      summary: Rotate the organization API key.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - org api keys
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RotationApiKey'
+          description: organization API key rotation done.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RotationApiKey'
+          description: organization API key rotation failed. The request is malformed
+            or the body is not respecting the waited scheme.
+  /1.0/organization/confirm_inscription/:
+    post:
+      operationId: organization_confirm_inscription_create
+      description: Must be called by the user to set its name and finalize the inscription
+        process
+      summary: Finalize the inscription process
+      tags:
+      - organization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmInscriptionRequest'
+      security:
+      - Bearer: []
+      deprecated: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
+          description: Inscription finalized
+  /1.0/organization/finalize/:
+    post:
+      operationId: organization_finalize_create
+      description: Set an organization out of the draft state.
+      summary: Finalize a draft organization
+      tags:
+      - organization
+      security:
+      - Bearer: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationInfo'
+          description: Organization successfully finalized.
+  /1.0/organization/info/:
+    get:
+      operationId: organization_info_retrieve
+      summary: Get the organization information
+      tags:
+      - organization
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationInfo'
+          description: ''
+    patch:
+      operationId: organization_info_partial_update
+      summary: Update organization information
+      parameters:
+      - in: query
+        name: x-amzn-marketplace-token
+        schema:
+          type: string
+        description: Provide the aws marketplace token.
+      tags:
+      - organization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOrganizationInfoRequest'
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationInfo'
+          description: ''
+  /1.0/organization/invitation_request/:
+    post:
+      operationId: organization_invitation_request_create
+      description: Standard users can ask to invite new people in the organization.
+        The invitation must be validated by an organization admin. Optionally, an
+        application can be specified, in which case the application captains may also
+        approve the invitation request, and the invited user will be granted access
+        to this application. A temporary user_uuid is given in the API response, which
+        can be used to further configure the invited user accesses. This user_uuid
+        will be replaced by the uuid of the user which uses the access code of the
+        invitation.
+      summary: Ask to invite an external user
+      tags:
+      - organization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvitationRequest'
+        required: true
+      security:
+      - Bearer: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
+          description: Pending user associated to the invitation.
+  /1.0/organization/members/:
+    get:
+      operationId: organization_members_list
+      summary: Get all members
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: When pagination is enabled, select the page to get.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Enable pagination and set the page size.
+        schema:
+          type: integer
+      tags:
+      - organization
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMemberList'
+          description: List of members
+    post:
+      operationId: organization_members_create
+      summary: Add a new member
+      tags:
+      - organization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberCreationRequest'
+        required: true
+      security:
+      - Bearer: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
+          description: Member created
+  /1.0/organization/members/{uuid}/:
+    get:
+      operationId: organization_members_retrieve
+      summary: Get a specific member
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          pattern: ^[-\w]+$
+        required: true
+      tags:
+      - organization
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberDetail'
+          description: ''
+    patch:
+      operationId: organization_members_partial_update
+      summary: Update a member.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          pattern: ^[-\w]+$
+        required: true
+      tags:
+      - organization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMemberDetailRequest'
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberDetail'
+          description: ''
+    delete:
+      operationId: organization_members_destroy
+      summary: Delete a single member
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          pattern: ^[-\w]+$
+        required: true
+      tags:
+      - organization
+      security:
+      - Bearer: []
+      responses:
+        '204':
+          description: No response body
+  /1.0/organization/members/{uuid}/validate/:
+    post:
+      operationId: organization_members_validate_create
+      description: An email will be sent to the invited address. This route can also
+        be called to send another invitation email.
+      summary: Accept an invitation request
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          pattern: ^[-\w]+$
+        required: true
+      tags:
+      - organization
+      security:
+      - Bearer: []
+      responses:
+        '201':
+          description: Invitation request accepted
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThrottledError'
+          description: Too many requests
+  /1.0/organization/plugins/powervu/:
+    get:
+      operationId: organization_plugins_powervu_retrieve
+      summary: Get the powervu plugin information
+      tags:
+      - plugins
+      security:
+      - Bearer: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PowerVu'
+          description: ''
+  /1.0/organization/sso/saml/:
+    get:
+      operationId: organization_sso_saml_retrieve
+      summary: Get the organization SSO configuration
+      tags:
+      - single sign-on
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Saml'
+          description: SSO configuration
+    put:
+      operationId: organization_sso_saml_update
+      summary: Update the organization SSO configuration
+      tags:
+      - single sign-on
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SamlRequest'
+        required: true
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Saml'
+          description: SSO configuration
+    delete:
+      operationId: organization_sso_saml_destroy
+      summary: Delete the organization SSO configuration
+      tags:
+      - single sign-on
+      security:
+      - Bearer: []
+      responses:
+        '204':
+          description: SSO configuration deleted
+  /1.0/organization/terms_of_service/:
+    post:
+      operationId: organization_terms_of_service_create
+      summary: Accept Quortex I/O terms of service
+      tags:
+      - terms of service
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TosRequest'
+        required: true
+      security:
+      - Bearer: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tos'
+          description: Terms of service accepted
+  /1.0/organization/webhooks/:
+    get:
+      operationId: organization_webhooks_list
+      description: Return the list of webhooks.
+      summary: Gets the list of webhooks.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: When pagination is enabled, select the page to get.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Enable pagination and set the page size.
+        schema:
+          type: integer
+      tags:
+      - webhooks
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWebhookList'
+          description: List of webhooks successfully retrieved.
+        '404':
+          description: Organization not found.
+    post:
+      operationId: organization_webhooks_create
+      description: Create new webhook.
+      summary: Creates a webhook.
+      tags:
+      - webhooks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookRequest'
+        required: true
+      security:
+      - Bearer: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+          description: Webhook created.
+        '404':
+          description: Webhook creation failed. The request is malformed or the body
+            is not respecting the waited scheme.
+        '415':
+          description: Webhook creation failed. Unsupported or missing content-type.
+    delete:
+      operationId: webhook_delete_all
+      description: Delete all webhook configurations.
+      summary: Deletes all webhook configurations.
+      tags:
+      - webhooks
+      security:
+      - Bearer: []
+      responses:
+        '204':
+          description: All webhook configurations deleted.
+        '404':
+          description: Organization not found.
+  /1.0/organization/webhooks/{uuid}/:
+    get:
+      operationId: organization_webhooks_retrieve
+      description: Return the webhook identified by the given uuid.
+      summary: Gets a single webhook.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - webhooks
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+          description: Webhook successfully retrieved.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+          description: Failed to get the webhook (probably because it does not exist).
+    put:
+      operationId: organization_webhooks_update
+      description: Updates the webhook identified by the given uuid. This perform
+        a full update of the webhook.
+      summary: Fully updates a single webhook.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - webhooks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookRequest'
+        required: true
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+          description: Full webhook updated.
+        '404':
+          description: Full webhook update failed. The request is malformed or the
+            body is not respecting the waited scheme.
+        '415':
+          description: Full webhook update failed. Unsupported or missing content-type.
+    patch:
+      operationId: organization_webhooks_partial_update
+      description: Updates the webhook identified by the given uuid. This perform
+        a partial update of the webhook.
+      summary: Partially updates a webhook.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - webhooks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedWebhookRequest'
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+          description: Partial webhook updated.
+        '404':
+          description: Partial webhook update failed. The request is malformed or
+            the body is not respecting the waited scheme.
+        '415':
+          description: Partial webhook update failed. Unsupported or missing content-type.
+    delete:
+      operationId: organization_webhooks_destroy
+      description: Deletes the webhook identified by the given uuid.
+      summary: Deletes a single webhook.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - webhooks
+      security:
+      - Bearer: []
+      responses:
+        '204':
+          description: Webhook deleted.
+  /1.0/token/:
+    post:
+      operationId: token_create
+      description: Creates an access token from an API key.
+      summary: Get access token.
+      tags:
+      - token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRequestRequest'
+            examples:
+              GetJWT:
+                value:
+                  api_key_secret: eHh4eHh4eHh4eHh4eHh4eA==
+                summary: get JWT
+        required: true
+      security:
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+          description: Access token created.
+        '400':
+          description: Invalid API key.
+        '403':
+          description: Unauthorized API key.
+  /1.0/users/me/:
+    get:
+      operationId: users_me_retrieve
+      description: Get self user information. Not available for API keys.
+      summary: Get self information
+      tags:
+      - self
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Self'
+          description: Self information retrieved.
+        '406':
+          description: No self member. Happens when this endpoint is called with an
+            API key.
+    patch:
+      operationId: users_me_partial_update
+      description: Update self user information. Not available for API keys.
+      summary: Update self information
+      tags:
+      - self
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSelfRequest'
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Self'
+          description: Self information retrieved.
+        '406':
+          description: No self member. Happens when this endpoint is called with an
+            API key.
+  /1.0/users/me/reset_password/:
+    post:
+      operationId: users_me_reset_password_create
+      description: An email will be sent with a reset password link.
+      summary: Reset self password
+      tags:
+      - self
+      security:
+      - Bearer: []
+      - {}
+      responses:
+        '201':
+          description: Reset password request accepted
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThrottledError'
+          description: Too many requests
+components:
+  schemas:
+    Address:
+      type: object
+      properties:
+        city:
+          type: string
+          maxLength: 128
+        country:
+          enum:
+          - AW
+          - AF
+          - AO
+          - AI
+          - AX
+          - AL
+          - AD
+          - AE
+          - AR
+          - AM
+          - AS
+          - AQ
+          - TF
+          - AG
+          - AU
+          - AT
+          - AZ
+          - BI
+          - BE
+          - BJ
+          - BQ
+          - BF
+          - BD
+          - BG
+          - BH
+          - BS
+          - BA
+          - BL
+          - BY
+          - BZ
+          - BM
+          - BO
+          - BR
+          - BB
+          - BN
+          - BT
+          - BV
+          - BW
+          - CF
+          - CA
+          - CC
+          - CH
+          - CL
+          - CN
+          - CI
+          - CM
+          - CD
+          - CG
+          - CK
+          - CO
+          - KM
+          - CV
+          - CR
+          - CU
+          - CW
+          - CX
+          - KY
+          - CY
+          - CZ
+          - DE
+          - DJ
+          - DM
+          - DK
+          - DO
+          - DZ
+          - EC
+          - EG
+          - ER
+          - EH
+          - ES
+          - EE
+          - ET
+          - FI
+          - FJ
+          - FK
+          - FR
+          - FO
+          - FM
+          - GA
+          - GB
+          - GE
+          - GG
+          - GH
+          - GI
+          - GN
+          - GP
+          - GM
+          - GW
+          - GQ
+          - GR
+          - GD
+          - GL
+          - GT
+          - GF
+          - GU
+          - GY
+          - HK
+          - HM
+          - HN
+          - HR
+          - HT
+          - HU
+          - ID
+          - IM
+          - IN
+          - IO
+          - IE
+          - IR
+          - IQ
+          - IS
+          - IL
+          - IT
+          - JM
+          - JE
+          - JO
+          - JP
+          - KZ
+          - KE
+          - KG
+          - KH
+          - KI
+          - KN
+          - KR
+          - KW
+          - LA
+          - LB
+          - LR
+          - LY
+          - LC
+          - LI
+          - LK
+          - LS
+          - LT
+          - LU
+          - LV
+          - MO
+          - MF
+          - MA
+          - MC
+          - MD
+          - MG
+          - MV
+          - MX
+          - MH
+          - MK
+          - ML
+          - MT
+          - MM
+          - ME
+          - MN
+          - MP
+          - MZ
+          - MR
+          - MS
+          - MQ
+          - MU
+          - MW
+          - MY
+          - YT
+          - NA
+          - NC
+          - NE
+          - NF
+          - NG
+          - NI
+          - NU
+          - NL
+          - 'NO'
+          - NP
+          - NR
+          - NZ
+          - OM
+          - PK
+          - PA
+          - PN
+          - PE
+          - PH
+          - PW
+          - PG
+          - PL
+          - PR
+          - KP
+          - PT
+          - PY
+          - PS
+          - PF
+          - QA
+          - RE
+          - RO
+          - RU
+          - RW
+          - SA
+          - SD
+          - SN
+          - SG
+          - GS
+          - SH
+          - SJ
+          - SB
+          - SL
+          - SV
+          - SM
+          - SO
+          - PM
+          - RS
+          - SS
+          - ST
+          - SR
+          - SK
+          - SI
+          - SE
+          - SZ
+          - SX
+          - SC
+          - SY
+          - TC
+          - TD
+          - TG
+          - TH
+          - TJ
+          - TK
+          - TM
+          - TL
+          - TO
+          - TT
+          - TN
+          - TR
+          - TV
+          - TW
+          - TZ
+          - UG
+          - UA
+          - UM
+          - UY
+          - US
+          - UZ
+          - VA
+          - VC
+          - VE
+          - VG
+          - VI
+          - VN
+          - VU
+          - WF
+          - WS
+          - YE
+          - ZA
+          - ZM
+          - ZW
+          - ''
+          type: string
+          description: |-
+            * `AW` - Aruba
+            * `AF` - Afghanistan
+            * `AO` - Angola
+            * `AI` - Anguilla
+            * `AX` - Åland Islands
+            * `AL` - Albania
+            * `AD` - Andorra
+            * `AE` - United Arab Emirates
+            * `AR` - Argentina
+            * `AM` - Armenia
+            * `AS` - American Samoa
+            * `AQ` - Antarctica
+            * `TF` - French Southern Territories
+            * `AG` - Antigua and Barbuda
+            * `AU` - Australia
+            * `AT` - Austria
+            * `AZ` - Azerbaijan
+            * `BI` - Burundi
+            * `BE` - Belgium
+            * `BJ` - Benin
+            * `BQ` - Bonaire, Sint Eustatius and Saba
+            * `BF` - Burkina Faso
+            * `BD` - Bangladesh
+            * `BG` - Bulgaria
+            * `BH` - Bahrain
+            * `BS` - Bahamas
+            * `BA` - Bosnia and Herzegovina
+            * `BL` - Saint Barthélemy
+            * `BY` - Belarus
+            * `BZ` - Belize
+            * `BM` - Bermuda
+            * `BO` - Bolivia, Plurinational State of
+            * `BR` - Brazil
+            * `BB` - Barbados
+            * `BN` - Brunei Darussalam
+            * `BT` - Bhutan
+            * `BV` - Bouvet Island
+            * `BW` - Botswana
+            * `CF` - Central African Republic
+            * `CA` - Canada
+            * `CC` - Cocos (Keeling) Islands
+            * `CH` - Switzerland
+            * `CL` - Chile
+            * `CN` - China
+            * `CI` - Côte d'Ivoire
+            * `CM` - Cameroon
+            * `CD` - Congo, The Democratic Republic of the
+            * `CG` - Congo
+            * `CK` - Cook Islands
+            * `CO` - Colombia
+            * `KM` - Comoros
+            * `CV` - Cabo Verde
+            * `CR` - Costa Rica
+            * `CU` - Cuba
+            * `CW` - Curaçao
+            * `CX` - Christmas Island
+            * `KY` - Cayman Islands
+            * `CY` - Cyprus
+            * `CZ` - Czechia
+            * `DE` - Germany
+            * `DJ` - Djibouti
+            * `DM` - Dominica
+            * `DK` - Denmark
+            * `DO` - Dominican Republic
+            * `DZ` - Algeria
+            * `EC` - Ecuador
+            * `EG` - Egypt
+            * `ER` - Eritrea
+            * `EH` - Western Sahara
+            * `ES` - Spain
+            * `EE` - Estonia
+            * `ET` - Ethiopia
+            * `FI` - Finland
+            * `FJ` - Fiji
+            * `FK` - Falkland Islands (Malvinas)
+            * `FR` - France
+            * `FO` - Faroe Islands
+            * `FM` - Micronesia, Federated States of
+            * `GA` - Gabon
+            * `GB` - United Kingdom
+            * `GE` - Georgia
+            * `GG` - Guernsey
+            * `GH` - Ghana
+            * `GI` - Gibraltar
+            * `GN` - Guinea
+            * `GP` - Guadeloupe
+            * `GM` - Gambia
+            * `GW` - Guinea-Bissau
+            * `GQ` - Equatorial Guinea
+            * `GR` - Greece
+            * `GD` - Grenada
+            * `GL` - Greenland
+            * `GT` - Guatemala
+            * `GF` - French Guiana
+            * `GU` - Guam
+            * `GY` - Guyana
+            * `HK` - Hong Kong
+            * `HM` - Heard Island and McDonald Islands
+            * `HN` - Honduras
+            * `HR` - Croatia
+            * `HT` - Haiti
+            * `HU` - Hungary
+            * `ID` - Indonesia
+            * `IM` - Isle of Man
+            * `IN` - India
+            * `IO` - British Indian Ocean Territory
+            * `IE` - Ireland
+            * `IR` - Iran, Islamic Republic of
+            * `IQ` - Iraq
+            * `IS` - Iceland
+            * `IL` - Israel
+            * `IT` - Italy
+            * `JM` - Jamaica
+            * `JE` - Jersey
+            * `JO` - Jordan
+            * `JP` - Japan
+            * `KZ` - Kazakhstan
+            * `KE` - Kenya
+            * `KG` - Kyrgyzstan
+            * `KH` - Cambodia
+            * `KI` - Kiribati
+            * `KN` - Saint Kitts and Nevis
+            * `KR` - Korea, Republic of
+            * `KW` - Kuwait
+            * `LA` - Lao People's Democratic Republic
+            * `LB` - Lebanon
+            * `LR` - Liberia
+            * `LY` - Libya
+            * `LC` - Saint Lucia
+            * `LI` - Liechtenstein
+            * `LK` - Sri Lanka
+            * `LS` - Lesotho
+            * `LT` - Lithuania
+            * `LU` - Luxembourg
+            * `LV` - Latvia
+            * `MO` - Macao
+            * `MF` - Saint Martin (French part)
+            * `MA` - Morocco
+            * `MC` - Monaco
+            * `MD` - Moldova, Republic of
+            * `MG` - Madagascar
+            * `MV` - Maldives
+            * `MX` - Mexico
+            * `MH` - Marshall Islands
+            * `MK` - North Macedonia
+            * `ML` - Mali
+            * `MT` - Malta
+            * `MM` - Myanmar
+            * `ME` - Montenegro
+            * `MN` - Mongolia
+            * `MP` - Northern Mariana Islands
+            * `MZ` - Mozambique
+            * `MR` - Mauritania
+            * `MS` - Montserrat
+            * `MQ` - Martinique
+            * `MU` - Mauritius
+            * `MW` - Malawi
+            * `MY` - Malaysia
+            * `YT` - Mayotte
+            * `NA` - Namibia
+            * `NC` - New Caledonia
+            * `NE` - Niger
+            * `NF` - Norfolk Island
+            * `NG` - Nigeria
+            * `NI` - Nicaragua
+            * `NU` - Niue
+            * `NL` - Netherlands
+            * `NO` - Norway
+            * `NP` - Nepal
+            * `NR` - Nauru
+            * `NZ` - New Zealand
+            * `OM` - Oman
+            * `PK` - Pakistan
+            * `PA` - Panama
+            * `PN` - Pitcairn
+            * `PE` - Peru
+            * `PH` - Philippines
+            * `PW` - Palau
+            * `PG` - Papua New Guinea
+            * `PL` - Poland
+            * `PR` - Puerto Rico
+            * `KP` - Korea, Democratic People's Republic of
+            * `PT` - Portugal
+            * `PY` - Paraguay
+            * `PS` - Palestine, State of
+            * `PF` - French Polynesia
+            * `QA` - Qatar
+            * `RE` - Réunion
+            * `RO` - Romania
+            * `RU` - Russian Federation
+            * `RW` - Rwanda
+            * `SA` - Saudi Arabia
+            * `SD` - Sudan
+            * `SN` - Senegal
+            * `SG` - Singapore
+            * `GS` - South Georgia and the South Sandwich Islands
+            * `SH` - Saint Helena, Ascension and Tristan da Cunha
+            * `SJ` - Svalbard and Jan Mayen
+            * `SB` - Solomon Islands
+            * `SL` - Sierra Leone
+            * `SV` - El Salvador
+            * `SM` - San Marino
+            * `SO` - Somalia
+            * `PM` - Saint Pierre and Miquelon
+            * `RS` - Serbia
+            * `SS` - South Sudan
+            * `ST` - Sao Tome and Principe
+            * `SR` - Suriname
+            * `SK` - Slovakia
+            * `SI` - Slovenia
+            * `SE` - Sweden
+            * `SZ` - Eswatini
+            * `SX` - Sint Maarten (Dutch part)
+            * `SC` - Seychelles
+            * `SY` - Syrian Arab Republic
+            * `TC` - Turks and Caicos Islands
+            * `TD` - Chad
+            * `TG` - Togo
+            * `TH` - Thailand
+            * `TJ` - Tajikistan
+            * `TK` - Tokelau
+            * `TM` - Turkmenistan
+            * `TL` - Timor-Leste
+            * `TO` - Tonga
+            * `TT` - Trinidad and Tobago
+            * `TN` - Tunisia
+            * `TR` - Türkiye
+            * `TV` - Tuvalu
+            * `TW` - Taiwan, Province of China
+            * `TZ` - Tanzania, United Republic of
+            * `UG` - Uganda
+            * `UA` - Ukraine
+            * `UM` - United States Minor Outlying Islands
+            * `UY` - Uruguay
+            * `US` - United States
+            * `UZ` - Uzbekistan
+            * `VA` - Holy See (Vatican City State)
+            * `VC` - Saint Vincent and the Grenadines
+            * `VE` - Venezuela, Bolivarian Republic of
+            * `VG` - Virgin Islands, British
+            * `VI` - Virgin Islands, U.S.
+            * `VN` - Viet Nam
+            * `VU` - Vanuatu
+            * `WF` - Wallis and Futuna
+            * `WS` - Samoa
+            * `YE` - Yemen
+            * `ZA` - South Africa
+            * `ZM` - Zambia
+            * `ZW` - Zimbabwe
+          x-spec-enum-id: bc478f0228a1549c
+        line1:
+          type: string
+          maxLength: 256
+        line2:
+          type: string
+          maxLength: 256
+        postal_code:
+          type: string
+          maxLength: 16
+        state:
+          type: string
+          maxLength: 128
+    AddressRequest:
+      type: object
+      properties:
+        city:
+          type: string
+          maxLength: 128
+        country:
+          enum:
+          - AW
+          - AF
+          - AO
+          - AI
+          - AX
+          - AL
+          - AD
+          - AE
+          - AR
+          - AM
+          - AS
+          - AQ
+          - TF
+          - AG
+          - AU
+          - AT
+          - AZ
+          - BI
+          - BE
+          - BJ
+          - BQ
+          - BF
+          - BD
+          - BG
+          - BH
+          - BS
+          - BA
+          - BL
+          - BY
+          - BZ
+          - BM
+          - BO
+          - BR
+          - BB
+          - BN
+          - BT
+          - BV
+          - BW
+          - CF
+          - CA
+          - CC
+          - CH
+          - CL
+          - CN
+          - CI
+          - CM
+          - CD
+          - CG
+          - CK
+          - CO
+          - KM
+          - CV
+          - CR
+          - CU
+          - CW
+          - CX
+          - KY
+          - CY
+          - CZ
+          - DE
+          - DJ
+          - DM
+          - DK
+          - DO
+          - DZ
+          - EC
+          - EG
+          - ER
+          - EH
+          - ES
+          - EE
+          - ET
+          - FI
+          - FJ
+          - FK
+          - FR
+          - FO
+          - FM
+          - GA
+          - GB
+          - GE
+          - GG
+          - GH
+          - GI
+          - GN
+          - GP
+          - GM
+          - GW
+          - GQ
+          - GR
+          - GD
+          - GL
+          - GT
+          - GF
+          - GU
+          - GY
+          - HK
+          - HM
+          - HN
+          - HR
+          - HT
+          - HU
+          - ID
+          - IM
+          - IN
+          - IO
+          - IE
+          - IR
+          - IQ
+          - IS
+          - IL
+          - IT
+          - JM
+          - JE
+          - JO
+          - JP
+          - KZ
+          - KE
+          - KG
+          - KH
+          - KI
+          - KN
+          - KR
+          - KW
+          - LA
+          - LB
+          - LR
+          - LY
+          - LC
+          - LI
+          - LK
+          - LS
+          - LT
+          - LU
+          - LV
+          - MO
+          - MF
+          - MA
+          - MC
+          - MD
+          - MG
+          - MV
+          - MX
+          - MH
+          - MK
+          - ML
+          - MT
+          - MM
+          - ME
+          - MN
+          - MP
+          - MZ
+          - MR
+          - MS
+          - MQ
+          - MU
+          - MW
+          - MY
+          - YT
+          - NA
+          - NC
+          - NE
+          - NF
+          - NG
+          - NI
+          - NU
+          - NL
+          - 'NO'
+          - NP
+          - NR
+          - NZ
+          - OM
+          - PK
+          - PA
+          - PN
+          - PE
+          - PH
+          - PW
+          - PG
+          - PL
+          - PR
+          - KP
+          - PT
+          - PY
+          - PS
+          - PF
+          - QA
+          - RE
+          - RO
+          - RU
+          - RW
+          - SA
+          - SD
+          - SN
+          - SG
+          - GS
+          - SH
+          - SJ
+          - SB
+          - SL
+          - SV
+          - SM
+          - SO
+          - PM
+          - RS
+          - SS
+          - ST
+          - SR
+          - SK
+          - SI
+          - SE
+          - SZ
+          - SX
+          - SC
+          - SY
+          - TC
+          - TD
+          - TG
+          - TH
+          - TJ
+          - TK
+          - TM
+          - TL
+          - TO
+          - TT
+          - TN
+          - TR
+          - TV
+          - TW
+          - TZ
+          - UG
+          - UA
+          - UM
+          - UY
+          - US
+          - UZ
+          - VA
+          - VC
+          - VE
+          - VG
+          - VI
+          - VN
+          - VU
+          - WF
+          - WS
+          - YE
+          - ZA
+          - ZM
+          - ZW
+          - ''
+          type: string
+          description: |-
+            * `AW` - Aruba
+            * `AF` - Afghanistan
+            * `AO` - Angola
+            * `AI` - Anguilla
+            * `AX` - Åland Islands
+            * `AL` - Albania
+            * `AD` - Andorra
+            * `AE` - United Arab Emirates
+            * `AR` - Argentina
+            * `AM` - Armenia
+            * `AS` - American Samoa
+            * `AQ` - Antarctica
+            * `TF` - French Southern Territories
+            * `AG` - Antigua and Barbuda
+            * `AU` - Australia
+            * `AT` - Austria
+            * `AZ` - Azerbaijan
+            * `BI` - Burundi
+            * `BE` - Belgium
+            * `BJ` - Benin
+            * `BQ` - Bonaire, Sint Eustatius and Saba
+            * `BF` - Burkina Faso
+            * `BD` - Bangladesh
+            * `BG` - Bulgaria
+            * `BH` - Bahrain
+            * `BS` - Bahamas
+            * `BA` - Bosnia and Herzegovina
+            * `BL` - Saint Barthélemy
+            * `BY` - Belarus
+            * `BZ` - Belize
+            * `BM` - Bermuda
+            * `BO` - Bolivia, Plurinational State of
+            * `BR` - Brazil
+            * `BB` - Barbados
+            * `BN` - Brunei Darussalam
+            * `BT` - Bhutan
+            * `BV` - Bouvet Island
+            * `BW` - Botswana
+            * `CF` - Central African Republic
+            * `CA` - Canada
+            * `CC` - Cocos (Keeling) Islands
+            * `CH` - Switzerland
+            * `CL` - Chile
+            * `CN` - China
+            * `CI` - Côte d'Ivoire
+            * `CM` - Cameroon
+            * `CD` - Congo, The Democratic Republic of the
+            * `CG` - Congo
+            * `CK` - Cook Islands
+            * `CO` - Colombia
+            * `KM` - Comoros
+            * `CV` - Cabo Verde
+            * `CR` - Costa Rica
+            * `CU` - Cuba
+            * `CW` - Curaçao
+            * `CX` - Christmas Island
+            * `KY` - Cayman Islands
+            * `CY` - Cyprus
+            * `CZ` - Czechia
+            * `DE` - Germany
+            * `DJ` - Djibouti
+            * `DM` - Dominica
+            * `DK` - Denmark
+            * `DO` - Dominican Republic
+            * `DZ` - Algeria
+            * `EC` - Ecuador
+            * `EG` - Egypt
+            * `ER` - Eritrea
+            * `EH` - Western Sahara
+            * `ES` - Spain
+            * `EE` - Estonia
+            * `ET` - Ethiopia
+            * `FI` - Finland
+            * `FJ` - Fiji
+            * `FK` - Falkland Islands (Malvinas)
+            * `FR` - France
+            * `FO` - Faroe Islands
+            * `FM` - Micronesia, Federated States of
+            * `GA` - Gabon
+            * `GB` - United Kingdom
+            * `GE` - Georgia
+            * `GG` - Guernsey
+            * `GH` - Ghana
+            * `GI` - Gibraltar
+            * `GN` - Guinea
+            * `GP` - Guadeloupe
+            * `GM` - Gambia
+            * `GW` - Guinea-Bissau
+            * `GQ` - Equatorial Guinea
+            * `GR` - Greece
+            * `GD` - Grenada
+            * `GL` - Greenland
+            * `GT` - Guatemala
+            * `GF` - French Guiana
+            * `GU` - Guam
+            * `GY` - Guyana
+            * `HK` - Hong Kong
+            * `HM` - Heard Island and McDonald Islands
+            * `HN` - Honduras
+            * `HR` - Croatia
+            * `HT` - Haiti
+            * `HU` - Hungary
+            * `ID` - Indonesia
+            * `IM` - Isle of Man
+            * `IN` - India
+            * `IO` - British Indian Ocean Territory
+            * `IE` - Ireland
+            * `IR` - Iran, Islamic Republic of
+            * `IQ` - Iraq
+            * `IS` - Iceland
+            * `IL` - Israel
+            * `IT` - Italy
+            * `JM` - Jamaica
+            * `JE` - Jersey
+            * `JO` - Jordan
+            * `JP` - Japan
+            * `KZ` - Kazakhstan
+            * `KE` - Kenya
+            * `KG` - Kyrgyzstan
+            * `KH` - Cambodia
+            * `KI` - Kiribati
+            * `KN` - Saint Kitts and Nevis
+            * `KR` - Korea, Republic of
+            * `KW` - Kuwait
+            * `LA` - Lao People's Democratic Republic
+            * `LB` - Lebanon
+            * `LR` - Liberia
+            * `LY` - Libya
+            * `LC` - Saint Lucia
+            * `LI` - Liechtenstein
+            * `LK` - Sri Lanka
+            * `LS` - Lesotho
+            * `LT` - Lithuania
+            * `LU` - Luxembourg
+            * `LV` - Latvia
+            * `MO` - Macao
+            * `MF` - Saint Martin (French part)
+            * `MA` - Morocco
+            * `MC` - Monaco
+            * `MD` - Moldova, Republic of
+            * `MG` - Madagascar
+            * `MV` - Maldives
+            * `MX` - Mexico
+            * `MH` - Marshall Islands
+            * `MK` - North Macedonia
+            * `ML` - Mali
+            * `MT` - Malta
+            * `MM` - Myanmar
+            * `ME` - Montenegro
+            * `MN` - Mongolia
+            * `MP` - Northern Mariana Islands
+            * `MZ` - Mozambique
+            * `MR` - Mauritania
+            * `MS` - Montserrat
+            * `MQ` - Martinique
+            * `MU` - Mauritius
+            * `MW` - Malawi
+            * `MY` - Malaysia
+            * `YT` - Mayotte
+            * `NA` - Namibia
+            * `NC` - New Caledonia
+            * `NE` - Niger
+            * `NF` - Norfolk Island
+            * `NG` - Nigeria
+            * `NI` - Nicaragua
+            * `NU` - Niue
+            * `NL` - Netherlands
+            * `NO` - Norway
+            * `NP` - Nepal
+            * `NR` - Nauru
+            * `NZ` - New Zealand
+            * `OM` - Oman
+            * `PK` - Pakistan
+            * `PA` - Panama
+            * `PN` - Pitcairn
+            * `PE` - Peru
+            * `PH` - Philippines
+            * `PW` - Palau
+            * `PG` - Papua New Guinea
+            * `PL` - Poland
+            * `PR` - Puerto Rico
+            * `KP` - Korea, Democratic People's Republic of
+            * `PT` - Portugal
+            * `PY` - Paraguay
+            * `PS` - Palestine, State of
+            * `PF` - French Polynesia
+            * `QA` - Qatar
+            * `RE` - Réunion
+            * `RO` - Romania
+            * `RU` - Russian Federation
+            * `RW` - Rwanda
+            * `SA` - Saudi Arabia
+            * `SD` - Sudan
+            * `SN` - Senegal
+            * `SG` - Singapore
+            * `GS` - South Georgia and the South Sandwich Islands
+            * `SH` - Saint Helena, Ascension and Tristan da Cunha
+            * `SJ` - Svalbard and Jan Mayen
+            * `SB` - Solomon Islands
+            * `SL` - Sierra Leone
+            * `SV` - El Salvador
+            * `SM` - San Marino
+            * `SO` - Somalia
+            * `PM` - Saint Pierre and Miquelon
+            * `RS` - Serbia
+            * `SS` - South Sudan
+            * `ST` - Sao Tome and Principe
+            * `SR` - Suriname
+            * `SK` - Slovakia
+            * `SI` - Slovenia
+            * `SE` - Sweden
+            * `SZ` - Eswatini
+            * `SX` - Sint Maarten (Dutch part)
+            * `SC` - Seychelles
+            * `SY` - Syrian Arab Republic
+            * `TC` - Turks and Caicos Islands
+            * `TD` - Chad
+            * `TG` - Togo
+            * `TH` - Thailand
+            * `TJ` - Tajikistan
+            * `TK` - Tokelau
+            * `TM` - Turkmenistan
+            * `TL` - Timor-Leste
+            * `TO` - Tonga
+            * `TT` - Trinidad and Tobago
+            * `TN` - Tunisia
+            * `TR` - Türkiye
+            * `TV` - Tuvalu
+            * `TW` - Taiwan, Province of China
+            * `TZ` - Tanzania, United Republic of
+            * `UG` - Uganda
+            * `UA` - Ukraine
+            * `UM` - United States Minor Outlying Islands
+            * `UY` - Uruguay
+            * `US` - United States
+            * `UZ` - Uzbekistan
+            * `VA` - Holy See (Vatican City State)
+            * `VC` - Saint Vincent and the Grenadines
+            * `VE` - Venezuela, Bolivarian Republic of
+            * `VG` - Virgin Islands, British
+            * `VI` - Virgin Islands, U.S.
+            * `VN` - Viet Nam
+            * `VU` - Vanuatu
+            * `WF` - Wallis and Futuna
+            * `WS` - Samoa
+            * `YE` - Yemen
+            * `ZA` - South Africa
+            * `ZM` - Zambia
+            * `ZW` - Zimbabwe
+          x-spec-enum-id: bc478f0228a1549c
+        line1:
+          type: string
+          maxLength: 256
+        line2:
+          type: string
+          maxLength: 256
+        postal_code:
+          type: string
+          maxLength: 16
+        state:
+          type: string
+          maxLength: 128
+    ApiKey:
+      type: object
+      properties:
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Creation date
+        last_used_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Last token generation date
+        name:
+          type: string
+          description: Name of the API key
+        uuid:
+          type: string
+          readOnly: true
+          description: Identifier of the API key
+      required:
+      - created_at
+      - last_used_at
+      - name
+      - uuid
+    ApiKeyRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Name of the API key
+      required:
+      - name
+    ConfirmInscriptionRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+    DetailedApiKey:
+      type: object
+      properties:
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Creation date
+        last_used_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Last token generation date
+        name:
+          type: string
+          description: Name of the API key
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Identifier of the API key
+        secret:
+          type: string
+          readOnly: true
+          description: Secret to be used to get API access tokens. It must remain
+            secret and must be updated if leaked.
+      required:
+      - created_at
+      - last_used_at
+      - name
+      - secret
+      - uuid
+    Event:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        message:
+          type: string
+        pool_uuid:
+          type: string
+          nullable: true
+          maxLength: 128
+        workspace_uuid:
+          type: string
+          nullable: true
+          maxLength: 128
+        resource_uuid:
+          type: string
+          nullable: true
+          maxLength: 128
+        application:
+          enum:
+          - play
+          - link
+          - organization
+          - billing
+          - user
+          - switch
+          - admin
+          - ingest
+          - ''
+          type: string
+          description: |-
+            * `play` - Play
+            * `link` - Link
+            * `organization` - Organization
+            * `billing` - Billing
+            * `user` - User
+            * `switch` - Switch
+            * `admin` - Admin
+            * `ingest` - Ingest
+          x-spec-enum-id: f50026ed0e022c4a
+    GeneralSettingField:
+      type: object
+      properties:
+        pnc_url:
+          type: string
+        grafana_url:
+          type: string
+          minLength: 0
+      required:
+      - grafana_url
+      - pnc_url
+    InvitationCode:
+      type: object
+      properties:
+        organization_name:
+          type: string
+          readOnly: true
+        organization_uuid:
+          type: string
+          readOnly: true
+        is_admin:
+          type: boolean
+          readOnly: true
+        user_name:
+          type: string
+          readOnly: true
+        inviter:
+          type: string
+          readOnly: true
+          nullable: true
+      required:
+      - inviter
+      - is_admin
+      - organization_name
+      - organization_uuid
+      - user_name
+    InvitationRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+        app:
+          enum:
+          - play
+          - link
+          - switch
+          type: string
+          description: |-
+            * `play` - play
+            * `link` - link
+            * `switch` - switch <span type="warning" class="dLkyEd"> Beta </span><br/>
+          x-spec-enum-id: 2f02544182e00674
+          writeOnly: true
+          default: play
+      required:
+      - email
+    Inviter:
+      type: object
+      properties:
+        uuid:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          maxLength: 128
+      required:
+      - uuid
+    InviterRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 128
+    LinkParameters:
+      type: object
+      properties:
+        role:
+          enum:
+          - captain
+          - user
+          - null
+          type: string
+          description: |-
+            * `captain` - Captain
+            * `user` - User
+          x-spec-enum-id: 468235c806f07a70
+          nullable: true
+        pool_count:
+          type: integer
+          readOnly: true
+      required:
+      - pool_count
+      - role
+    LinkParametersDetail:
+      type: object
+      properties:
+        role:
+          enum:
+          - captain
+          - user
+          - null
+          type: string
+          description: |-
+            * `captain` - Captain
+            * `user` - User
+          x-spec-enum-id: 468235c806f07a70
+          nullable: true
+        pool_count:
+          type: integer
+          readOnly: true
+        pools:
+          type: array
+          items:
+            $ref: '#/components/schemas/PoolAccess'
+          readOnly: true
+      required:
+      - pool_count
+      - pools
+      - role
+    LinkParametersDetailRequest:
+      type: object
+      properties:
+        role:
+          enum:
+          - captain
+          - user
+          - null
+          type: string
+          description: |-
+            * `captain` - Captain
+            * `user` - User
+          x-spec-enum-id: 468235c806f07a70
+          nullable: true
+      required:
+      - role
+    LinkParametersRequest:
+      type: object
+      properties:
+        role:
+          enum:
+          - captain
+          - user
+          - null
+          type: string
+          description: |-
+            * `captain` - Captain
+            * `user` - User
+          x-spec-enum-id: 468235c806f07a70
+          nullable: true
+      required:
+      - role
+    Member:
+      type: object
+      properties:
+        uuid:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        email:
+          type: string
+          readOnly: true
+        profile_picture_url:
+          type: string
+          readOnly: true
+        is_admin:
+          type: boolean
+        role:
+          enum:
+          - admin
+          - captain
+          - user
+          type: string
+          x-spec-enum-id: 36d5186180ef59c8
+          description: |-
+            Deprecated. Use the is_admin field and apps.role instead.
+
+            * `admin` - Admin
+            * `captain` - Captain
+            * `user` - User
+        play:
+          $ref: '#/components/schemas/PlayParameters'
+        link:
+          $ref: '#/components/schemas/LinkParameters'
+        switch:
+          $ref: '#/components/schemas/SwitchParameters'
+        login_type:
+          type: string
+          readOnly: true
+        sso:
+          allOf:
+          - $ref: '#/components/schemas/Sso'
+          readOnly: true
+          nullable: true
+          description: SSO connection information, used when login_type is "sso".
+        member_since:
+          type: string
+          format: date
+          readOnly: true
+          nullable: true
+        invitation:
+          enum:
+          - requested
+          - sent
+          - accepted
+          type: string
+          description: |-
+            * `requested` - requested
+            * `sent` - sent
+            * `accepted` - accepted
+          x-spec-enum-id: 86da09bb50d2c996
+          readOnly: true
+        suspended:
+          type: boolean
+        pools:
+          type: array
+          items:
+            $ref: '#/components/schemas/PoolAccess'
+          readOnly: true
+          description: Deprecated. Use the play.pool_count or play.pools fields instead
+        inviter:
+          allOf:
+          - $ref: '#/components/schemas/Inviter'
+          readOnly: true
+      required:
+      - email
+      - invitation
+      - inviter
+      - link
+      - login_type
+      - member_since
+      - name
+      - play
+      - pools
+      - profile_picture_url
+      - role
+      - sso
+      - switch
+      - uuid
+    MemberCreationRequest:
+      type: object
+      properties:
+        is_admin:
+          type: boolean
+          writeOnly: true
+          default: false
+        role:
+          enum:
+          - admin
+          - captain
+          - user
+          type: string
+          x-spec-enum-id: b47f1f7df76f808b
+          writeOnly: true
+          description: |-
+            deprecated. Use 'is_admin' and application specific roles instead.
+
+            * `admin` - admin
+            * `captain` - captain
+            * `user` - user
+        play:
+          $ref: '#/components/schemas/PlayParametersRequest'
+        link:
+          $ref: '#/components/schemas/LinkParametersRequest'
+        switch:
+          $ref: '#/components/schemas/SwitchParametersRequest'
+        email:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - email
+    MemberDetail:
+      type: object
+      properties:
+        uuid:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        email:
+          type: string
+          readOnly: true
+        profile_picture_url:
+          type: string
+          readOnly: true
+        is_admin:
+          type: boolean
+        role:
+          enum:
+          - admin
+          - captain
+          - user
+          type: string
+          x-spec-enum-id: 36d5186180ef59c8
+          description: |-
+            Deprecated. Use the is_admin field and apps.role instead.
+
+            * `admin` - Admin
+            * `captain` - Captain
+            * `user` - User
+        play:
+          $ref: '#/components/schemas/PlayParametersDetail'
+        link:
+          $ref: '#/components/schemas/LinkParametersDetail'
+        switch:
+          $ref: '#/components/schemas/SwitchParameters'
+        login_type:
+          type: string
+          readOnly: true
+        sso:
+          allOf:
+          - $ref: '#/components/schemas/Sso'
+          readOnly: true
+          nullable: true
+          description: SSO connection information, used when login_type is "sso".
+        member_since:
+          type: string
+          format: date
+          readOnly: true
+          nullable: true
+        invitation:
+          enum:
+          - requested
+          - sent
+          - accepted
+          type: string
+          description: |-
+            * `requested` - requested
+            * `sent` - sent
+            * `accepted` - accepted
+          x-spec-enum-id: 86da09bb50d2c996
+          readOnly: true
+        suspended:
+          type: boolean
+        pools:
+          type: array
+          items:
+            $ref: '#/components/schemas/PoolAccess'
+          readOnly: true
+          description: Deprecated. Use the play.pool_count or play.pools fields instead
+        inviter:
+          allOf:
+          - $ref: '#/components/schemas/Inviter'
+          readOnly: true
+      required:
+      - email
+      - invitation
+      - inviter
+      - link
+      - login_type
+      - member_since
+      - name
+      - play
+      - pools
+      - profile_picture_url
+      - role
+      - sso
+      - switch
+      - uuid
+    Membership:
+      type: object
+      properties:
+        is_admin:
+          type: boolean
+        role_play:
+          enum:
+          - captain
+          - user
+          - ''
+          - null
+          type: string
+          description: |-
+            * `captain` - Captain
+            * `user` - User
+          x-spec-enum-id: 468235c806f07a70
+          nullable: true
+        role_link:
+          enum:
+          - captain
+          - user
+          - ''
+          - null
+          type: string
+          description: |-
+            * `captain` - Captain
+            * `user` - User
+          x-spec-enum-id: 468235c806f07a70
+          nullable: true
+        role_switch:
+          enum:
+          - captain
+          - user
+          - ''
+          - null
+          type: string
+          description: |-
+            * `captain` - Captain
+            * `user` - User
+          x-spec-enum-id: 468235c806f07a70
+          nullable: true
+        role:
+          enum:
+          - admin
+          - captain
+          - user
+          type: string
+          description: |-
+            * `admin` - Admin
+            * `captain` - Captain
+            * `user` - User
+          x-spec-enum-id: 36d5186180ef59c8
+          readOnly: true
+        link_enabled:
+          type: boolean
+          readOnly: true
+        powervu_enabled:
+          type: boolean
+          readOnly: true
+        member_since:
+          type: string
+          format: date
+          nullable: true
+        invitation:
+          enum:
+          - requested
+          - sent
+          - accepted
+          type: string
+          description: |-
+            * `requested` - requested
+            * `sent` - sent
+            * `accepted` - accepted
+          x-spec-enum-id: 86da09bb50d2c996
+        suspended:
+          type: boolean
+        organization_uuid:
+          type: string
+          readOnly: true
+        organization_name:
+          type: string
+        creation_status:
+          enum:
+          - draft
+          - pending
+          - ok
+          - rejected
+          type: string
+          description: |-
+            * `draft` - Draft
+            * `pending` - Pending
+            * `ok` - Ok
+            * `rejected` - Rejected
+          x-spec-enum-id: '4476579537637920'
+        trial:
+          type: boolean
+          readOnly: true
+          description: Is this organization still in trial mode?
+        billing_mode:
+          enum:
+          - standard
+          - experimental
+          type: string
+          description: |-
+            * `standard` - Standard
+            * `experimental` - Experimental
+          x-spec-enum-id: 77e8decaf7b8e20c
+          readOnly: true
+        pools:
+          type: array
+          items:
+            type: string
+          readOnly: true
+          description: uuids of the accessible pools in this organization
+      required:
+      - billing_mode
+      - creation_status
+      - invitation
+      - link_enabled
+      - member_since
+      - organization_name
+      - organization_uuid
+      - pools
+      - powervu_enabled
+      - role
+      - suspended
+      - trial
+    MembershipRequest:
+      type: object
+      properties:
+        is_admin:
+          type: boolean
+        role_play:
+          enum:
+          - captain
+          - user
+          - ''
+          - null
+          type: string
+          description: |-
+            * `captain` - Captain
+            * `user` - User
+          x-spec-enum-id: 468235c806f07a70
+          nullable: true
+        role_link:
+          enum:
+          - captain
+          - user
+          - ''
+          - null
+          type: string
+          description: |-
+            * `captain` - Captain
+            * `user` - User
+          x-spec-enum-id: 468235c806f07a70
+          nullable: true
+        role_switch:
+          enum:
+          - captain
+          - user
+          - ''
+          - null
+          type: string
+          description: |-
+            * `captain` - Captain
+            * `user` - User
+          x-spec-enum-id: 468235c806f07a70
+          nullable: true
+        member_since:
+          type: string
+          format: date
+          nullable: true
+        invitation:
+          enum:
+          - requested
+          - sent
+          - accepted
+          type: string
+          description: |-
+            * `requested` - requested
+            * `sent` - sent
+            * `accepted` - accepted
+          x-spec-enum-id: 86da09bb50d2c996
+        suspended:
+          type: boolean
+        organization_name:
+          type: string
+          minLength: 1
+        creation_status:
+          enum:
+          - draft
+          - pending
+          - ok
+          - rejected
+          type: string
+          description: |-
+            * `draft` - Draft
+            * `pending` - Pending
+            * `ok` - Ok
+            * `rejected` - Rejected
+          x-spec-enum-id: '4476579537637920'
+      required:
+      - creation_status
+      - invitation
+      - member_since
+      - organization_name
+      - suspended
+    NewsDetail:
+      type: object
+      properties:
+        uuid:
+          type: string
+          readOnly: true
+        status:
+          enum:
+          - draft
+          - published
+          type: string
+          description: |-
+            * `draft` - Draft
+            * `published` - Published
+          x-spec-enum-id: 68a4bf21925d9818
+        title:
+          type: string
+          maxLength: 255
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        displayed_at:
+          type: string
+          format: date-time
+        icon:
+          type: string
+          nullable: true
+          maxLength: 1024
+        description:
+          type: string
+          maxLength: 220
+        link:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 1024
+        link_label:
+          type: string
+          nullable: true
+          maxLength: 80
+      required:
+      - created_at
+      - description
+      - displayed_at
+      - status
+      - title
+      - uuid
+    OrganizationCreationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        tos_accepted:
+          type: boolean
+        creation_status:
+          enum:
+          - draft
+          - pending
+          type: string
+          description: |-
+            * `draft` - draft
+            * `pending` - pending
+          x-spec-enum-id: 774eb93f6c22b760
+          default: pending
+        address:
+          $ref: '#/components/schemas/AddressRequest'
+    OrganizationInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 150
+        uuid:
+          type: string
+          readOnly: true
+        creation_status:
+          enum:
+          - draft
+          - pending
+          - ok
+          - rejected
+          type: string
+          description: |-
+            * `draft` - Draft
+            * `pending` - Pending
+            * `ok` - Ok
+            * `rejected` - Rejected
+          x-spec-enum-id: '4476579537637920'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        suspended:
+          type: boolean
+          readOnly: true
+          description: The organization could gets suspended when there are no trial
+            credits left during trial, if the payment fails too many times during
+            paying plan or if the AWS subscription gets cancelled.
+        tos_accepted:
+          type: boolean
+          readOnly: true
+        tos_accepted_date:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        sso_enabled:
+          type: boolean
+          readOnly: true
+          description: SSO (Single Sign-On) configured on the organization.
+        limits:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationLimit'
+          readOnly: true
+        features:
+          type: array
+          items:
+            enum:
+            - billing
+            - billing_v2
+            - readonly_banner
+            - sso
+            - input_sharing
+            - input_sharing_v2
+            - billing_dev_no_usage_per_pool
+            - ingest_dev_front_mvp
+            - automatic_pullers
+            - avg_viewing_duration_chart
+            - catchup
+            - custom_domain
+            - dash_timebased_segments
+            - drm_merchant
+            - fast
+            - input_fallback
+            - input_logo
+            - input_overrides
+            - input_redundancy
+            - mp4_packaging
+            - output_origin
+            - rtmp
+            - scte_35
+            - scte_35_advanced
+            - time_shifting_startover
+            - target_restriction
+            - time_shifting
+            - vbr_mode
+            - dash_language_labels
+            - push_endpoints
+            - push_endpoints_cmaf
+            - dash_avc3_signalling
+            - content_length
+            - pool_start_date
+            - advanced_processing
+            - push_bucket
+            - play_video_quality
+            - disaster_processing
+            - dedicated_dataplane
+            - framerate_family_29_97
+            - jitp_default_routing
+            - play_rules
+            - play_multidrms
+            - watermarking
+            - play_new_inputs
+            - link_scheduler
+            - link_failover_switch
+            - link_transcoding
+            - link_rtmp_output
+            - link_dev_transcoding
+            - link_dev_rtmp_output
+            - link_dev_availability_zone
+            - link_dev_api_v2
+            - link_dev_flexible_link
+            - link_dev_input_preview
+            - link_dev_transcoding_edit
+            - link_dev_dual_link
+            - link_dev_api_v1
+            - link_dev_srt_fqdn
+            - link_dev_zixi_output
+            - switch_enabled
+            - switch_configurable_steering_frequency
+            type: string
+            description: |-
+              * `billing` - Billing
+              * `billing_v2` - Billing V2
+              * `readonly_banner` - Readonly Banner
+              * `sso` - Sso
+              * `input_sharing` - Input Sharing
+              * `input_sharing_v2` - Input Sharing V2
+              * `billing_dev_no_usage_per_pool` - Billing Dev No Usage Per Pool
+              * `ingest_dev_front_mvp` - Ingest Dev Front Mvp
+              * `automatic_pullers` - Automatic Pullers
+              * `avg_viewing_duration_chart` - Avg Viewing Duration Chart
+              * `catchup` - Catchup
+              * `custom_domain` - Custom Domain
+              * `dash_timebased_segments` - Dash Timebased Segments
+              * `drm_merchant` - Drm Merchant
+              * `fast` - Fast
+              * `input_fallback` - Input Fallback
+              * `input_logo` - Input Logo
+              * `input_overrides` - Input Overrides
+              * `input_redundancy` - Input Redundancy
+              * `mp4_packaging` - Mp4 Packaging
+              * `output_origin` - Output Origin
+              * `rtmp` - Rtmp
+              * `scte_35` - Scte 35
+              * `scte_35_advanced` - Scte 35 Advanced
+              * `time_shifting_startover` - Startover
+              * `target_restriction` - Target Restriction
+              * `time_shifting` - Time Shifting
+              * `vbr_mode` - Vbr Mode
+              * `dash_language_labels` - Dash Language Labels
+              * `push_endpoints` - Push Endpoints
+              * `push_endpoints_cmaf` - Push Endpoints Cmaf
+              * `dash_avc3_signalling` - Dash Avc3 Signalling
+              * `content_length` - Content Length
+              * `pool_start_date` - Pool Start Date
+              * `advanced_processing` - Advanced Processing
+              * `push_bucket` - Push Bucket
+              * `play_video_quality` - Play Video Quality
+              * `disaster_processing` - Disaster Processing
+              * `dedicated_dataplane` - Dedicated Dataplane
+              * `framerate_family_29_97` - Framerate Family 29 97
+              * `jitp_default_routing` - Jitp Default Routing
+              * `play_rules` - Play Rules
+              * `play_multidrms` - Play Multidrms
+              * `watermarking` - Watermarking
+              * `play_new_inputs` - Play New Inputs
+              * `link_scheduler` - Link Scheduler
+              * `link_failover_switch` - Link Failover Switch
+              * `link_transcoding` - Link Transcoding
+              * `link_rtmp_output` - Link Rtmp Output
+              * `link_dev_transcoding` - Link Dev Transcoding
+              * `link_dev_rtmp_output` - Link Dev Rtmp Output
+              * `link_dev_availability_zone` - Link Dev Availability Zone
+              * `link_dev_api_v2` - Link Dev Api V2
+              * `link_dev_flexible_link` - Link Dev Flexible Link
+              * `link_dev_input_preview` - Link Dev Input Preview
+              * `link_dev_transcoding_edit` - Link Dev Transcoding Edit
+              * `link_dev_dual_link` - Link Dev Dual Link
+              * `link_dev_api_v1` - Link Dev Api V1
+              * `link_dev_srt_fqdn` - Link Dev Srt Fqdn
+              * `link_dev_zixi_output` - Link Dev Zixi Output
+              * `switch_enabled` - Switch Enabled
+              * `switch_configurable_steering_frequency` - Switch Configurable Steering Frequency
+            x-spec-enum-id: f292f44e96ace704
+          readOnly: true
+        support_service_now_status:
+          enum:
+          - configuration_active
+          - configuration_pending
+          - not_available
+          type: string
+          readOnly: true
+        link_enabled:
+          type: boolean
+          readOnly: true
+        powervu_enabled:
+          type: boolean
+          readOnly: true
+        address:
+          $ref: '#/components/schemas/Address'
+      required:
+      - created_at
+      - creation_status
+      - features
+      - limits
+      - link_enabled
+      - powervu_enabled
+      - sso_enabled
+      - support_service_now_status
+      - suspended
+      - tos_accepted
+      - tos_accepted_date
+      - uuid
+    OrganizationLimit:
+      type: object
+      properties:
+        members:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many members may exist in the organization (including pending
+            members)
+        available_seats:
+          type: integer
+          readOnly: true
+          description: How many seats are left for new members.
+        play_pools:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many pools may exist simultaneously on Quortex Play
+        link_pools:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many pools may exist simultaneously on Quortex Link
+        org_api_keys:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many organization api keys may exist in the organization
+        api_keys_per_pool:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many pools api keys may exist in each pool
+        inputs_per_pool:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many inputs may exist in each pool
+        startover_duration:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum startover duration configurable per pool
+        catchup_duration:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum catchup duration configurable per pool
+        video_media_per_processing:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum number of video medias configurable per processing
+        audio_media_per_processing:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum number of audio medias configurable per processing
+        subtitle_media_per_processing:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum number of subtitle medias configurable per processing
+        play_channels:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many channels may exist simultaneously on Quortex Play
+        play_startover_times:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many startover times may exist simultaneously on Quortex
+            Play
+        play_input_shared:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum number of times a shared input can be used on Quortex
+            Play
+        play_program_duration:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum duration of a catchup program that can be created on
+            Quortex Play
+        switch_servers:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum number of servers in Quortex Switch
+      required:
+      - api_keys_per_pool
+      - audio_media_per_processing
+      - available_seats
+      - catchup_duration
+      - inputs_per_pool
+      - link_pools
+      - members
+      - org_api_keys
+      - play_channels
+      - play_input_shared
+      - play_pools
+      - play_program_duration
+      - play_startover_times
+      - startover_duration
+      - subtitle_media_per_processing
+      - switch_servers
+      - video_media_per_processing
+    OrganizationLimitRequest:
+      type: object
+      properties:
+        members:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many members may exist in the organization (including pending
+            members)
+        play_pools:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many pools may exist simultaneously on Quortex Play
+        link_pools:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many pools may exist simultaneously on Quortex Link
+        org_api_keys:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many organization api keys may exist in the organization
+        api_keys_per_pool:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many pools api keys may exist in each pool
+        inputs_per_pool:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many inputs may exist in each pool
+        startover_duration:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum startover duration configurable per pool
+        catchup_duration:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum catchup duration configurable per pool
+        video_media_per_processing:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum number of video medias configurable per processing
+        audio_media_per_processing:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum number of audio medias configurable per processing
+        subtitle_media_per_processing:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum number of subtitle medias configurable per processing
+        play_channels:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many channels may exist simultaneously on Quortex Play
+        play_startover_times:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many startover times may exist simultaneously on Quortex
+            Play
+        play_input_shared:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum number of times a shared input can be used on Quortex
+            Play
+        play_program_duration:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum duration of a catchup program that can be created on
+            Quortex Play
+        switch_servers:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum number of servers in Quortex Switch
+      required:
+      - api_keys_per_pool
+      - audio_media_per_processing
+      - catchup_duration
+      - inputs_per_pool
+      - link_pools
+      - members
+      - org_api_keys
+      - play_channels
+      - play_input_shared
+      - play_pools
+      - play_program_duration
+      - play_startover_times
+      - startover_duration
+      - subtitle_media_per_processing
+      - switch_servers
+      - video_media_per_processing
+    PaginatedApiKeyList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiKey'
+    PaginatedEventList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+    PaginatedMemberList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Member'
+    PaginatedNewsDetailList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewsDetail'
+    PaginatedWebhookList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Webhook'
+    PatchedDetailedApiKeyRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Name of the API key
+    PatchedMemberDetailRequest:
+      type: object
+      properties:
+        is_admin:
+          type: boolean
+        role:
+          enum:
+          - admin
+          - captain
+          - user
+          type: string
+          x-spec-enum-id: 36d5186180ef59c8
+          description: |-
+            Deprecated. Use the is_admin field and apps.role instead.
+
+            * `admin` - Admin
+            * `captain` - Captain
+            * `user` - User
+        play:
+          $ref: '#/components/schemas/PlayParametersDetailRequest'
+        link:
+          $ref: '#/components/schemas/LinkParametersDetailRequest'
+        switch:
+          $ref: '#/components/schemas/SwitchParametersRequest'
+        suspended:
+          type: boolean
+    PatchedOrganizationInfoRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        address:
+          $ref: '#/components/schemas/AddressRequest'
+    PatchedSelfRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 128
+        seen_tours:
+          type: array
+          items:
+            enum:
+            - rules
+            - order_rules
+            - new_portal
+            - ott_endpoints_menu
+            - ott_endpoints_list
+            - link_new_naming
+            - link_new_io_panel
+            - link_new_io_config
+            - switch_fallback_segment
+            - switch_root_segment
+            - switch_segment_balancing
+            type: string
+            description: |-
+              * `rules` - Rules
+              * `order_rules` - Order Rules
+              * `new_portal` - New Portal
+              * `ott_endpoints_menu` - Ott Endpoints Menu
+              * `ott_endpoints_list` - Ott Endpoints List
+              * `link_new_naming` - Link New Naming
+              * `link_new_io_panel` - Link New Io Panel
+              * `link_new_io_config` - Link New Io Config
+              * `switch_fallback_segment` - Switch Fallback Segment
+              * `switch_root_segment` - Switch Root Segment
+              * `switch_segment_balancing` - Switch Segment Balancing
+            x-spec-enum-id: d69f51824f59d89b
+    PatchedWebhookRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: This is the name of the webhook. It can be whatever that identifies
+            the webhook.
+          maxLength: 100
+        type:
+          enum:
+          - raw
+          - gchat
+          - slack
+          - teams
+          type: string
+          x-spec-enum-id: 291f97f5c1bbcd3d
+          description: |-
+            This is the type of the webhook.
+
+            * `raw` - raw
+            * `gchat` - gchat
+            * `slack` - slack
+            * `teams` - teams
+        url:
+          type: string
+          format: uri
+          minLength: 1
+          description: Specify the url of the webhook.
+          maxLength: 1024
+        application:
+          enum:
+          - play
+          - link
+          - organization
+          - billing
+          - user
+          - switch
+          - admin
+          - ingest
+          type: string
+          x-spec-enum-id: f50026ed0e022c4a
+          description: |-
+            Specify an application to filter on specific events.
+
+            * `play` - Play
+            * `link` - Link
+            * `organization` - Organization
+            * `billing` - Billing
+            * `user` - User
+            * `switch` - Switch
+            * `admin` - Admin
+            * `ingest` - Ingest
+        category:
+          enum:
+          - pool
+          - input
+          - stream
+          - target
+          - publishing_points
+          - processing
+          - access
+          - program
+          - drm_merchant
+          - vod_asset
+          - push_endpoint
+          - ott_endpoint
+          - scheduled_event
+          - output
+          - transcoding_preset
+          - organization
+          - membership
+          - user
+          - api_key
+          - payment
+          - plan
+          - service
+          - credit
+          - workspace
+          - cdn
+          - segment
+          type: string
+          x-spec-enum-id: a5eeff4622ce2352
+          description: |-
+            Specify a category to filter on specific events.
+
+            * `pool` - pool
+            * `input` - input
+            * `stream` - stream
+            * `target` - target
+            * `publishing_points` - publishing_points
+            * `processing` - processing
+            * `access` - access
+            * `program` - program
+            * `drm_merchant` - drm_merchant
+            * `vod_asset` - vod_asset
+            * `push_endpoint` - push_endpoint
+            * `ott_endpoint` - ott_endpoint
+            * `scheduled_event` - scheduled_event
+            * `output` - output
+            * `transcoding_preset` - transcoding_preset
+            * `organization` - organization
+            * `membership` - membership
+            * `user` - user
+            * `api_key` - api_key
+            * `payment` - payment
+            * `plan` - plan
+            * `service` - service
+            * `credit` - credit
+            * `workspace` - workspace
+            * `cdn` - cdn
+            * `segment` - segment
+        operation:
+          enum:
+          - creation
+          - update
+          - status_change
+          - deletion
+          - alarm_change
+          type: string
+          x-spec-enum-id: ddbe9b8741c780d9
+          description: |-
+            Specify an operation to filter on specific events.
+
+            * `creation` - Creation
+            * `update` - Update
+            * `status_change` - Status Change
+            * `deletion` - Deletion
+            * `alarm_change` - Alarm Change
+        pool_uuid:
+          type: string
+          description: Specify an existing pool unique identifier to filter the events
+            on that pool.
+          maxLength: 128
+        resource_uuid:
+          type: string
+          description: Specify an existing resource unique identifier to filter the
+            events on that resource.
+          maxLength: 128
+    PlayParameters:
+      type: object
+      properties:
+        role:
+          enum:
+          - captain
+          - user
+          - null
+          type: string
+          description: |-
+            * `captain` - Captain
+            * `user` - User
+          x-spec-enum-id: 468235c806f07a70
+          nullable: true
+        pool_count:
+          type: integer
+          readOnly: true
+      required:
+      - pool_count
+      - role
+    PlayParametersDetail:
+      type: object
+      properties:
+        role:
+          enum:
+          - captain
+          - user
+          - null
+          type: string
+          description: |-
+            * `captain` - Captain
+            * `user` - User
+          x-spec-enum-id: 468235c806f07a70
+          nullable: true
+        pool_count:
+          type: integer
+          readOnly: true
+        pools:
+          type: array
+          items:
+            $ref: '#/components/schemas/PoolAccess'
+          readOnly: true
+      required:
+      - pool_count
+      - pools
+      - role
+    PlayParametersDetailRequest:
+      type: object
+      properties:
+        role:
+          enum:
+          - captain
+          - user
+          - null
+          type: string
+          description: |-
+            * `captain` - Captain
+            * `user` - User
+          x-spec-enum-id: 468235c806f07a70
+          nullable: true
+      required:
+      - role
+    PlayParametersRequest:
+      type: object
+      properties:
+        role:
+          enum:
+          - captain
+          - user
+          - null
+          type: string
+          description: |-
+            * `captain` - Captain
+            * `user` - User
+          x-spec-enum-id: 468235c806f07a70
+          nullable: true
+      required:
+      - role
+    PoolAccess:
+      type: object
+      properties:
+        pool_uuid:
+          type: string
+        pool_name:
+          type: string
+        access:
+          enum:
+          - viewer
+          - editor
+          - owner
+          type: string
+          description: |-
+            * `viewer` - viewer
+            * `editor` - editor
+            * `owner` - owner
+          x-spec-enum-id: 410105c1f14d410c
+      required:
+      - access
+      - pool_name
+      - pool_uuid
+    PoolAccessRequest:
+      type: object
+      properties:
+        pool_uuid:
+          type: string
+          minLength: 1
+        pool_name:
+          type: string
+          minLength: 1
+        access:
+          enum:
+          - viewer
+          - editor
+          - owner
+          type: string
+          description: |-
+            * `viewer` - viewer
+            * `editor` - editor
+            * `owner` - owner
+          x-spec-enum-id: 410105c1f14d410c
+      required:
+      - access
+      - pool_name
+      - pool_uuid
+    PowerVu:
+      type: object
+      properties:
+        general_settings:
+          type: array
+          items:
+            $ref: '#/components/schemas/GeneralSettingField'
+          description: list of PoweverVu URL & Grafana.
+          maxItems: 1
+          minItems: 0
+        feature_names:
+          type: array
+          items:
+            type: string
+            minLength: 0
+          description: List of provided features.
+          minItems: 0
+        service_support_items:
+          type: array
+          items:
+            type: string
+            minLength: 0
+          description: List of provided service & support items.
+          minItems: 0
+        current_contract_term:
+          type: string
+          format: date
+          description: Term of the current contract.
+    RotationApiKey:
+      type: object
+      properties:
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Creation date
+        last_used_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Last token generation date
+        name:
+          type: string
+          description: Name of the API key
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Identifier of the API key
+        secret:
+          type: string
+          readOnly: true
+          description: Secret to be used to get API access tokens. It must remain
+            secret and must be updated if leaked.
+      required:
+      - created_at
+      - last_used_at
+      - name
+      - secret
+      - uuid
+    Saml:
+      type: object
+      properties:
+        sign_in_url:
+          type: string
+          description: Identity Provider Single Sign-On URL.
+          format: uri
+          maxLength: 256
+        certificate:
+          type: string
+          description: Public certificate of the identity provider, in PEM format.
+            Begins with -----BEGIN CERTIFICATE----- and ends with -----END CERTIFICATE-----
+        asc_url:
+          type: string
+          readOnly: true
+          description: Assertion Consumer Service (ASC) URL. Should be used as both
+            recipient URL and destination URL in the identity provider.
+        sp_entity_id:
+          type: string
+          readOnly: true
+          description: Service Provider (SP) Entity ID. Also known as Audience URI.
+      required:
+      - asc_url
+      - certificate
+      - sign_in_url
+      - sp_entity_id
+    SamlRequest:
+      type: object
+      properties:
+        sign_in_url:
+          type: string
+          description: Identity Provider Single Sign-On URL.
+          format: uri
+          maxLength: 256
+        certificate:
+          type: string
+          description: Public certificate of the identity provider, in PEM format.
+            Begins with -----BEGIN CERTIFICATE----- and ends with -----END CERTIFICATE-----
+      required:
+      - certificate
+      - sign_in_url
+    Self:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          readOnly: true
+        email_signature:
+          type: string
+          nullable: true
+          readOnly: true
+        name:
+          type: string
+          maxLength: 128
+        validated:
+          type: boolean
+          readOnly: true
+        uuid:
+          type: string
+          readOnly: true
+        login_type:
+          enum:
+          - password
+          - sso
+          - social
+          - null
+          type: string
+          description: |-
+            * `password` - password
+            * `sso` - sso
+            * `social` - social
+          x-spec-enum-id: a5d7afa28011efb7
+          readOnly: true
+          nullable: true
+        profile_picture_url:
+          type: string
+          readOnly: true
+        memberships:
+          type: array
+          items:
+            $ref: '#/components/schemas/Membership'
+          readOnly: true
+        applications:
+          type: array
+          items:
+            type: string
+          readOnly: true
+          description: Accessible applications
+        seen_tours:
+          type: array
+          items:
+            enum:
+            - rules
+            - order_rules
+            - new_portal
+            - ott_endpoints_menu
+            - ott_endpoints_list
+            - link_new_naming
+            - link_new_io_panel
+            - link_new_io_config
+            - switch_fallback_segment
+            - switch_root_segment
+            - switch_segment_balancing
+            type: string
+            description: |-
+              * `rules` - Rules
+              * `order_rules` - Order Rules
+              * `new_portal` - New Portal
+              * `ott_endpoints_menu` - Ott Endpoints Menu
+              * `ott_endpoints_list` - Ott Endpoints List
+              * `link_new_naming` - Link New Naming
+              * `link_new_io_panel` - Link New Io Panel
+              * `link_new_io_config` - Link New Io Config
+              * `switch_fallback_segment` - Switch Fallback Segment
+              * `switch_root_segment` - Switch Root Segment
+              * `switch_segment_balancing` - Switch Segment Balancing
+            x-spec-enum-id: d69f51824f59d89b
+      required:
+      - applications
+      - email
+      - email_signature
+      - login_type
+      - memberships
+      - profile_picture_url
+      - seen_tours
+      - uuid
+      - validated
+    Sso:
+      type: object
+      properties:
+        protocol:
+          type: string
+          readOnly: true
+          description: SSO protocol.
+        identity_provider:
+          type: string
+          readOnly: true
+          description: SSO identity provider.
+      required:
+      - identity_provider
+      - protocol
+    SwitchParameters:
+      type: object
+      properties:
+        role:
+          enum:
+          - captain
+          - user
+          - null
+          type: string
+          description: |-
+            * `captain` - Captain
+            * `user` - User
+          x-spec-enum-id: 468235c806f07a70
+          nullable: true
+      required:
+      - role
+    SwitchParametersRequest:
+      type: object
+      properties:
+        role:
+          enum:
+          - captain
+          - user
+          - null
+          type: string
+          description: |-
+            * `captain` - Captain
+            * `user` - User
+          x-spec-enum-id: 468235c806f07a70
+          nullable: true
+      required:
+      - role
+    ThrottledError:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Error description.
+        wait_time:
+          type: integer
+          description: Duration, in seconds, to wait before being able to call this
+            endpoint again.
+      required:
+      - detail
+      - wait_time
+    Token:
+      type: object
+      properties:
+        access_token:
+          type: string
+          readOnly: true
+          description: Access token to use the secured API
+        expires_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: End of life of the token
+      required:
+      - access_token
+      - expires_at
+    TokenRequestRequest:
+      type: object
+      properties:
+        api_key_secret:
+          type: string
+          writeOnly: true
+          minLength: 1
+          description: API key secret
+      required:
+      - api_key_secret
+    Tos:
+      type: object
+      properties:
+        accepted:
+          type: boolean
+          description: I accept Quortex I/O terms of service
+      required:
+      - accepted
+    TosRequest:
+      type: object
+      properties:
+        accepted:
+          type: boolean
+          description: I accept Quortex I/O terms of service
+      required:
+      - accepted
+    Webhook:
+      type: object
+      properties:
+        name:
+          type: string
+          description: This is the name of the webhook. It can be whatever that identifies
+            the webhook.
+          maxLength: 100
+        uuid:
+          type: string
+          readOnly: true
+          description: This is the universal unique identifier of the resource.
+        type:
+          enum:
+          - raw
+          - gchat
+          - slack
+          - teams
+          type: string
+          x-spec-enum-id: 291f97f5c1bbcd3d
+          description: |-
+            This is the type of the webhook.
+
+            * `raw` - raw
+            * `gchat` - gchat
+            * `slack` - slack
+            * `teams` - teams
+        url:
+          type: string
+          format: uri
+          description: Specify the url of the webhook.
+          maxLength: 1024
+        application:
+          enum:
+          - play
+          - link
+          - organization
+          - billing
+          - user
+          - switch
+          - admin
+          - ingest
+          type: string
+          x-spec-enum-id: f50026ed0e022c4a
+          description: |-
+            Specify an application to filter on specific events.
+
+            * `play` - Play
+            * `link` - Link
+            * `organization` - Organization
+            * `billing` - Billing
+            * `user` - User
+            * `switch` - Switch
+            * `admin` - Admin
+            * `ingest` - Ingest
+        category:
+          enum:
+          - pool
+          - input
+          - stream
+          - target
+          - publishing_points
+          - processing
+          - access
+          - program
+          - drm_merchant
+          - vod_asset
+          - push_endpoint
+          - ott_endpoint
+          - scheduled_event
+          - output
+          - transcoding_preset
+          - organization
+          - membership
+          - user
+          - api_key
+          - payment
+          - plan
+          - service
+          - credit
+          - workspace
+          - cdn
+          - segment
+          type: string
+          x-spec-enum-id: a5eeff4622ce2352
+          description: |-
+            Specify a category to filter on specific events.
+
+            * `pool` - pool
+            * `input` - input
+            * `stream` - stream
+            * `target` - target
+            * `publishing_points` - publishing_points
+            * `processing` - processing
+            * `access` - access
+            * `program` - program
+            * `drm_merchant` - drm_merchant
+            * `vod_asset` - vod_asset
+            * `push_endpoint` - push_endpoint
+            * `ott_endpoint` - ott_endpoint
+            * `scheduled_event` - scheduled_event
+            * `output` - output
+            * `transcoding_preset` - transcoding_preset
+            * `organization` - organization
+            * `membership` - membership
+            * `user` - user
+            * `api_key` - api_key
+            * `payment` - payment
+            * `plan` - plan
+            * `service` - service
+            * `credit` - credit
+            * `workspace` - workspace
+            * `cdn` - cdn
+            * `segment` - segment
+        operation:
+          enum:
+          - creation
+          - update
+          - status_change
+          - deletion
+          - alarm_change
+          type: string
+          x-spec-enum-id: ddbe9b8741c780d9
+          description: |-
+            Specify an operation to filter on specific events.
+
+            * `creation` - Creation
+            * `update` - Update
+            * `status_change` - Status Change
+            * `deletion` - Deletion
+            * `alarm_change` - Alarm Change
+        pool_uuid:
+          type: string
+          description: Specify an existing pool unique identifier to filter the events
+            on that pool.
+          maxLength: 128
+        resource_uuid:
+          type: string
+          description: Specify an existing resource unique identifier to filter the
+            events on that resource.
+          maxLength: 128
+      required:
+      - name
+      - type
+      - url
+      - uuid
+    WebhookRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: This is the name of the webhook. It can be whatever that identifies
+            the webhook.
+          maxLength: 100
+        type:
+          enum:
+          - raw
+          - gchat
+          - slack
+          - teams
+          type: string
+          x-spec-enum-id: 291f97f5c1bbcd3d
+          description: |-
+            This is the type of the webhook.
+
+            * `raw` - raw
+            * `gchat` - gchat
+            * `slack` - slack
+            * `teams` - teams
+        url:
+          type: string
+          format: uri
+          minLength: 1
+          description: Specify the url of the webhook.
+          maxLength: 1024
+        application:
+          enum:
+          - play
+          - link
+          - organization
+          - billing
+          - user
+          - switch
+          - admin
+          - ingest
+          type: string
+          x-spec-enum-id: f50026ed0e022c4a
+          description: |-
+            Specify an application to filter on specific events.
+
+            * `play` - Play
+            * `link` - Link
+            * `organization` - Organization
+            * `billing` - Billing
+            * `user` - User
+            * `switch` - Switch
+            * `admin` - Admin
+            * `ingest` - Ingest
+        category:
+          enum:
+          - pool
+          - input
+          - stream
+          - target
+          - publishing_points
+          - processing
+          - access
+          - program
+          - drm_merchant
+          - vod_asset
+          - push_endpoint
+          - ott_endpoint
+          - scheduled_event
+          - output
+          - transcoding_preset
+          - organization
+          - membership
+          - user
+          - api_key
+          - payment
+          - plan
+          - service
+          - credit
+          - workspace
+          - cdn
+          - segment
+          type: string
+          x-spec-enum-id: a5eeff4622ce2352
+          description: |-
+            Specify a category to filter on specific events.
+
+            * `pool` - pool
+            * `input` - input
+            * `stream` - stream
+            * `target` - target
+            * `publishing_points` - publishing_points
+            * `processing` - processing
+            * `access` - access
+            * `program` - program
+            * `drm_merchant` - drm_merchant
+            * `vod_asset` - vod_asset
+            * `push_endpoint` - push_endpoint
+            * `ott_endpoint` - ott_endpoint
+            * `scheduled_event` - scheduled_event
+            * `output` - output
+            * `transcoding_preset` - transcoding_preset
+            * `organization` - organization
+            * `membership` - membership
+            * `user` - user
+            * `api_key` - api_key
+            * `payment` - payment
+            * `plan` - plan
+            * `service` - service
+            * `credit` - credit
+            * `workspace` - workspace
+            * `cdn` - cdn
+            * `segment` - segment
+        operation:
+          enum:
+          - creation
+          - update
+          - status_change
+          - deletion
+          - alarm_change
+          type: string
+          x-spec-enum-id: ddbe9b8741c780d9
+          description: |-
+            Specify an operation to filter on specific events.
+
+            * `creation` - Creation
+            * `update` - Update
+            * `status_change` - Status Change
+            * `deletion` - Deletion
+            * `alarm_change` - Alarm Change
+        pool_uuid:
+          type: string
+          description: Specify an existing pool unique identifier to filter the events
+            on that pool.
+          maxLength: 128
+        resource_uuid:
+          type: string
+          description: Specify an existing resource unique identifier to filter the
+            events on that resource.
+          maxLength: 128
+      required:
+      - name
+      - type
+      - url
+  securitySchemes:
+    Bearer:
+      type: apiKey
+      in: header
+      name: Authorization
+servers:
+- url: https://api.quortex.io/
+tags:
+- name: webhooks
+  description: |
+    ## introduction
+
+    The Quortex platform generates events when resources are created, updated, deleted, and when the status of a resource changes. These events appear in [the Event API](/#operation/events_list) and in the "Event log" area of the UI.
+
+    Each of these events can trigger a call to an external service by configuring a webhook on the platform.
+
+    ## text webhooks
+
+    The Quortex platform webhooks can be used to send messages on three popular chat applications:
+
+    - Microsoft Teams
+    - Google Chat
+    - Slack
+
+    ## raw webhooks
+
+    For every other purposes, "raw" webhooks can be used, so a JSON payload is posted.
+
+    > **This raw webhook API is still under development. We may introduce breaking changes.**
+
+    ### raw payload fields
+
+    | Name              | Type   | Required? | Description |
+    | ----------------- | ------ | --------- | ----------- |
+    | application       | string | Yes       | This is the application concerned by this event. |
+    | category          | string | Yes       | This is the resource type of the event. This can be used to determine the objet represented by the "resource_uuid" field. |
+    | operation         | string | Yes       | Nature of the event.  |
+    | resource_uuid     | string | Yes       | The identifier of the resource the event is about. |
+    | organization_uuid | string | Yes       | Organization identifier. Useful when a single webhook URL is used in many Quortex organizations. |
+    | organization      | string | Yes       | Name of the organization. |
+    | message           | string | Yes       | Event log message. |
+    | pool_uuid         | string | No        | Present only when event is about a Quortex Play or Quortex Link resource. |
+    | metadata          | dict   | No        | Additional event information. The format is described below. |
+
+    ### metadata format
+
+    For every application, category and operation values present in the table below, a metadata field is present in the webhook payload. The format of the metadata is also specified.
+
+    | Application | category          | operation     | Metadata format                  |
+    | ----------- |-------------------| ------------- |----------------------------------|
+    | link        | input             | status_change | LinkInputStatusMetadata          |
+    | link        | output            | status_change | LinkOutputStatusMetadata         |
+    | link        | scheduled_event   | status_change | LinkScheduledEventStatusMetadata |
+    | play        | publishing_points | *             | OttEndpointMetadata              |
+    | play        | stream            | *             | StreamMetadata                   |
+
+    #### LinkInputStatusMetadata
+
+    | Name            | Type            | Required? | Description                                            |
+    |-----------------|-----------------|-----------|--------------------------------------------------------|
+    | previous_status | LinkInputStatus | Yes       | Previous status of the input.                          |
+    | current_status  | LinkInputStatus | Yes       | New status of the input.                               |
+    | stream          | string          | No        | main \| failover, only set if input has dual streams.  |
+
+    LinkInputStatus is a string which can take these values:
+
+    - active
+    - ready
+    - configuring
+    - warning
+    - down
+    - disabled
+
+    Please refer to Quortex Link documentation for additional information.
+
+    #### LinkOutputStatusMetadata
+
+    | Name            | Type             | Required? | Description                    |
+    |-----------------|------------------| --------- |--------------------------------|
+    | previous_status | LinkOutputStatus | Yes       | Previous status of the output. |
+    | current_status  | LinkOutputStatus | Yes       | New status of the output.      |
+
+    LinkOutputStatus is a string which can take these values:
+
+    - active
+    - ready
+    - configuring
+    - warning
+    - down
+    - disabled
+
+    Please refer to Quortex Link documentation for additional information.
+
+    #### LinkScheduledEventStatusMetadata
+
+    | Name            | Type                     | Required? | Description                             |
+    |-----------------|--------------------------| --------- |-----------------------------------------|
+    | previous_status | LinkScheduledEventStatus | Yes       | Previous status of the scheduled event. |
+    | current_status  | LinkScheduledEventStatus | Yes       | New status of the scheduled event.      |
+
+    LinkScheduledEventStatus is a string which can take these values:
+
+    - scheduled
+    - started
+    - finished
+
+    Please refer to Quortex Link documentation for additional information.
+
+    ### OttEndpointMetadata
+
+    | Name              | Type                       | Required? | Description |
+    | ----------------- | -------------------------- | --------- | ----------- |
+    | configuration     | OttEndpointRequestMetadata | Yes       | Specify the configuration of ott endpoint. |
+
+    Please refer to Quortex Play documentation for additional information.
+
+    ### OttEndpointRequestMetadata
+
+    | Name              | Type                | Required? | Description |
+    | ----------------- | ------------------- | --------- | ----------- |
+    | custom_path       | string              | Yes       | Specify a custom path to access the manifest file. |
+    | enabled           | boolean             | Yes       | Is this specific ott endpoint enabled. |
+    | start_times       | array of string     | Yes       | Restrict the allowed start times to values that appear in this list. |
+    | input_uuid        | string              | Yes       | UUID of the corresponding input. |
+    | processing_uuid   | string              | Yes       | UUID of the corresponding processing. |
+    | target_uuid       | string              | Yes       | UUID of the corresponding target. |
+
+    ### StreamMetadata
+
+    | Name              | Type                       | Required? | Description |
+    | ----------------- | -------------------------- | --------- | ----------- |
+    | configuration     | StreamRequestMetadata | Yes       | Specify the configuration of stream. |
+
+    Please refer to Quortex Play documentation for additional information.
+
+    ### StreamRequestMetadata
+
+    | Name              | Type                | Required? | Description |
+    | ----------------- | ------------------- | --------- | ----------- |
+    | input_uuid        | string              | Yes       | UUID of the corresponding input. |
+
+    Please refer to Quortex Play documentation for additional information.
+x-tagGroups:
+- name: Organization
+  tags:
+  - organization
+  - terms of service
+  - single sign-on
+  - invitation
+- name: API Keys
+  tags:
+  - org api keys
+  - token
+- name: Users
+  tags:
+  - self
+- name: Plugins
+  tags:
+  - plugins
+- name: Events
+  tags:
+  - events
+  - webhooks
+- name: News
+  tags:
+  - news

@@ -1,0 +1,1649 @@
+openapi: 3.0.3
+info:
+  title: Quortex Ingest API
+  version: 1.1.0
+  x-logo:
+    url: https://storage.googleapis.com/logo-quortex/Logo%20Quortex.svg
+paths:
+  /ingest/config/regions/:
+    get:
+      operationId: ingest_config_regions_retrieve
+      description: Return the list of available regions.
+      summary: Gets the list of available regions.
+      parameters:
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      tags:
+      - regions
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Regions'
+          description: List of available regions successfully retrieved.
+  /ingest/inputs/:
+    get:
+      operationId: ingest_inputs_list
+      description: Return the list of inputs.
+      summary: Gets the list of inputs.
+      parameters:
+      - in: query
+        name: expand
+        schema:
+          type: string
+        description: 'Comma-separated list of additional fields to expand in the response.
+          Supported value: psi.'
+      - in: query
+        name: input
+        schema:
+          type: array
+          items:
+            type: string
+        description: Filter inputs by uuid. Multiple values may be separated by commas.
+          Returns inputs that match the uuids.
+        explode: false
+        style: form
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - name: page
+        required: false
+        in: query
+        description: When pagination is enabled, select the page to get.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Enable pagination and set the page size.
+        schema:
+          type: integer
+      tags:
+      - inputs
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedInputList'
+          description: List of inputs successfully retrieved.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+        '404':
+          description: Failed to find the resource (probably because it does not exist).
+    post:
+      operationId: ingest_inputs_create
+      description: Create new input.
+      summary: Creates a input.
+      parameters:
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      tags:
+      - inputs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InputRequest'
+        required: true
+      security:
+      - GeneralApi: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Input'
+          description: Input created.
+        '400':
+          description: Input creation failed. The request is malformed, the body is
+            not respecting the expected scheme or an invalid value is passed.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+        '404':
+          description: Failed to find the resource (probably because it does not exist).
+        '409':
+          description: Conflict occurred during input creation.
+        '415':
+          description: Input creation failed. Unsupported or missing content-type.
+  /ingest/inputs/{input_uuid}/stream_switch/:
+    post:
+      operationId: ingest_inputs_stream_switch_create
+      description: Request a stream failover. Cannot request if an existing request
+        is in progress.
+      summary: Request a stream failover.
+      parameters:
+      - in: path
+        name: input_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      tags:
+      - stream switch
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FailoverSwitchRequest'
+        required: true
+      security:
+      - GeneralApi: []
+      responses:
+        '204':
+          description: Stream switch requested.
+        '400':
+          description: Stream switch request failed. The request is malformed, the
+            body is not respecting the expected scheme or an invalid value is passed.The
+            input stream redundancy is not 'dual' or the target srt stream status
+            is 'disabled' or 'configuring'
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this input.
+        '404':
+          description: Failed to find the resource (probably because it does not exist).
+        '415':
+          description: Stream switch request failed. Unsupported or missing content-type.
+  /ingest/inputs/{uuid}/:
+    get:
+      operationId: ingest_inputs_retrieve
+      description: Return the input identified by the given uuid.
+      summary: Gets a single input configuration.
+      parameters:
+      - in: query
+        name: expand
+        schema:
+          type: string
+        description: 'Comma-separated list of additional fields to expand in the response.
+          Supported value: psi.'
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - inputs
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Input'
+          description: Input successfully retrieved.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+        '404':
+          description: Failed to find the resource (probably because it does not exist).
+    patch:
+      operationId: ingest_inputs_partial_update
+      description: Updates the input identified by the given uuid. This perform a
+        partial update of the input.
+      summary: Updates a single input.
+      parameters:
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - inputs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedInputPatchRequest'
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Input'
+          description: Partial input updated.
+        '400':
+          description: Input update failed. The request is malformed, the body is
+            not respecting the expected scheme or an invalid value is passed.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+        '404':
+          description: Failed to find the resource (probably because it does not exist).
+        '409':
+          description: Conflict occurred during input update.
+        '415':
+          description: Input update failed. Unsupported or missing content-type.
+    delete:
+      operationId: ingest_inputs_destroy
+      description: Deletes the input identified by the given uuid.
+      summary: Deletes a single input.
+      parameters:
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - inputs
+      security:
+      - GeneralApi: []
+      responses:
+        '204':
+          description: Input deleted.
+        '400':
+          description: Deleting inputs is not allowed if they are used by other apps.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+        '404':
+          description: Failed to find the resource (probably because it does not exist).
+  /ingest/inputs/{uuid}/disable_consumers/:
+    post:
+      operationId: ingest_inputs_disable_consumers_create
+      description: Disables all consumers of the input identified by the given uuid.
+      summary: Disables all consumers of a specific input.
+      parameters:
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - inputs
+      security:
+      - GeneralApi: []
+      responses:
+        '204':
+          description: All consumers disabled successfully.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+        '404':
+          description: Failed to find the resource (probably because it does not exist).
+  /ingest/inputs/{uuid}/psi/:
+    get:
+      operationId: ingest_inputs_psi_retrieve
+      description: Return the program specific information of the input identified
+        by the given uuid.
+      summary: Gets program specific information of a single input.
+      parameters:
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - inputs
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InputPsi'
+          description: PSI of input successfully retrieved.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+        '404':
+          description: Failed to find the resource (probably because it does not exist).
+  /ingest/inputs/{uuid}/thumbnail/:
+    get:
+      operationId: ingest_inputs_thumbnail_retrieve
+      description: Return the thumbnail of the input identified by the given uuid.
+      summary: Gets thumbnail of a single input.
+      parameters:
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - inputs
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          description: Thumbnail of input successfully retrieved.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+        '404':
+          description: Failed to find the resource (probably because it does not exist).
+components:
+  schemas:
+    AudioComponent:
+      type: object
+      properties:
+        codec:
+          enum:
+          - UNKNOWN
+          - AAC
+          - AC-3
+          - E-AC-3
+          - MP2
+          type: string
+          x-spec-enum-id: 8d8789ae018c0219
+          readOnly: true
+          description: |-
+            Audio codec of the component.
+
+            * `UNKNOWN` - unknown
+            * `AAC` - AAC
+            * `AC-3` - AC-3
+            * `E-AC-3` - E-AC-3
+            * `MP2` - MPEG Audio Layer II
+          example: AAC
+        language:
+          type: string
+          description: ISO 639 language code.
+        media_analysis:
+          allOf:
+          - $ref: '#/components/schemas/MediaAnalysis'
+          readOnly: true
+          description: Media analysis infos
+      required:
+      - codec
+      - media_analysis
+    AudioComponentRequest:
+      type: object
+      properties:
+        language:
+          type: string
+          minLength: 1
+          description: ISO 639 language code.
+    AudioLevel:
+      type: object
+      properties:
+        average:
+          type: number
+          format: double
+          readOnly: true
+          description: Average audio levels detected in dBFS
+      required:
+      - average
+    AudioLevels:
+      type: object
+      properties:
+        left:
+          allOf:
+          - $ref: '#/components/schemas/AudioLevel'
+          readOnly: true
+          description: Audio levels info for left channel
+        right:
+          allOf:
+          - $ref: '#/components/schemas/AudioLevel'
+          readOnly: true
+          description: Audio levels info for right channel
+      required:
+      - left
+      - right
+    Consumer:
+      type: object
+      properties:
+        app:
+          enum:
+          - link
+          - play
+          - powervu
+          type: string
+          x-spec-enum-id: c072a0325b88c6a0
+          description: |-
+            The application consuming this input.
+
+            * `link` - Link
+            * `play` - Play
+            * `powervu` - PowerVu
+        play:
+          allOf:
+          - $ref: '#/components/schemas/PlayConsumer'
+          description: Play app consumer infos. Only when app is play.
+        link:
+          allOf:
+          - $ref: '#/components/schemas/LinkConsumer'
+          description: Link app consumer infos. Only when app is link.
+        powervu:
+          allOf:
+          - $ref: '#/components/schemas/PowerVuConsumer'
+          description: PowerVu app consumer infos. Only when app is powervu.
+        enabled:
+          type: boolean
+          description: Indicates if the consumer needs this input to be enabled.
+      required:
+      - app
+    ConsumerRequest:
+      type: object
+      properties:
+        app:
+          enum:
+          - link
+          - play
+          - powervu
+          type: string
+          x-spec-enum-id: c072a0325b88c6a0
+          description: |-
+            The application consuming this input.
+
+            * `link` - Link
+            * `play` - Play
+            * `powervu` - PowerVu
+        play:
+          allOf:
+          - $ref: '#/components/schemas/PlayConsumerRequest'
+          description: Play app consumer infos. Only when app is play.
+        link:
+          allOf:
+          - $ref: '#/components/schemas/LinkConsumerRequest'
+          description: Link app consumer infos. Only when app is link.
+        powervu:
+          allOf:
+          - $ref: '#/components/schemas/PowerVuConsumerRequest'
+          description: PowerVu app consumer infos. Only when app is powervu.
+        enabled:
+          type: boolean
+          description: Indicates if the consumer needs this input to be enabled.
+      required:
+      - app
+    FailoverSrtCaller:
+      type: object
+      properties:
+        address:
+          type: string
+          description: Your SRT server/listener address. It must be a valid SRT URL
+            with a port in range 1024-65535 (except 2077 and 2088).
+          example: srt://streamer.quortex.io:1234
+          format: uri
+        passphrase:
+          type: string
+          nullable: true
+          description: The passphrase of the SRT (10 and 79 characters long).
+          maxLength: 79
+          minLength: 10
+        our_ip:
+          type: string
+          readOnly: true
+          description: IP address used by our SRT caller. You may use it to filter
+            incoming connections.
+        stream_id:
+          type: string
+          nullable: true
+          description: 'Used to differentiate between ingest streams. Limitation:
+            the stream_id cannot be cleared once it is set. In case you want to clear
+            it, you need to delete and recreate the input.'
+          pattern: ^[A-Za-z0-9\-_.~/!*\'()#{}\$^\[\]]*$
+          maxLength: 512
+      required:
+      - address
+      - our_ip
+    FailoverSrtCallerRequest:
+      type: object
+      properties:
+        address:
+          type: string
+          minLength: 1
+          description: Your SRT server/listener address. It must be a valid SRT URL
+            with a port in range 1024-65535 (except 2077 and 2088).
+          example: srt://streamer.quortex.io:1234
+          format: uri
+        passphrase:
+          type: string
+          nullable: true
+          minLength: 10
+          description: The passphrase of the SRT (10 and 79 characters long).
+          maxLength: 79
+        stream_id:
+          type: string
+          nullable: true
+          description: 'Used to differentiate between ingest streams. Limitation:
+            the stream_id cannot be cleared once it is set. In case you want to clear
+            it, you need to delete and recreate the input.'
+          pattern: ^[A-Za-z0-9\-_.~/!*\'()#{}\$^\[\]]*$
+          maxLength: 512
+      required:
+      - address
+    FailoverSrtListener:
+      type: object
+      properties:
+        address:
+          type: string
+          readOnly: true
+          description: SRT address where our server is listening.
+        passphrase:
+          type: string
+          nullable: true
+          description: The passphrase of the SRT. Must be between 10 and 79 characters
+            long. If null or not provided, encryption is disabled.
+          maxLength: 79
+          minLength: 10
+        cidr:
+          type: array
+          items:
+            type: string
+          description: List of CIDR blocks (maximum 1 allowed).
+      required:
+      - address
+    FailoverSrtListenerRequest:
+      type: object
+      properties:
+        passphrase:
+          type: string
+          nullable: true
+          minLength: 10
+          description: The passphrase of the SRT. Must be between 10 and 79 characters
+            long. If null or not provided, encryption is disabled.
+          maxLength: 79
+        cidr:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: List of CIDR blocks (maximum 1 allowed).
+    FailoverSrtStream:
+      type: object
+      properties:
+        uuid:
+          type: string
+          readOnly: true
+          description: A universal unique identifier for this stream.
+        connection_type:
+          enum:
+          - caller
+          - listener
+          type: string
+          x-spec-enum-id: b9e74d84e44fdb3f
+          description: |-
+            The type of SRT connection.
+
+            * `caller` - Caller
+            * `listener` - Listener
+        listener:
+          allOf:
+          - $ref: '#/components/schemas/FailoverSrtListener'
+          description: SRT listener configuration.
+        caller:
+          allOf:
+          - $ref: '#/components/schemas/FailoverSrtCaller'
+          description: SRT caller configuration.
+        latency:
+          type: integer
+          maximum: 15000
+          minimum: 100
+          description: The latency in milliseconds of the SRT connection.
+        status:
+          enum:
+          - active
+          - ready
+          - warning
+          - configuring
+          - down
+          - disabled
+          type: string
+          x-spec-enum-id: b983bbe42a5fb3dd
+          readOnly: true
+          description: |-
+            The current status of the SRT stream.
+
+            * `active` - Active
+            * `ready` - Ready
+            * `warning` - Warning
+            * `configuring` - Configuring
+            * `down` - Down
+            * `disabled` - Disabled
+        status_messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/SrtFailoverStreamStatusMessage'
+          readOnly: true
+          description: Messages related to the current status of the stream.
+        last_status_updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date when the SRT stream status was last updated.
+      required:
+      - connection_type
+      - last_status_updated_at
+      - status
+      - status_messages
+      - uuid
+    FailoverSrtStreamPatchRequest:
+      type: object
+      properties:
+        connection_type:
+          enum:
+          - caller
+          - listener
+          type: string
+          x-spec-enum-id: b9e74d84e44fdb3f
+          description: |-
+            The type of SRT connection.
+
+            * `caller` - Caller
+            * `listener` - Listener
+        listener:
+          allOf:
+          - $ref: '#/components/schemas/FailoverSrtListenerRequest'
+          description: SRT listener configuration.
+        caller:
+          allOf:
+          - $ref: '#/components/schemas/FailoverSrtCallerRequest'
+          description: SRT caller configuration.
+        latency:
+          type: integer
+          maximum: 15000
+          minimum: 100
+          description: The latency in milliseconds of the SRT connection.
+    FailoverSrtStreamRequest:
+      type: object
+      properties:
+        connection_type:
+          enum:
+          - caller
+          - listener
+          type: string
+          x-spec-enum-id: b9e74d84e44fdb3f
+          description: |-
+            The type of SRT connection.
+
+            * `caller` - Caller
+            * `listener` - Listener
+        listener:
+          allOf:
+          - $ref: '#/components/schemas/FailoverSrtListenerRequest'
+          description: SRT listener configuration.
+        caller:
+          allOf:
+          - $ref: '#/components/schemas/FailoverSrtCallerRequest'
+          description: SRT caller configuration.
+        latency:
+          type: integer
+          maximum: 15000
+          minimum: 100
+          description: The latency in milliseconds of the SRT connection.
+      required:
+      - connection_type
+    FailoverSwitchRequest:
+      type: object
+      properties:
+        main:
+          type: boolean
+          writeOnly: true
+          description: If true, triggers switch on main stream. If false, triggers
+            switch on failover stream.
+      required:
+      - main
+    Input:
+      type: object
+      properties:
+        uuid:
+          type: string
+          readOnly: true
+          description: The universal unique identifier of the input.
+          example: in_it_a12bC3d4
+        name:
+          type: string
+          description: The name of the input.
+          example: My input
+          maxLength: 100
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date when the input was created.
+        modified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date when the input was last updated.
+        region:
+          type: string
+          description: The region from which the streams are acquired. [See available
+            input regions](#tag/regions)
+          example: virginia
+          maxLength: 100
+        type:
+          enum:
+          - srt
+          type: string
+          x-spec-enum-id: 0e2f976fb4b701f7
+          description: |-
+            Specify the type of input.
+
+            * `srt` - Srt
+        srt:
+          allOf:
+          - $ref: '#/components/schemas/Srt'
+          description: SRT configuration (only when type is srt).
+        consumers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Consumer'
+          readOnly: true
+          description: <span type="warning" class="dLkyEd"> Beta </span><br/>List
+            of consumers (other apps) that uses this input.
+        enabled:
+          type: boolean
+          readOnly: true
+          description: Indicates if the input is enabled.
+        status:
+          enum:
+          - active
+          - ready
+          - warning
+          - configuring
+          - down
+          - disabled
+          type: string
+          description: |-
+            * `active` - Active
+            * `ready` - Ready
+            * `warning` - Warning
+            * `configuring` - Configuring
+            * `down` - Down
+            * `disabled` - Disabled
+          x-spec-enum-id: b983bbe42a5fb3dd
+          readOnly: true
+        status_messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/InputStatusMessage'
+          readOnly: true
+          description: Messages related to the current status of the input.
+        last_status_updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        psi:
+          allOf:
+          - $ref: '#/components/schemas/InputPsi'
+          description: The program specific information of the input, shown only by
+            adding expand=psi as query parameter.
+      required:
+      - consumers
+      - created_at
+      - enabled
+      - last_status_updated_at
+      - modified_at
+      - name
+      - region
+      - srt
+      - status
+      - status_messages
+      - uuid
+    InputComponent:
+      type: object
+      properties:
+        type:
+          enum:
+          - audio
+          - video
+          type: string
+          x-spec-enum-id: 598f182354c82180
+          readOnly: true
+          description: |-
+            Type of the component.
+
+            * `audio` - audio
+            * `video` - video
+          example: audio
+        audio:
+          allOf:
+          - $ref: '#/components/schemas/AudioComponent'
+          readOnly: true
+          description: Audio specific infos
+        video:
+          allOf:
+          - $ref: '#/components/schemas/VideoComponent'
+          readOnly: true
+          description: Video specific infos
+        pid:
+          type: integer
+          readOnly: true
+          description: Packet identifier of the component.
+          example: 101
+        bitrate:
+          type: integer
+          readOnly: true
+          description: Bitrate of the component in bit/s.
+          example: 128000
+      required:
+      - bitrate
+      - pid
+      - type
+    InputProgram:
+      type: object
+      properties:
+        program_number:
+          type: integer
+          readOnly: true
+          description: Program number.
+          example: 100
+        service_name:
+          type: string
+          readOnly: true
+          description: Service name of the program.
+          example: QxChannel
+        service_provider:
+          type: string
+          readOnly: true
+          description: Provider name of the program.
+          example: Quortex
+        pmt_pid:
+          type: integer
+          readOnly: true
+          description: Program Mapping Table packet identifier.
+          example: 100
+        bitrate:
+          type: integer
+          readOnly: true
+          description: Bitrate of the program in bit/s.
+          example: 20000000
+        components:
+          type: array
+          items:
+            $ref: '#/components/schemas/InputComponent'
+          readOnly: true
+          description: List of components available in the program.
+    InputPsi:
+      type: object
+      properties:
+        programs:
+          type: array
+          items:
+            $ref: '#/components/schemas/InputProgram'
+          readOnly: true
+          description: The list of programs present in the last received stream PSI.
+            Empty until a first stream PSI is received.
+        last_updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date when the PSI was last updated. Not present until a
+            first stream PSI is received.
+      required:
+      - programs
+    InputRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The name of the input.
+          example: My input
+          maxLength: 100
+        region:
+          type: string
+          minLength: 1
+          description: The region from which the streams are acquired. [See available
+            input regions](#tag/regions)
+          example: virginia
+          maxLength: 100
+        type:
+          enum:
+          - srt
+          type: string
+          x-spec-enum-id: 0e2f976fb4b701f7
+          description: |-
+            Specify the type of input.
+
+            * `srt` - Srt
+        srt:
+          allOf:
+          - $ref: '#/components/schemas/SrtRequest'
+          description: SRT configuration (only when type is srt).
+      required:
+      - name
+      - region
+      - srt
+    InputStatusMessage:
+      type: object
+      properties:
+        message:
+          type: string
+          readOnly: true
+          description: A message about the current status.
+        code:
+          enum:
+          - READY_WAITING_CONNECTION
+          - WARNING_NO_DATA
+          - DOWN_CONNECTION_FAILURE
+          - DOWN_CONFIGURATION_FAILURE
+          - WARNING_OTHER_STREAM_READY
+          - WARNING_OTHER_STREAM_NO_DATA
+          - WARNING_OTHER_STREAM_CONNECTION_FAILURE
+          - WARNING_OTHER_STREAM_CONFIGURATION_FAILURE
+          type: string
+          x-spec-enum-id: 01c2b845eb209049
+          readOnly: true
+          description: |-
+            Status code categorizing the status message. Required for status READY, DOWN and WARNING.
+
+            * `READY_WAITING_CONNECTION` - READY_WAITING_CONNECTION
+            * `WARNING_NO_DATA` - WARNING_NO_DATA
+            * `DOWN_CONNECTION_FAILURE` - DOWN_CONNECTION_FAILURE
+            * `DOWN_CONFIGURATION_FAILURE` - DOWN_CONFIGURATION_FAILURE
+            * `WARNING_OTHER_STREAM_READY` - WARNING_OTHER_STREAM_READY
+            * `WARNING_OTHER_STREAM_NO_DATA` - WARNING_OTHER_STREAM_NO_DATA
+            * `WARNING_OTHER_STREAM_CONNECTION_FAILURE` - WARNING_OTHER_STREAM_CONNECTION_FAILURE
+            * `WARNING_OTHER_STREAM_CONFIGURATION_FAILURE` - WARNING_OTHER_STREAM_CONFIGURATION_FAILURE
+      required:
+      - message
+    LinkConsumer:
+      type: object
+      properties:
+        pool_uuid:
+          type: string
+          description: The UUID of the Link pool consuming this input.
+        pool_name:
+          type: string
+          description: The name of the Link pool consuming this input.
+      required:
+      - pool_name
+      - pool_uuid
+    LinkConsumerRequest:
+      type: object
+      properties:
+        pool_uuid:
+          type: string
+          minLength: 1
+          description: The UUID of the Link pool consuming this input.
+        pool_name:
+          type: string
+          minLength: 1
+          description: The name of the Link pool consuming this input.
+      required:
+      - pool_name
+      - pool_uuid
+    MainSrtCaller:
+      type: object
+      properties:
+        address:
+          type: string
+          description: Your SRT server/listener address. It must be a valid SRT URL
+            with a port in range 1024-65535 (except 2077 and 2088).
+          example: srt://streamer.quortex.io:1234
+          format: uri
+        passphrase:
+          type: string
+          nullable: true
+          description: The passphrase of the SRT (10 and 79 characters long).
+          maxLength: 79
+          minLength: 10
+        our_ip:
+          type: string
+          readOnly: true
+          description: IP address used by our SRT caller. You may use it to filter
+            incoming connections.
+        stream_id:
+          type: string
+          nullable: true
+          description: 'Used to differentiate between ingest streams. Limitation:
+            the stream_id cannot be cleared once it is set. In case you want to clear
+            it, you need to delete and recreate the input.'
+          pattern: ^[A-Za-z0-9\-_.~/!*\'()#{}\$^\[\]]*$
+          maxLength: 512
+      required:
+      - address
+      - our_ip
+    MainSrtCallerRequest:
+      type: object
+      properties:
+        address:
+          type: string
+          minLength: 1
+          description: Your SRT server/listener address. It must be a valid SRT URL
+            with a port in range 1024-65535 (except 2077 and 2088).
+          example: srt://streamer.quortex.io:1234
+          format: uri
+        passphrase:
+          type: string
+          nullable: true
+          minLength: 10
+          description: The passphrase of the SRT (10 and 79 characters long).
+          maxLength: 79
+        stream_id:
+          type: string
+          nullable: true
+          description: 'Used to differentiate between ingest streams. Limitation:
+            the stream_id cannot be cleared once it is set. In case you want to clear
+            it, you need to delete and recreate the input.'
+          pattern: ^[A-Za-z0-9\-_.~/!*\'()#{}\$^\[\]]*$
+          maxLength: 512
+      required:
+      - address
+    MainSrtListener:
+      type: object
+      properties:
+        address:
+          type: string
+          readOnly: true
+          description: SRT address where our server is listening.
+        passphrase:
+          type: string
+          nullable: true
+          description: The passphrase of the SRT. Must be between 10 and 79 characters
+            long. If null or not provided, encryption is disabled.
+          maxLength: 79
+          minLength: 10
+        cidr:
+          type: array
+          items:
+            type: string
+          description: List of CIDR blocks (maximum 1 allowed).
+      required:
+      - address
+    MainSrtListenerRequest:
+      type: object
+      properties:
+        passphrase:
+          type: string
+          nullable: true
+          minLength: 10
+          description: The passphrase of the SRT. Must be between 10 and 79 characters
+            long. If null or not provided, encryption is disabled.
+          maxLength: 79
+        cidr:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: List of CIDR blocks (maximum 1 allowed).
+    MainSrtStream:
+      type: object
+      properties:
+        uuid:
+          type: string
+          readOnly: true
+          description: A universal unique identifier for this stream.
+        connection_type:
+          enum:
+          - caller
+          - listener
+          type: string
+          x-spec-enum-id: b9e74d84e44fdb3f
+          description: |-
+            The type of SRT connection.
+
+            * `caller` - Caller
+            * `listener` - Listener
+        listener:
+          allOf:
+          - $ref: '#/components/schemas/MainSrtListener'
+          description: SRT listener configuration.
+        caller:
+          allOf:
+          - $ref: '#/components/schemas/MainSrtCaller'
+          description: SRT caller configuration.
+        latency:
+          type: integer
+          maximum: 15000
+          minimum: 100
+          description: The latency in milliseconds of the SRT connection.
+        status:
+          enum:
+          - active
+          - ready
+          - warning
+          - configuring
+          - down
+          - disabled
+          type: string
+          x-spec-enum-id: b983bbe42a5fb3dd
+          readOnly: true
+          description: |-
+            The current status of the SRT stream.
+
+            * `active` - Active
+            * `ready` - Ready
+            * `warning` - Warning
+            * `configuring` - Configuring
+            * `down` - Down
+            * `disabled` - Disabled
+        status_messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/SrtMainStreamStatusMessage'
+          readOnly: true
+          description: Messages related to the current status of the stream.
+        last_status_updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date when the SRT stream status was last updated.
+      required:
+      - connection_type
+      - last_status_updated_at
+      - status
+      - status_messages
+      - uuid
+    MainSrtStreamPatchRequest:
+      type: object
+      properties:
+        connection_type:
+          enum:
+          - caller
+          - listener
+          type: string
+          x-spec-enum-id: b9e74d84e44fdb3f
+          description: |-
+            The type of SRT connection.
+
+            * `caller` - Caller
+            * `listener` - Listener
+        listener:
+          allOf:
+          - $ref: '#/components/schemas/MainSrtListenerRequest'
+          description: SRT listener configuration.
+        caller:
+          allOf:
+          - $ref: '#/components/schemas/MainSrtCallerRequest'
+          description: SRT caller configuration.
+        latency:
+          type: integer
+          maximum: 15000
+          minimum: 100
+          description: The latency in milliseconds of the SRT connection.
+    MainSrtStreamRequest:
+      type: object
+      properties:
+        connection_type:
+          enum:
+          - caller
+          - listener
+          type: string
+          x-spec-enum-id: b9e74d84e44fdb3f
+          description: |-
+            The type of SRT connection.
+
+            * `caller` - Caller
+            * `listener` - Listener
+        listener:
+          allOf:
+          - $ref: '#/components/schemas/MainSrtListenerRequest'
+          description: SRT listener configuration.
+        caller:
+          allOf:
+          - $ref: '#/components/schemas/MainSrtCallerRequest'
+          description: SRT caller configuration.
+        latency:
+          type: integer
+          maximum: 15000
+          minimum: 100
+          description: The latency in milliseconds of the SRT connection.
+      required:
+      - connection_type
+    MediaAnalysis:
+      type: object
+      properties:
+        status:
+          enum:
+          - success
+          - warning
+          - error
+          type: string
+          x-spec-enum-id: 507d67cbb6e2cf29
+          readOnly: true
+          description: |-
+            Status of the media analysis.
+
+            * `success` - success
+            * `warning` - warning
+            * `error` - error
+          example: success
+        status_messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/StatusMessage'
+          readOnly: true
+          description: Messages associated to the status
+        levels:
+          allOf:
+          - $ref: '#/components/schemas/AudioLevels'
+          readOnly: true
+          description: Audio levels info of the component
+      required:
+      - status
+      - status_messages
+    PaginatedInputList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Input'
+    PatchedInputPatchRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The name of the input.
+          example: My input
+          maxLength: 100
+        srt:
+          allOf:
+          - $ref: '#/components/schemas/SrtPatchRequest'
+          description: SRT configuration (only when type is srt).
+    PlayConsumer:
+      type: object
+      properties:
+        pool_uuid:
+          type: string
+          description: The UUID of the Play pool consuming this input.
+        pool_name:
+          type: string
+          description: The name of the Play pool consuming this input.
+      required:
+      - pool_name
+      - pool_uuid
+    PlayConsumerRequest:
+      type: object
+      properties:
+        pool_uuid:
+          type: string
+          minLength: 1
+          description: The UUID of the Play pool consuming this input.
+        pool_name:
+          type: string
+          minLength: 1
+          description: The name of the Play pool consuming this input.
+      required:
+      - pool_name
+      - pool_uuid
+    PowerVuConsumer:
+      type: object
+      properties:
+        workspace_uuid:
+          type: string
+          description: The UUID of the PowerVu workspace consuming this input.
+        workspace_name:
+          type: string
+          description: The name of the PowerVu workspace consuming this input.
+      required:
+      - workspace_name
+      - workspace_uuid
+    PowerVuConsumerRequest:
+      type: object
+      properties:
+        workspace_uuid:
+          type: string
+          minLength: 1
+          description: The UUID of the PowerVu workspace consuming this input.
+        workspace_name:
+          type: string
+          minLength: 1
+          description: The name of the PowerVu workspace consuming this input.
+      required:
+      - workspace_name
+      - workspace_uuid
+    Regions:
+      type: object
+      properties:
+        available_regions:
+          type: array
+          items:
+            type: string
+            maxLength: 200
+      required:
+      - available_regions
+    Srt:
+      type: object
+      properties:
+        stream_redundancy:
+          enum:
+          - single
+          - dual
+          type: string
+          x-spec-enum-id: d7b4a2e8f1248d52
+          description: |-
+            The level of SRT stream redundancy.
+
+            * `single` - Single
+            * `dual` - Dual
+          example: single
+        streams:
+          allOf:
+          - $ref: '#/components/schemas/SrtStreams'
+          description: SRT streams configuration.
+        stream_switch_status:
+          enum:
+          - on_main
+          - on_failover
+          - switching_to_main
+          - switching_to_failover
+          type: string
+          x-spec-enum-id: 99544fa1e85e6667
+          readOnly: true
+          description: |-
+            The current status of the stream switch (only when stream redundancy is dual).
+
+            * `on_main` - On Main
+            * `on_failover` - On Failover
+            * `switching_to_main` - Switching To Main
+            * `switching_to_failover` - Switching To Failover
+        last_stream_switch_status_updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date when the stream switch status was last updated.
+      required:
+      - stream_redundancy
+      - streams
+    SrtFailoverStreamStatusMessage:
+      type: object
+      properties:
+        message:
+          type: string
+          readOnly: true
+          description: A message about the current status.
+        code:
+          enum:
+          - READY_WAITING_CONNECTION
+          - WARNING_NO_DATA
+          - DOWN_CONNECTION_FAILURE
+          - DOWN_CONFIGURATION_FAILURE
+          type: string
+          x-spec-enum-id: a72264914d03de3f
+          readOnly: true
+          description: |-
+            Status code categorizing the status message. Required for status READY, DOWN and WARNING.
+
+            * `READY_WAITING_CONNECTION` - READY_WAITING_CONNECTION
+            * `WARNING_NO_DATA` - WARNING_NO_DATA
+            * `DOWN_CONNECTION_FAILURE` - DOWN_CONNECTION_FAILURE
+            * `DOWN_CONFIGURATION_FAILURE` - DOWN_CONFIGURATION_FAILURE
+      required:
+      - message
+    SrtMainStreamStatusMessage:
+      type: object
+      properties:
+        message:
+          type: string
+          readOnly: true
+          description: A message about the current status.
+        code:
+          enum:
+          - READY_WAITING_CONNECTION
+          - WARNING_NO_DATA
+          - DOWN_CONNECTION_FAILURE
+          - DOWN_CONFIGURATION_FAILURE
+          type: string
+          x-spec-enum-id: a72264914d03de3f
+          readOnly: true
+          description: |-
+            Status code categorizing the status message. Required for status READY, DOWN and WARNING.
+
+            * `READY_WAITING_CONNECTION` - READY_WAITING_CONNECTION
+            * `WARNING_NO_DATA` - WARNING_NO_DATA
+            * `DOWN_CONNECTION_FAILURE` - DOWN_CONNECTION_FAILURE
+            * `DOWN_CONFIGURATION_FAILURE` - DOWN_CONFIGURATION_FAILURE
+      required:
+      - message
+    SrtPatchRequest:
+      type: object
+      properties:
+        streams:
+          allOf:
+          - $ref: '#/components/schemas/SrtStreamsPatchRequest'
+          description: SRT streams configuration.
+    SrtRequest:
+      type: object
+      properties:
+        stream_redundancy:
+          enum:
+          - single
+          - dual
+          type: string
+          x-spec-enum-id: d7b4a2e8f1248d52
+          description: |-
+            The level of SRT stream redundancy.
+
+            * `single` - Single
+            * `dual` - Dual
+          example: single
+        streams:
+          allOf:
+          - $ref: '#/components/schemas/SrtStreamsRequest'
+          description: SRT streams configuration.
+      required:
+      - stream_redundancy
+      - streams
+    SrtStreams:
+      type: object
+      properties:
+        main:
+          allOf:
+          - $ref: '#/components/schemas/MainSrtStream'
+          description: Main SRT stream configuration.
+        failover:
+          allOf:
+          - $ref: '#/components/schemas/FailoverSrtStream'
+          description: Failover SRT stream configuration (only when stream redundancy
+            is dual).
+      required:
+      - main
+    SrtStreamsPatchRequest:
+      type: object
+      properties:
+        main:
+          allOf:
+          - $ref: '#/components/schemas/MainSrtStreamPatchRequest'
+          description: Main SRT stream configuration.
+        failover:
+          allOf:
+          - $ref: '#/components/schemas/FailoverSrtStreamPatchRequest'
+          description: Failover SRT stream configuration (only when stream redundancy
+            is dual).
+    SrtStreamsRequest:
+      type: object
+      properties:
+        main:
+          allOf:
+          - $ref: '#/components/schemas/MainSrtStreamRequest'
+          description: Main SRT stream configuration.
+        failover:
+          allOf:
+          - $ref: '#/components/schemas/FailoverSrtStreamRequest'
+          description: Failover SRT stream configuration (only when stream redundancy
+            is dual).
+      required:
+      - main
+    StatusMessage:
+      type: object
+      properties:
+        code:
+          enum:
+          - WARNING_NO_DATA
+          - ERROR_DECODING
+          type: string
+          x-spec-enum-id: 2e61a9a230adf89b
+          readOnly: true
+          description: |-
+            Message Code
+
+            * `WARNING_NO_DATA` - WARNING_NO_DATA
+            * `ERROR_DECODING` - ERROR_DECODING
+          example: WARNING_NO_DATA
+        message:
+          enum:
+          - No data for this audio track
+          - Unable to decode this audio track
+          type: string
+          x-spec-enum-id: b6f86ba08737d187
+          readOnly: true
+          description: |-
+            Status of the component.
+
+            * `No data for this audio track` - No data for this audio track
+            * `Unable to decode this audio track` - Unable to decode this audio track
+          example: No data for this audio track
+      required:
+      - code
+      - message
+    VideoComponent:
+      type: object
+      properties:
+        codec:
+          enum:
+          - UNKNOWN
+          - H.265
+          - H.264
+          - H.262
+          type: string
+          x-spec-enum-id: 1b982b46fef6092e
+          readOnly: true
+          description: |-
+            Video codec of the component.
+
+            * `UNKNOWN` - unknown
+            * `H.265` - HEVC (H.265)
+            * `H.264` - AVC (H.264)
+            * `H.262` - MPEG-2 Video (H.262)
+          example: H.265
+        thumbnail_updated_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: The date when the thumbnail was last updated. Null means the
+            thumbnail has not been updated yet.
+        thumbnail_url:
+          type: string
+          nullable: true
+          description: The url where to download the thumbnail. Null means the thumbnail
+            has not been updated yet.
+      required:
+      - codec
+    VideoComponentRequest:
+      type: object
+      properties:
+        thumbnail_updated_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: The date when the thumbnail was last updated. Null means the
+            thumbnail has not been updated yet.
+        thumbnail_url:
+          type: string
+          nullable: true
+          minLength: 1
+          description: The url where to download the thumbnail. Null means the thumbnail
+            has not been updated yet.
+  securitySchemes:
+    GeneralApi:
+      type: apiKey
+      in: header
+      name: Authorization
+servers:
+- url: https://api.quortex.io/
+x-tagGroups:
+- name: Resources
+  tags:
+  - inputs
+  - stream switch
+- name: Config
+  tags:
+  - regions

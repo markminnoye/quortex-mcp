@@ -1,0 +1,5946 @@
+openapi: 3.0.3
+info:
+  title: Quortex Switch API
+  version: 1.0.0
+  x-logo:
+    url: https://storage.googleapis.com/logo-quortex/Logo%20Quortex.svg
+paths:
+  /switch/asns/:
+    get:
+      operationId: switch_asns_list
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Return the
+        list of Autonomous Systems.
+      summary: Gets the list of Autonomous Systems.
+      parameters:
+      - in: query
+        name: asn
+        schema:
+          type: string
+        description: Search for exact match of Autonomous System's number.
+      - in: query
+        name: asn__istartswith
+        schema:
+          type: string
+        description: Search for Autonomous System's number starting with value (case
+          insensitive).
+      - in: query
+        name: asn__startswith
+        schema:
+          type: string
+        description: Search for Autonomous System's number starting with value (case
+          sensitive).
+      - in: query
+        name: country
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - ABW
+            - AFG
+            - AGO
+            - AIA
+            - ALA
+            - ALB
+            - AND
+            - ARE
+            - ARG
+            - ARM
+            - ASM
+            - ATA
+            - ATF
+            - ATG
+            - AUS
+            - AUT
+            - AZE
+            - BDI
+            - BEL
+            - BEN
+            - BES
+            - BFA
+            - BGD
+            - BGR
+            - BHR
+            - BHS
+            - BIH
+            - BLM
+            - BLR
+            - BLZ
+            - BMU
+            - BOL
+            - BRA
+            - BRB
+            - BRN
+            - BTN
+            - BVT
+            - BWA
+            - CAF
+            - CAN
+            - CCK
+            - CHE
+            - CHL
+            - CHN
+            - CIV
+            - CMR
+            - COD
+            - COG
+            - COK
+            - COL
+            - COM
+            - CPV
+            - CRI
+            - CUB
+            - CUW
+            - CXR
+            - CYM
+            - CYP
+            - CZE
+            - DEU
+            - DJI
+            - DMA
+            - DNK
+            - DOM
+            - DZA
+            - ECU
+            - EGY
+            - ERI
+            - ESH
+            - ESP
+            - EST
+            - ETH
+            - FIN
+            - FJI
+            - FLK
+            - FRA
+            - FRO
+            - FSM
+            - GAB
+            - GBR
+            - GEO
+            - GGY
+            - GHA
+            - GIB
+            - GIN
+            - GLP
+            - GMB
+            - GNB
+            - GNQ
+            - GRC
+            - GRD
+            - GRL
+            - GTM
+            - GUF
+            - GUM
+            - GUY
+            - HKG
+            - HMD
+            - HND
+            - HRV
+            - HTI
+            - HUN
+            - IDN
+            - IMN
+            - IND
+            - IOT
+            - IRL
+            - IRN
+            - IRQ
+            - ISL
+            - ISR
+            - ITA
+            - JAM
+            - JEY
+            - JOR
+            - JPN
+            - KAZ
+            - KEN
+            - KGZ
+            - KHM
+            - KIR
+            - KNA
+            - KOR
+            - KWT
+            - LAO
+            - LBN
+            - LBR
+            - LBY
+            - LCA
+            - LIE
+            - LKA
+            - LSO
+            - LTU
+            - LUX
+            - LVA
+            - MAC
+            - MAF
+            - MAR
+            - MCO
+            - MDA
+            - MDG
+            - MDV
+            - MEX
+            - MHL
+            - MKD
+            - MLI
+            - MLT
+            - MMR
+            - MNE
+            - MNG
+            - MNP
+            - MOZ
+            - MRT
+            - MSR
+            - MTQ
+            - MUS
+            - MWI
+            - MYS
+            - MYT
+            - NAM
+            - NCL
+            - NER
+            - NFK
+            - NGA
+            - NIC
+            - NIU
+            - NLD
+            - NOR
+            - NPL
+            - NRU
+            - NZL
+            - OMN
+            - PAK
+            - PAN
+            - PCN
+            - PER
+            - PHL
+            - PLW
+            - PNG
+            - POL
+            - PRI
+            - PRK
+            - PRT
+            - PRY
+            - PSE
+            - PYF
+            - QAT
+            - REU
+            - ROU
+            - RUS
+            - RWA
+            - SAU
+            - SDN
+            - SEN
+            - SGP
+            - SGS
+            - SHN
+            - SJM
+            - SLB
+            - SLE
+            - SLV
+            - SMR
+            - SOM
+            - SPM
+            - SRB
+            - SSD
+            - STP
+            - SUR
+            - SVK
+            - SVN
+            - SWE
+            - SWZ
+            - SXM
+            - SYC
+            - SYR
+            - TCA
+            - TCD
+            - TGO
+            - THA
+            - TJK
+            - TKL
+            - TKM
+            - TLS
+            - TON
+            - TTO
+            - TUN
+            - TUR
+            - TUV
+            - TWN
+            - TZA
+            - UGA
+            - UKR
+            - UMI
+            - URY
+            - USA
+            - UZB
+            - VAT
+            - VCT
+            - VEN
+            - VGB
+            - VIR
+            - VNM
+            - VUT
+            - WLF
+            - WSM
+            - YEM
+            - ZAF
+            - ZMB
+            - ZWE
+        description: |-
+          Search for exact match in list of Autonomous System's countries.
+
+          * `ABW` - ABW
+          * `AFG` - AFG
+          * `AGO` - AGO
+          * `AIA` - AIA
+          * `ALA` - ALA
+          * `ALB` - ALB
+          * `AND` - AND
+          * `ARE` - ARE
+          * `ARG` - ARG
+          * `ARM` - ARM
+          * `ASM` - ASM
+          * `ATA` - ATA
+          * `ATF` - ATF
+          * `ATG` - ATG
+          * `AUS` - AUS
+          * `AUT` - AUT
+          * `AZE` - AZE
+          * `BDI` - BDI
+          * `BEL` - BEL
+          * `BEN` - BEN
+          * `BES` - BES
+          * `BFA` - BFA
+          * `BGD` - BGD
+          * `BGR` - BGR
+          * `BHR` - BHR
+          * `BHS` - BHS
+          * `BIH` - BIH
+          * `BLM` - BLM
+          * `BLR` - BLR
+          * `BLZ` - BLZ
+          * `BMU` - BMU
+          * `BOL` - BOL
+          * `BRA` - BRA
+          * `BRB` - BRB
+          * `BRN` - BRN
+          * `BTN` - BTN
+          * `BVT` - BVT
+          * `BWA` - BWA
+          * `CAF` - CAF
+          * `CAN` - CAN
+          * `CCK` - CCK
+          * `CHE` - CHE
+          * `CHL` - CHL
+          * `CHN` - CHN
+          * `CIV` - CIV
+          * `CMR` - CMR
+          * `COD` - COD
+          * `COG` - COG
+          * `COK` - COK
+          * `COL` - COL
+          * `COM` - COM
+          * `CPV` - CPV
+          * `CRI` - CRI
+          * `CUB` - CUB
+          * `CUW` - CUW
+          * `CXR` - CXR
+          * `CYM` - CYM
+          * `CYP` - CYP
+          * `CZE` - CZE
+          * `DEU` - DEU
+          * `DJI` - DJI
+          * `DMA` - DMA
+          * `DNK` - DNK
+          * `DOM` - DOM
+          * `DZA` - DZA
+          * `ECU` - ECU
+          * `EGY` - EGY
+          * `ERI` - ERI
+          * `ESH` - ESH
+          * `ESP` - ESP
+          * `EST` - EST
+          * `ETH` - ETH
+          * `FIN` - FIN
+          * `FJI` - FJI
+          * `FLK` - FLK
+          * `FRA` - FRA
+          * `FRO` - FRO
+          * `FSM` - FSM
+          * `GAB` - GAB
+          * `GBR` - GBR
+          * `GEO` - GEO
+          * `GGY` - GGY
+          * `GHA` - GHA
+          * `GIB` - GIB
+          * `GIN` - GIN
+          * `GLP` - GLP
+          * `GMB` - GMB
+          * `GNB` - GNB
+          * `GNQ` - GNQ
+          * `GRC` - GRC
+          * `GRD` - GRD
+          * `GRL` - GRL
+          * `GTM` - GTM
+          * `GUF` - GUF
+          * `GUM` - GUM
+          * `GUY` - GUY
+          * `HKG` - HKG
+          * `HMD` - HMD
+          * `HND` - HND
+          * `HRV` - HRV
+          * `HTI` - HTI
+          * `HUN` - HUN
+          * `IDN` - IDN
+          * `IMN` - IMN
+          * `IND` - IND
+          * `IOT` - IOT
+          * `IRL` - IRL
+          * `IRN` - IRN
+          * `IRQ` - IRQ
+          * `ISL` - ISL
+          * `ISR` - ISR
+          * `ITA` - ITA
+          * `JAM` - JAM
+          * `JEY` - JEY
+          * `JOR` - JOR
+          * `JPN` - JPN
+          * `KAZ` - KAZ
+          * `KEN` - KEN
+          * `KGZ` - KGZ
+          * `KHM` - KHM
+          * `KIR` - KIR
+          * `KNA` - KNA
+          * `KOR` - KOR
+          * `KWT` - KWT
+          * `LAO` - LAO
+          * `LBN` - LBN
+          * `LBR` - LBR
+          * `LBY` - LBY
+          * `LCA` - LCA
+          * `LIE` - LIE
+          * `LKA` - LKA
+          * `LSO` - LSO
+          * `LTU` - LTU
+          * `LUX` - LUX
+          * `LVA` - LVA
+          * `MAC` - MAC
+          * `MAF` - MAF
+          * `MAR` - MAR
+          * `MCO` - MCO
+          * `MDA` - MDA
+          * `MDG` - MDG
+          * `MDV` - MDV
+          * `MEX` - MEX
+          * `MHL` - MHL
+          * `MKD` - MKD
+          * `MLI` - MLI
+          * `MLT` - MLT
+          * `MMR` - MMR
+          * `MNE` - MNE
+          * `MNG` - MNG
+          * `MNP` - MNP
+          * `MOZ` - MOZ
+          * `MRT` - MRT
+          * `MSR` - MSR
+          * `MTQ` - MTQ
+          * `MUS` - MUS
+          * `MWI` - MWI
+          * `MYS` - MYS
+          * `MYT` - MYT
+          * `NAM` - NAM
+          * `NCL` - NCL
+          * `NER` - NER
+          * `NFK` - NFK
+          * `NGA` - NGA
+          * `NIC` - NIC
+          * `NIU` - NIU
+          * `NLD` - NLD
+          * `NOR` - NOR
+          * `NPL` - NPL
+          * `NRU` - NRU
+          * `NZL` - NZL
+          * `OMN` - OMN
+          * `PAK` - PAK
+          * `PAN` - PAN
+          * `PCN` - PCN
+          * `PER` - PER
+          * `PHL` - PHL
+          * `PLW` - PLW
+          * `PNG` - PNG
+          * `POL` - POL
+          * `PRI` - PRI
+          * `PRK` - PRK
+          * `PRT` - PRT
+          * `PRY` - PRY
+          * `PSE` - PSE
+          * `PYF` - PYF
+          * `QAT` - QAT
+          * `REU` - REU
+          * `ROU` - ROU
+          * `RUS` - RUS
+          * `RWA` - RWA
+          * `SAU` - SAU
+          * `SDN` - SDN
+          * `SEN` - SEN
+          * `SGP` - SGP
+          * `SGS` - SGS
+          * `SHN` - SHN
+          * `SJM` - SJM
+          * `SLB` - SLB
+          * `SLE` - SLE
+          * `SLV` - SLV
+          * `SMR` - SMR
+          * `SOM` - SOM
+          * `SPM` - SPM
+          * `SRB` - SRB
+          * `SSD` - SSD
+          * `STP` - STP
+          * `SUR` - SUR
+          * `SVK` - SVK
+          * `SVN` - SVN
+          * `SWE` - SWE
+          * `SWZ` - SWZ
+          * `SXM` - SXM
+          * `SYC` - SYC
+          * `SYR` - SYR
+          * `TCA` - TCA
+          * `TCD` - TCD
+          * `TGO` - TGO
+          * `THA` - THA
+          * `TJK` - TJK
+          * `TKL` - TKL
+          * `TKM` - TKM
+          * `TLS` - TLS
+          * `TON` - TON
+          * `TTO` - TTO
+          * `TUN` - TUN
+          * `TUR` - TUR
+          * `TUV` - TUV
+          * `TWN` - TWN
+          * `TZA` - TZA
+          * `UGA` - UGA
+          * `UKR` - UKR
+          * `UMI` - UMI
+          * `URY` - URY
+          * `USA` - USA
+          * `UZB` - UZB
+          * `VAT` - VAT
+          * `VCT` - VCT
+          * `VEN` - VEN
+          * `VGB` - VGB
+          * `VIR` - VIR
+          * `VNM` - VNM
+          * `VUT` - VUT
+          * `WLF` - WLF
+          * `WSM` - WSM
+          * `YEM` - YEM
+          * `ZAF` - ZAF
+          * `ZMB` - ZMB
+          * `ZWE` - ZWE
+        explode: true
+        style: form
+      - in: query
+        name: isearch
+        schema:
+          type: string
+        description: Search for a value (case insensitive).
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: query
+        name: organization
+        schema:
+          type: string
+        description: Search for exact match of Autonomous System's organization.
+      - in: query
+        name: organization__contains
+        schema:
+          type: string
+        description: Search Autonomous System's organization containing value (case
+          sensitive).
+      - in: query
+        name: organization__icontains
+        schema:
+          type: string
+        description: Search Autonomous System's organization containing value (case
+          insensitive).
+      - name: page
+        required: false
+        in: query
+        description: When pagination is enabled, select the page to get.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Enable pagination and set the page size.
+        schema:
+          type: integer
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Search for a value (case sensitive).
+      - in: query
+        name: subdivision
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - US-AK
+            - US-AL
+            - US-AR
+            - US-AS
+            - US-AZ
+            - US-CA
+            - US-CO
+            - US-CT
+            - US-DC
+            - US-DE
+            - US-FL
+            - US-GA
+            - US-GU
+            - US-HI
+            - US-IA
+            - US-ID
+            - US-IL
+            - US-IN
+            - US-KS
+            - US-KY
+            - US-LA
+            - US-MA
+            - US-MD
+            - US-ME
+            - US-MI
+            - US-MN
+            - US-MO
+            - US-MP
+            - US-MS
+            - US-MT
+            - US-NC
+            - US-ND
+            - US-NE
+            - US-NH
+            - US-NJ
+            - US-NM
+            - US-NV
+            - US-NY
+            - US-OH
+            - US-OK
+            - US-OR
+            - US-PA
+            - US-PR
+            - US-RI
+            - US-SC
+            - US-SD
+            - US-TN
+            - US-TX
+            - US-UM
+            - US-UT
+            - US-VA
+            - US-VI
+            - US-VT
+            - US-WA
+            - US-WI
+            - US-WV
+            - US-WY
+        description: |-
+          Search for exact match in list of Autonomous System's subdivisions.
+
+          * `US-AK` - US-AK
+          * `US-AL` - US-AL
+          * `US-AR` - US-AR
+          * `US-AS` - US-AS
+          * `US-AZ` - US-AZ
+          * `US-CA` - US-CA
+          * `US-CO` - US-CO
+          * `US-CT` - US-CT
+          * `US-DC` - US-DC
+          * `US-DE` - US-DE
+          * `US-FL` - US-FL
+          * `US-GA` - US-GA
+          * `US-GU` - US-GU
+          * `US-HI` - US-HI
+          * `US-IA` - US-IA
+          * `US-ID` - US-ID
+          * `US-IL` - US-IL
+          * `US-IN` - US-IN
+          * `US-KS` - US-KS
+          * `US-KY` - US-KY
+          * `US-LA` - US-LA
+          * `US-MA` - US-MA
+          * `US-MD` - US-MD
+          * `US-ME` - US-ME
+          * `US-MI` - US-MI
+          * `US-MN` - US-MN
+          * `US-MO` - US-MO
+          * `US-MP` - US-MP
+          * `US-MS` - US-MS
+          * `US-MT` - US-MT
+          * `US-NC` - US-NC
+          * `US-ND` - US-ND
+          * `US-NE` - US-NE
+          * `US-NH` - US-NH
+          * `US-NJ` - US-NJ
+          * `US-NM` - US-NM
+          * `US-NV` - US-NV
+          * `US-NY` - US-NY
+          * `US-OH` - US-OH
+          * `US-OK` - US-OK
+          * `US-OR` - US-OR
+          * `US-PA` - US-PA
+          * `US-PR` - US-PR
+          * `US-RI` - US-RI
+          * `US-SC` - US-SC
+          * `US-SD` - US-SD
+          * `US-TN` - US-TN
+          * `US-TX` - US-TX
+          * `US-UM` - US-UM
+          * `US-UT` - US-UT
+          * `US-VA` - US-VA
+          * `US-VI` - US-VI
+          * `US-VT` - US-VT
+          * `US-WA` - US-WA
+          * `US-WI` - US-WI
+          * `US-WV` - US-WV
+          * `US-WY` - US-WY
+        explode: true
+        style: form
+      tags:
+      - autonomous_system
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAsnList'
+          description: List of Autonomous Systems successfully retrieved.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+  /switch/config/countries/:
+    get:
+      operationId: switch_config_countries_retrieve
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Return the
+        list of avaible countries and subdivisions for segment configuration.
+      summary: Gets the list of avaible countries and subdivisions for segment configuration.
+      parameters:
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: query
+        name: parent_segment_uuid
+        schema:
+          type: string
+        description: If specified, return available values that are not already used
+          in its children segments.
+      tags:
+      - countries
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Countries'
+          description: List of countries and subdivisions successfully retrieved.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+  /switch/workspaces/:
+    get:
+      operationId: switch_workspaces_list
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Return the
+        list of organization's workspaces. A workspace is automatically created if
+        one doesn't exist yet.
+      summary: Gets the list of organization's workspaces.
+      parameters:
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - name: page
+        required: false
+        in: query
+        description: When pagination is enabled, select the page to get.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Enable pagination and set the page size.
+        schema:
+          type: integer
+      tags:
+      - workspace
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWorkspaceList'
+          description: Workspaces successfully retrieved.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+  /switch/workspaces/{workspace_uuid}/:
+    patch:
+      operationId: switch_workspaces_partial_update
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Updates the
+        workspace identified by the given uuid. This perform a partial update of the
+        workspace.
+      summary: Partially updates a single workspace.
+      parameters:
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - workspace
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedWorkspaceRequest'
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workspace'
+          description: Workspace successfully updated.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+        '404':
+          description: Failed to find the resource (probably because it does not exist).
+  /switch/workspaces/{workspace_uuid}/cdns/:
+    get:
+      operationId: switch_workspaces_cdns_list
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Return the
+        list of CDN.
+      summary: Gets the list of CDN.
+      parameters:
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - name: page
+        required: false
+        in: query
+        description: When pagination is enabled, select the page to get.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Enable pagination and set the page size.
+        schema:
+          type: integer
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - cdn
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCdnList'
+          description: List of CDN successfully retrieved.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+    post:
+      operationId: switch_workspaces_cdns_create
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Create a
+        new CDN.
+      summary: Creates a CDN.
+      parameters:
+      - in: query
+        name: dry_run
+        schema:
+          type: boolean
+        description: If true, perfoms a dry run creation (CDN will not be saved).
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - cdn
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CdnRequest'
+        required: true
+      security:
+      - GeneralApi: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cdn'
+          description: CDN successfully created.
+        '400':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ValidationError'
+          description: The request is malformed, the body is not respecting the expected
+            scheme or an invalid value is passed.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+  /switch/workspaces/{workspace_uuid}/cdns/{cdn_uuid}/:
+    get:
+      operationId: switch_workspaces_cdns_retrieve
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Return the
+        CDN identified by the given uuid.
+      summary: Gets a single CDN configuration.
+      parameters:
+      - in: path
+        name: cdn_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - cdn
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cdn'
+          description: CDN successfully retrieved.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+        '404':
+          description: Failed to find the resource (probably because it does not exist).
+    patch:
+      operationId: switch_workspaces_cdns_partial_update
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Updates the
+        CDN identified by the given uuid. This perform a partial update of the CDN.
+      summary: Partially updates a single CDN.
+      parameters:
+      - in: path
+        name: cdn_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - cdn
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCdnRequest'
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cdn'
+          description: CDN successfully updated.
+        '400':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ValidationError'
+          description: The request is malformed, the body is not respecting the expected
+            scheme or an invalid value is passed.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+        '404':
+          description: Failed to find the resource (probably because it does not exist).
+    delete:
+      operationId: switch_workspaces_cdns_destroy
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Deletes the
+        CDN identified by the given uuid.
+      summary: Deletes a single CDN.
+      parameters:
+      - in: path
+        name: cdn_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - cdn
+      security:
+      - GeneralApi: []
+      responses:
+        '204':
+          description: CDN successfully deleted.
+        '400':
+          description: CDN is used in a segment.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+        '404':
+          description: Failed to find the resource (probably because it does not exist).
+  /switch/workspaces/{workspace_uuid}/cdns/{cdn_uuid}/qoe_metrics/:
+    get:
+      operationId: switch_workspaces_cdns_qoe_metrics_retrieve
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Get the CDN's
+        QoE metrics' configuration.
+      summary: Gets the CDN's QoE metrics' configuration.
+      parameters:
+      - in: path
+        name: cdn_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - qoe
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QoEConfiguration'
+          description: QoE metrics' configuration successfully retrieved.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+    put:
+      operationId: switch_workspaces_cdns_qoe_metrics_update
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Update the
+        CDN's QoE metrics' configuration.
+      summary: Updates the CDN's QoE metrics' configuration.
+      parameters:
+      - in: path
+        name: cdn_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - qoe
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QoEConfigurationRequest'
+        required: true
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QoEConfiguration'
+          description: QoE metrics' configuration successfully updated.
+        '400':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ValidationError'
+          description: The request is malformed, the body is not respecting the expected
+            scheme or an invalid value is passed.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+  /switch/workspaces/{workspace_uuid}/cdns/{cdn_uuid}/statistics/:
+    get:
+      operationId: switch_workspaces_cdns_statistics_details_retrieve
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Return the
+        CDN's statistics.
+      summary: Gets the CDN's statistics.
+      parameters:
+      - in: path
+        name: cdn_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: query
+        name: endtime
+        schema:
+          type: integer
+          pattern: '[0-9]+'
+        description: End time in milliseconds timestamp. Default is now date.
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: query
+        name: starttime
+        schema:
+          type: integer
+          pattern: '[0-9]+'
+        description: Start time in milliseconds timestamp. Default is now date minus
+          1 hour.
+      - in: query
+        name: step
+        schema:
+          type: integer
+          pattern: '[0-9]+'
+        description: Step between each data in second. Default is 300 seconds.
+      - in: query
+        name: unit
+        schema:
+          type: string
+          pattern: percentage|bandwidth
+          default: percentage
+        description: Statistics unit. Can be 'percentage' or 'bandwidth'. Default
+          is 'percentage'.
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - statistics
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CdnStatistics'
+          description: Statistics successfully retrieved.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+  /switch/workspaces/{workspace_uuid}/cdns/statistics/:
+    get:
+      operationId: switch_workspaces_cdns_statistics_retrieve
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Return overall
+        CDN statistics.
+      summary: Gets overall CDN statistics.
+      parameters:
+      - in: query
+        name: endtime
+        schema:
+          type: integer
+          pattern: '[0-9]+'
+        description: End time in milliseconds timestamp. Default is now date.
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: query
+        name: starttime
+        schema:
+          type: integer
+          pattern: '[0-9]+'
+        description: Start time in milliseconds timestamp. Default is now date minus
+          1 hour.
+      - in: query
+        name: step
+        schema:
+          type: integer
+          pattern: '[0-9]+'
+        description: Step between each data in second. Default is 300 seconds.
+      - in: query
+        name: unit
+        schema:
+          type: string
+          pattern: percentage|bandwidth
+          default: percentage
+        description: Statistics unit. Can be 'percentage' or 'bandwidth'. Default
+          is 'percentage'.
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - statistics
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OverallCdnStatistics'
+          description: Statistics successfully retrieved.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+  /switch/workspaces/{workspace_uuid}/qoe_provider/:
+    get:
+      operationId: switch_workspaces_qoe_provider_retrieve
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Get the workspace's
+        QoE provider's configuration.
+      summary: Gets the workspace's QoE provider's configuration.
+      parameters:
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - qoe
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QoeProvider'
+          description: QoE provider successfully retrieved.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+    post:
+      operationId: switch_workspaces_qoe_provider_create
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Create the
+        workspace's QoE provider's configuration.
+      summary: Creates the workspace's QoE provider's configuration.
+      parameters:
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - qoe
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QoeProviderRequest'
+        required: true
+      security:
+      - GeneralApi: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QoeProvider'
+          description: QoE provider successfully configured.
+        '400':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ValidationError'
+          description: The request is malformed, the body is not respecting the expected
+            scheme or an invalid value is passed.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+    patch:
+      operationId: switch_workspaces_qoe_provider_partial_update
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Partially
+        update the workspace's QoE provider' configuration.
+      summary: Partially updates the workspace's QoE provider' configuration.
+      parameters:
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - qoe
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedQoeProviderUpdateRequest'
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QoeProviderUpdate'
+          description: QoE provider's configuration successfully updated.
+        '400':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ValidationError'
+          description: The request is malformed, the body is not respecting the expected
+            scheme or an invalid value is passed.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+    delete:
+      operationId: switch_workspaces_qoe_provider_destroy
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Delete the
+        workspace's QoE provider' configuration.
+      summary: Deletes the workspace's QoE provider' configuration.
+      parameters:
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - qoe
+      security:
+      - GeneralApi: []
+      responses:
+        '204':
+          description: QoE provider's configuration successfully deleted.
+        '400':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ValidationError'
+          description: The request is malformed, the body is not respecting the expected
+            scheme or an invalid value is passed.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+        '404':
+          description: Failed to find the resource (probably because it does not exist).
+  /switch/workspaces/{workspace_uuid}/segments/:
+    get:
+      operationId: switch_workspaces_segments_list
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Return the
+        list of segments.
+      summary: Gets the list of segments.
+      parameters:
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - segment
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Segment'
+          description: List of segments successfully retrieved.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+    post:
+      operationId: switch_workspaces_segments_create
+      description: '<span type="warning" class="dLkyEd"> Beta </span><br/>Create a
+        new segment. The first segment created in the workspace must be of type root.
+        There can only be one root segment.If the created segment is not a root segment,
+        a parent must be specified. '
+      summary: Creates a segment.
+      parameters:
+      - in: query
+        name: dry_run
+        schema:
+          type: boolean
+        description: If true, perfoms a dry run creation (segment will not be saved).
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - segment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SegmentRequestRequest'
+        required: true
+      security:
+      - GeneralApi: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Segment'
+          description: CDN successfully created.
+        '400':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SegmentValidationError'
+          description: The request is malformed, the body is not respecting the expected
+            scheme or an invalid value is passed.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+        '404':
+          description: Failed to find the resource (probably because it does not exist).
+  /switch/workspaces/{workspace_uuid}/segments/{segment_uuid}/:
+    get:
+      operationId: switch_workspaces_segments_retrieve
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Return the
+        segment identified by the given uuid.
+      summary: Gets a single segment configuration.
+      parameters:
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: segment_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - segment
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Segment'
+          description: Segment successfully retrieved.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+        '404':
+          description: Failed to find the resource (probably because it does not exist).
+    put:
+      operationId: switch_workspaces_segments_update
+      description: '<span type="warning" class="dLkyEd"> Beta </span><br/>Fully update
+        the segment identified by the given uuid. The type of a root segment cannot
+        be modified. '
+      summary: Fully updates a single segment.
+      parameters:
+      - in: query
+        name: dry_run
+        schema:
+          type: boolean
+        description: If true, perfoms a dry run update (changes will not be saved).
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: segment_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - segment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SegmentRequestRequest'
+        required: true
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SegmentUpdate'
+          description: Segment successfully updated.
+        '400':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SegmentValidationError'
+          description: The request is malformed, the body is not respecting the expected
+            scheme or an invalid value is passed.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+        '404':
+          description: Failed to find the resource (probably because it does not exist).
+    delete:
+      operationId: switch_workspaces_segments_destroy
+      description: '<span type="warning" class="dLkyEd"> Beta </span><br/>Deletes
+        the segment identified by the given uuid. '
+      summary: Deletes a single segment.
+      parameters:
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: segment_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - segment
+      security:
+      - GeneralApi: []
+      responses:
+        '204':
+          description: Segment successfully deleted.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+        '404':
+          description: Failed to find the resource (probably because it does not exist).
+  /switch/workspaces/{workspace_uuid}/segments/{segment_uuid}/check/:
+    post:
+      operationId: switch_workspaces_segments_check_create
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Return true
+        if the geolocations or networks are available else raise an exception.
+      summary: Checks if segment's geolocations or networks are already used by the
+        children of the given segment uuid.
+      parameters:
+      - in: query
+        name: current_segment_uuid
+        schema:
+          type: string
+        description: If specified, ignores the geolocations or networks used by the
+          current segment.
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: segment_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - segment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SegmentCheckRequest'
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SegmentCheck'
+          description: Values are all available.
+        '400':
+          description: Some values are already used.
+  /switch/workspaces/{workspace_uuid}/segments/{segment_uuid}/statistics/:
+    get:
+      operationId: switch_workspaces_segments_statistics_retrieve
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Return the
+        segment's statistics.
+      summary: Gets the segment's statistics.
+      parameters:
+      - in: query
+        name: endtime
+        schema:
+          type: integer
+          pattern: '[0-9]+'
+        description: End time in milliseconds timestamp. Default is now date.
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: segment_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: query
+        name: starttime
+        schema:
+          type: integer
+          pattern: '[0-9]+'
+        description: Start time in milliseconds timestamp. Default is now date minus
+          1 hour.
+      - in: query
+        name: step
+        schema:
+          type: integer
+          pattern: '[0-9]+'
+        description: Step between each data in second. Default is 300 seconds.
+      - in: query
+        name: unit
+        schema:
+          type: string
+          pattern: percentage|bandwidth
+          default: percentage
+        description: Statistics unit. Can be 'percentage' or 'bandwidth'. Default
+          is 'percentage'.
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - statistics
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SegmentStatistics'
+          description: Statistics successfully retrieved.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+  /switch/workspaces/{workspace_uuid}/statistics/:
+    get:
+      operationId: switch_workspaces_statistics_retrieve
+      description: <span type="warning" class="dLkyEd"> Beta </span><br/>Return the
+        overall statistics.
+      summary: Gets the overall statistics.
+      parameters:
+      - in: query
+        name: org
+        schema:
+          type: string
+        description: UUID of the organization to target. Mandatory when being a member
+          of multiple organizations.
+      - in: path
+        name: workspace_uuid
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - statistics
+      security:
+      - GeneralApi: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OverallStatistics'
+          description: Statistics successfully retrieved.
+        '401':
+          description: Authentication necessary and credentials were not provided
+            or are invalid.
+        '403':
+          description: You don't have required access on this organization or workspace.
+components:
+  schemas:
+    Asn:
+      type: object
+      properties:
+        asn:
+          type: string
+          readOnly: true
+          description: Autonomous System's number.
+          example: AS1234
+        organization:
+          type: string
+          readOnly: true
+          description: Autonomous System's organization.
+          example: myOrg
+        countries:
+          type: array
+          items:
+            enum:
+            - ABW
+            - AFG
+            - AGO
+            - AIA
+            - ALA
+            - ALB
+            - AND
+            - ARE
+            - ARG
+            - ARM
+            - ASM
+            - ATA
+            - ATF
+            - ATG
+            - AUS
+            - AUT
+            - AZE
+            - BDI
+            - BEL
+            - BEN
+            - BES
+            - BFA
+            - BGD
+            - BGR
+            - BHR
+            - BHS
+            - BIH
+            - BLM
+            - BLR
+            - BLZ
+            - BMU
+            - BOL
+            - BRA
+            - BRB
+            - BRN
+            - BTN
+            - BVT
+            - BWA
+            - CAF
+            - CAN
+            - CCK
+            - CHE
+            - CHL
+            - CHN
+            - CIV
+            - CMR
+            - COD
+            - COG
+            - COK
+            - COL
+            - COM
+            - CPV
+            - CRI
+            - CUB
+            - CUW
+            - CXR
+            - CYM
+            - CYP
+            - CZE
+            - DEU
+            - DJI
+            - DMA
+            - DNK
+            - DOM
+            - DZA
+            - ECU
+            - EGY
+            - ERI
+            - ESH
+            - ESP
+            - EST
+            - ETH
+            - FIN
+            - FJI
+            - FLK
+            - FRA
+            - FRO
+            - FSM
+            - GAB
+            - GBR
+            - GEO
+            - GGY
+            - GHA
+            - GIB
+            - GIN
+            - GLP
+            - GMB
+            - GNB
+            - GNQ
+            - GRC
+            - GRD
+            - GRL
+            - GTM
+            - GUF
+            - GUM
+            - GUY
+            - HKG
+            - HMD
+            - HND
+            - HRV
+            - HTI
+            - HUN
+            - IDN
+            - IMN
+            - IND
+            - IOT
+            - IRL
+            - IRN
+            - IRQ
+            - ISL
+            - ISR
+            - ITA
+            - JAM
+            - JEY
+            - JOR
+            - JPN
+            - KAZ
+            - KEN
+            - KGZ
+            - KHM
+            - KIR
+            - KNA
+            - KOR
+            - KWT
+            - LAO
+            - LBN
+            - LBR
+            - LBY
+            - LCA
+            - LIE
+            - LKA
+            - LSO
+            - LTU
+            - LUX
+            - LVA
+            - MAC
+            - MAF
+            - MAR
+            - MCO
+            - MDA
+            - MDG
+            - MDV
+            - MEX
+            - MHL
+            - MKD
+            - MLI
+            - MLT
+            - MMR
+            - MNE
+            - MNG
+            - MNP
+            - MOZ
+            - MRT
+            - MSR
+            - MTQ
+            - MUS
+            - MWI
+            - MYS
+            - MYT
+            - NAM
+            - NCL
+            - NER
+            - NFK
+            - NGA
+            - NIC
+            - NIU
+            - NLD
+            - NOR
+            - NPL
+            - NRU
+            - NZL
+            - OMN
+            - PAK
+            - PAN
+            - PCN
+            - PER
+            - PHL
+            - PLW
+            - PNG
+            - POL
+            - PRI
+            - PRK
+            - PRT
+            - PRY
+            - PSE
+            - PYF
+            - QAT
+            - REU
+            - ROU
+            - RUS
+            - RWA
+            - SAU
+            - SDN
+            - SEN
+            - SGP
+            - SGS
+            - SHN
+            - SJM
+            - SLB
+            - SLE
+            - SLV
+            - SMR
+            - SOM
+            - SPM
+            - SRB
+            - SSD
+            - STP
+            - SUR
+            - SVK
+            - SVN
+            - SWE
+            - SWZ
+            - SXM
+            - SYC
+            - SYR
+            - TCA
+            - TCD
+            - TGO
+            - THA
+            - TJK
+            - TKL
+            - TKM
+            - TLS
+            - TON
+            - TTO
+            - TUN
+            - TUR
+            - TUV
+            - TWN
+            - TZA
+            - UGA
+            - UKR
+            - UMI
+            - URY
+            - USA
+            - UZB
+            - VAT
+            - VCT
+            - VEN
+            - VGB
+            - VIR
+            - VNM
+            - VUT
+            - WLF
+            - WSM
+            - YEM
+            - ZAF
+            - ZMB
+            - ZWE
+            type: string
+            description: |-
+              * `ABW` - ABW
+              * `AFG` - AFG
+              * `AGO` - AGO
+              * `AIA` - AIA
+              * `ALA` - ALA
+              * `ALB` - ALB
+              * `AND` - AND
+              * `ARE` - ARE
+              * `ARG` - ARG
+              * `ARM` - ARM
+              * `ASM` - ASM
+              * `ATA` - ATA
+              * `ATF` - ATF
+              * `ATG` - ATG
+              * `AUS` - AUS
+              * `AUT` - AUT
+              * `AZE` - AZE
+              * `BDI` - BDI
+              * `BEL` - BEL
+              * `BEN` - BEN
+              * `BES` - BES
+              * `BFA` - BFA
+              * `BGD` - BGD
+              * `BGR` - BGR
+              * `BHR` - BHR
+              * `BHS` - BHS
+              * `BIH` - BIH
+              * `BLM` - BLM
+              * `BLR` - BLR
+              * `BLZ` - BLZ
+              * `BMU` - BMU
+              * `BOL` - BOL
+              * `BRA` - BRA
+              * `BRB` - BRB
+              * `BRN` - BRN
+              * `BTN` - BTN
+              * `BVT` - BVT
+              * `BWA` - BWA
+              * `CAF` - CAF
+              * `CAN` - CAN
+              * `CCK` - CCK
+              * `CHE` - CHE
+              * `CHL` - CHL
+              * `CHN` - CHN
+              * `CIV` - CIV
+              * `CMR` - CMR
+              * `COD` - COD
+              * `COG` - COG
+              * `COK` - COK
+              * `COL` - COL
+              * `COM` - COM
+              * `CPV` - CPV
+              * `CRI` - CRI
+              * `CUB` - CUB
+              * `CUW` - CUW
+              * `CXR` - CXR
+              * `CYM` - CYM
+              * `CYP` - CYP
+              * `CZE` - CZE
+              * `DEU` - DEU
+              * `DJI` - DJI
+              * `DMA` - DMA
+              * `DNK` - DNK
+              * `DOM` - DOM
+              * `DZA` - DZA
+              * `ECU` - ECU
+              * `EGY` - EGY
+              * `ERI` - ERI
+              * `ESH` - ESH
+              * `ESP` - ESP
+              * `EST` - EST
+              * `ETH` - ETH
+              * `FIN` - FIN
+              * `FJI` - FJI
+              * `FLK` - FLK
+              * `FRA` - FRA
+              * `FRO` - FRO
+              * `FSM` - FSM
+              * `GAB` - GAB
+              * `GBR` - GBR
+              * `GEO` - GEO
+              * `GGY` - GGY
+              * `GHA` - GHA
+              * `GIB` - GIB
+              * `GIN` - GIN
+              * `GLP` - GLP
+              * `GMB` - GMB
+              * `GNB` - GNB
+              * `GNQ` - GNQ
+              * `GRC` - GRC
+              * `GRD` - GRD
+              * `GRL` - GRL
+              * `GTM` - GTM
+              * `GUF` - GUF
+              * `GUM` - GUM
+              * `GUY` - GUY
+              * `HKG` - HKG
+              * `HMD` - HMD
+              * `HND` - HND
+              * `HRV` - HRV
+              * `HTI` - HTI
+              * `HUN` - HUN
+              * `IDN` - IDN
+              * `IMN` - IMN
+              * `IND` - IND
+              * `IOT` - IOT
+              * `IRL` - IRL
+              * `IRN` - IRN
+              * `IRQ` - IRQ
+              * `ISL` - ISL
+              * `ISR` - ISR
+              * `ITA` - ITA
+              * `JAM` - JAM
+              * `JEY` - JEY
+              * `JOR` - JOR
+              * `JPN` - JPN
+              * `KAZ` - KAZ
+              * `KEN` - KEN
+              * `KGZ` - KGZ
+              * `KHM` - KHM
+              * `KIR` - KIR
+              * `KNA` - KNA
+              * `KOR` - KOR
+              * `KWT` - KWT
+              * `LAO` - LAO
+              * `LBN` - LBN
+              * `LBR` - LBR
+              * `LBY` - LBY
+              * `LCA` - LCA
+              * `LIE` - LIE
+              * `LKA` - LKA
+              * `LSO` - LSO
+              * `LTU` - LTU
+              * `LUX` - LUX
+              * `LVA` - LVA
+              * `MAC` - MAC
+              * `MAF` - MAF
+              * `MAR` - MAR
+              * `MCO` - MCO
+              * `MDA` - MDA
+              * `MDG` - MDG
+              * `MDV` - MDV
+              * `MEX` - MEX
+              * `MHL` - MHL
+              * `MKD` - MKD
+              * `MLI` - MLI
+              * `MLT` - MLT
+              * `MMR` - MMR
+              * `MNE` - MNE
+              * `MNG` - MNG
+              * `MNP` - MNP
+              * `MOZ` - MOZ
+              * `MRT` - MRT
+              * `MSR` - MSR
+              * `MTQ` - MTQ
+              * `MUS` - MUS
+              * `MWI` - MWI
+              * `MYS` - MYS
+              * `MYT` - MYT
+              * `NAM` - NAM
+              * `NCL` - NCL
+              * `NER` - NER
+              * `NFK` - NFK
+              * `NGA` - NGA
+              * `NIC` - NIC
+              * `NIU` - NIU
+              * `NLD` - NLD
+              * `NOR` - NOR
+              * `NPL` - NPL
+              * `NRU` - NRU
+              * `NZL` - NZL
+              * `OMN` - OMN
+              * `PAK` - PAK
+              * `PAN` - PAN
+              * `PCN` - PCN
+              * `PER` - PER
+              * `PHL` - PHL
+              * `PLW` - PLW
+              * `PNG` - PNG
+              * `POL` - POL
+              * `PRI` - PRI
+              * `PRK` - PRK
+              * `PRT` - PRT
+              * `PRY` - PRY
+              * `PSE` - PSE
+              * `PYF` - PYF
+              * `QAT` - QAT
+              * `REU` - REU
+              * `ROU` - ROU
+              * `RUS` - RUS
+              * `RWA` - RWA
+              * `SAU` - SAU
+              * `SDN` - SDN
+              * `SEN` - SEN
+              * `SGP` - SGP
+              * `SGS` - SGS
+              * `SHN` - SHN
+              * `SJM` - SJM
+              * `SLB` - SLB
+              * `SLE` - SLE
+              * `SLV` - SLV
+              * `SMR` - SMR
+              * `SOM` - SOM
+              * `SPM` - SPM
+              * `SRB` - SRB
+              * `SSD` - SSD
+              * `STP` - STP
+              * `SUR` - SUR
+              * `SVK` - SVK
+              * `SVN` - SVN
+              * `SWE` - SWE
+              * `SWZ` - SWZ
+              * `SXM` - SXM
+              * `SYC` - SYC
+              * `SYR` - SYR
+              * `TCA` - TCA
+              * `TCD` - TCD
+              * `TGO` - TGO
+              * `THA` - THA
+              * `TJK` - TJK
+              * `TKL` - TKL
+              * `TKM` - TKM
+              * `TLS` - TLS
+              * `TON` - TON
+              * `TTO` - TTO
+              * `TUN` - TUN
+              * `TUR` - TUR
+              * `TUV` - TUV
+              * `TWN` - TWN
+              * `TZA` - TZA
+              * `UGA` - UGA
+              * `UKR` - UKR
+              * `UMI` - UMI
+              * `URY` - URY
+              * `USA` - USA
+              * `UZB` - UZB
+              * `VAT` - VAT
+              * `VCT` - VCT
+              * `VEN` - VEN
+              * `VGB` - VGB
+              * `VIR` - VIR
+              * `VNM` - VNM
+              * `VUT` - VUT
+              * `WLF` - WLF
+              * `WSM` - WSM
+              * `YEM` - YEM
+              * `ZAF` - ZAF
+              * `ZMB` - ZMB
+              * `ZWE` - ZWE
+            x-spec-enum-id: 1ff0374a807f6f03
+          description: Autonomous System's associated countries.
+          example:
+          - FRA
+        subdivisions:
+          type: array
+          items:
+            enum:
+            - US-AK
+            - US-AL
+            - US-AR
+            - US-AS
+            - US-AZ
+            - US-CA
+            - US-CO
+            - US-CT
+            - US-DC
+            - US-DE
+            - US-FL
+            - US-GA
+            - US-GU
+            - US-HI
+            - US-IA
+            - US-ID
+            - US-IL
+            - US-IN
+            - US-KS
+            - US-KY
+            - US-LA
+            - US-MA
+            - US-MD
+            - US-ME
+            - US-MI
+            - US-MN
+            - US-MO
+            - US-MP
+            - US-MS
+            - US-MT
+            - US-NC
+            - US-ND
+            - US-NE
+            - US-NH
+            - US-NJ
+            - US-NM
+            - US-NV
+            - US-NY
+            - US-OH
+            - US-OK
+            - US-OR
+            - US-PA
+            - US-PR
+            - US-RI
+            - US-SC
+            - US-SD
+            - US-TN
+            - US-TX
+            - US-UM
+            - US-UT
+            - US-VA
+            - US-VI
+            - US-VT
+            - US-WA
+            - US-WI
+            - US-WV
+            - US-WY
+            type: string
+            description: |-
+              * `US-AK` - US-AK
+              * `US-AL` - US-AL
+              * `US-AR` - US-AR
+              * `US-AS` - US-AS
+              * `US-AZ` - US-AZ
+              * `US-CA` - US-CA
+              * `US-CO` - US-CO
+              * `US-CT` - US-CT
+              * `US-DC` - US-DC
+              * `US-DE` - US-DE
+              * `US-FL` - US-FL
+              * `US-GA` - US-GA
+              * `US-GU` - US-GU
+              * `US-HI` - US-HI
+              * `US-IA` - US-IA
+              * `US-ID` - US-ID
+              * `US-IL` - US-IL
+              * `US-IN` - US-IN
+              * `US-KS` - US-KS
+              * `US-KY` - US-KY
+              * `US-LA` - US-LA
+              * `US-MA` - US-MA
+              * `US-MD` - US-MD
+              * `US-ME` - US-ME
+              * `US-MI` - US-MI
+              * `US-MN` - US-MN
+              * `US-MO` - US-MO
+              * `US-MP` - US-MP
+              * `US-MS` - US-MS
+              * `US-MT` - US-MT
+              * `US-NC` - US-NC
+              * `US-ND` - US-ND
+              * `US-NE` - US-NE
+              * `US-NH` - US-NH
+              * `US-NJ` - US-NJ
+              * `US-NM` - US-NM
+              * `US-NV` - US-NV
+              * `US-NY` - US-NY
+              * `US-OH` - US-OH
+              * `US-OK` - US-OK
+              * `US-OR` - US-OR
+              * `US-PA` - US-PA
+              * `US-PR` - US-PR
+              * `US-RI` - US-RI
+              * `US-SC` - US-SC
+              * `US-SD` - US-SD
+              * `US-TN` - US-TN
+              * `US-TX` - US-TX
+              * `US-UM` - US-UM
+              * `US-UT` - US-UT
+              * `US-VA` - US-VA
+              * `US-VI` - US-VI
+              * `US-VT` - US-VT
+              * `US-WA` - US-WA
+              * `US-WI` - US-WI
+              * `US-WV` - US-WV
+              * `US-WY` - US-WY
+            x-spec-enum-id: 624dfc7573702d12
+          description: Autonomous System's associated subdivisions.
+          example:
+          - US-OH
+      required:
+      - asn
+      - countries
+      - organization
+      - subdivisions
+    Balancing:
+      type: object
+      properties:
+        cdn_uuid:
+          type: string
+          description: UUID of the CDN associated to the segment.
+          example: cdn_sw_yunWQ04F
+        cdn_name:
+          type: string
+          readOnly: true
+          description: Name of the CDN associated to the segment.
+          example: cdnName
+        cdn_pathway_id:
+          type: string
+          readOnly: true
+          description: Pathway id of the CDN associated to the segment.
+          example: cdnPathway
+        percentage:
+          type: integer
+          maximum: 100
+          minimum: 0
+          nullable: true
+          description: Percentage of the CDN in the segment. Mandatory if balancing
+            mode is manual.
+        capacity:
+          type: number
+          format: double
+          description: Capacity in Gbps of the CDN in the segment. Mandatory if balancing
+            mode is capacitybased.
+          example: 3000
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Order of the segment in the balancing list. Lower values have
+            higher priority. Mandatory if balancing mode is capacitybased.
+      required:
+      - cdn_name
+      - cdn_pathway_id
+      - cdn_uuid
+    BalancingRequest:
+      type: object
+      properties:
+        cdn_uuid:
+          type: string
+          minLength: 1
+          description: UUID of the CDN associated to the segment.
+          example: cdn_sw_yunWQ04F
+        percentage:
+          type: integer
+          maximum: 100
+          minimum: 0
+          nullable: true
+          description: Percentage of the CDN in the segment. Mandatory if balancing
+            mode is manual.
+        capacity:
+          type: number
+          format: double
+          description: Capacity in Gbps of the CDN in the segment. Mandatory if balancing
+            mode is capacitybased.
+          example: 3000
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Order of the segment in the balancing list. Lower values have
+            higher priority. Mandatory if balancing mode is capacitybased.
+      required:
+      - cdn_uuid
+    BandwidthRepartition:
+      type: object
+      properties:
+        timestamp:
+          type: integer
+          description: Timestamp of the repartition
+          example: 1753116055
+        repartition:
+          type: array
+          items:
+            $ref: '#/components/schemas/BandwidthRepartitionPerCdn'
+          description: Bandwidth repartition percentage per CDN
+      required:
+      - repartition
+      - timestamp
+    BandwidthRepartitionPerCdn:
+      type: object
+      properties:
+        cdn_name:
+          type: string
+          description: CDN's name
+          example: France
+          maxLength: 200
+        cdn_uuid:
+          type: string
+          description: CDN's uuid
+          example: seg_sw_yunWQ04F
+          maxLength: 200
+        percentage:
+          type: number
+          format: double
+          description: Viewers repartition percentage on this CDN
+          example: 50.0
+        estimated_used_bandwidth:
+          type: number
+          format: double
+          description: Estimated used bandwidth in Gbps on this CDN
+          example: 2.0
+      required:
+      - cdn_name
+      - estimated_used_bandwidth
+      - percentage
+    Cdn:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the CDN.
+          example: myCdn
+          maxLength: 100
+        uuid:
+          type: string
+          readOnly: true
+          description: Universal unique identifier of the CDN.
+          example: cdn_sw_yunWQ04F
+        pathway_id:
+          type: string
+          description: Pathway identifier of the CDN
+          example: my-pathway123
+          pattern: ^[\w-]+$
+          maxLength: 100
+        segments:
+          type: array
+          items:
+            $ref: '#/components/schemas/CdnSegment'
+          readOnly: true
+        qoe_status:
+          enum:
+          - DISABLED
+          - NO_DATA
+          - READY
+          - HEALTHY
+          - WARNING
+          - ERROR
+          type: string
+          x-spec-enum-id: b4ec064ca5f41acc
+          readOnly: true
+          description: |-
+            QoE status of the CDN.
+
+            * `DISABLED` - Disabled
+            * `NO_DATA` - No Data
+            * `READY` - Ready
+            * `HEALTHY` - Healthy
+            * `WARNING` - Warning
+            * `ERROR` - Error
+          example: HEALTHY
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date when the CDN was created.
+        modified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date when the CDN was last updated.
+      required:
+      - created_at
+      - modified_at
+      - name
+      - pathway_id
+      - qoe_status
+      - segments
+      - uuid
+    CdnRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Name of the CDN.
+          example: myCdn
+          maxLength: 100
+        pathway_id:
+          type: string
+          minLength: 1
+          description: Pathway identifier of the CDN
+          example: my-pathway123
+          pattern: ^[\w-]+$
+          maxLength: 100
+      required:
+      - name
+      - pathway_id
+    CdnSegment:
+      type: object
+      properties:
+        name:
+          type: string
+          readOnly: true
+          description: Name of the segment.
+          example: mySegment
+          maxLength: 100
+        uuid:
+          type: string
+          readOnly: true
+          description: Universal unique identifier of the segment.
+          example: seg_sw_yunWQ04F
+          maxLength: 100
+      required:
+      - name
+      - uuid
+    CdnStatistics:
+      type: object
+      properties:
+        overall_viewers:
+          allOf:
+          - $ref: '#/components/schemas/OverallViewers'
+          description: Overall cdn viewers
+        overall_estimated_used_bandwidth:
+          type: number
+          format: double
+          description: Overall cdn used bandwidth in Gbps
+          example: 25.0
+        viewers_counts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ViewersCounts'
+          description: Viewers count
+        estimated_used_bandwidth:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsedBandwidthCapacity'
+          description: Estimated used bandwidth in Gpbs
+      required:
+      - overall_estimated_used_bandwidth
+      - overall_viewers
+    Countries:
+      type: object
+      properties:
+        available_countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryValue'
+          description: Available countries to use in a segment geolocation countries
+        available_subdivisions:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubdivisionValue'
+          description: Available subdivisions to use in a segment geolocation subdivisions
+      required:
+      - available_countries
+      - available_subdivisions
+    CountryValue:
+      type: object
+      properties:
+        name:
+          type: string
+          example: France
+          maxLength: 200
+        code:
+          enum:
+          - ABW
+          - AFG
+          - AGO
+          - AIA
+          - ALA
+          - ALB
+          - AND
+          - ARE
+          - ARG
+          - ARM
+          - ASM
+          - ATA
+          - ATF
+          - ATG
+          - AUS
+          - AUT
+          - AZE
+          - BDI
+          - BEL
+          - BEN
+          - BES
+          - BFA
+          - BGD
+          - BGR
+          - BHR
+          - BHS
+          - BIH
+          - BLM
+          - BLR
+          - BLZ
+          - BMU
+          - BOL
+          - BRA
+          - BRB
+          - BRN
+          - BTN
+          - BVT
+          - BWA
+          - CAF
+          - CAN
+          - CCK
+          - CHE
+          - CHL
+          - CHN
+          - CIV
+          - CMR
+          - COD
+          - COG
+          - COK
+          - COL
+          - COM
+          - CPV
+          - CRI
+          - CUB
+          - CUW
+          - CXR
+          - CYM
+          - CYP
+          - CZE
+          - DEU
+          - DJI
+          - DMA
+          - DNK
+          - DOM
+          - DZA
+          - ECU
+          - EGY
+          - ERI
+          - ESH
+          - ESP
+          - EST
+          - ETH
+          - FIN
+          - FJI
+          - FLK
+          - FRA
+          - FRO
+          - FSM
+          - GAB
+          - GBR
+          - GEO
+          - GGY
+          - GHA
+          - GIB
+          - GIN
+          - GLP
+          - GMB
+          - GNB
+          - GNQ
+          - GRC
+          - GRD
+          - GRL
+          - GTM
+          - GUF
+          - GUM
+          - GUY
+          - HKG
+          - HMD
+          - HND
+          - HRV
+          - HTI
+          - HUN
+          - IDN
+          - IMN
+          - IND
+          - IOT
+          - IRL
+          - IRN
+          - IRQ
+          - ISL
+          - ISR
+          - ITA
+          - JAM
+          - JEY
+          - JOR
+          - JPN
+          - KAZ
+          - KEN
+          - KGZ
+          - KHM
+          - KIR
+          - KNA
+          - KOR
+          - KWT
+          - LAO
+          - LBN
+          - LBR
+          - LBY
+          - LCA
+          - LIE
+          - LKA
+          - LSO
+          - LTU
+          - LUX
+          - LVA
+          - MAC
+          - MAF
+          - MAR
+          - MCO
+          - MDA
+          - MDG
+          - MDV
+          - MEX
+          - MHL
+          - MKD
+          - MLI
+          - MLT
+          - MMR
+          - MNE
+          - MNG
+          - MNP
+          - MOZ
+          - MRT
+          - MSR
+          - MTQ
+          - MUS
+          - MWI
+          - MYS
+          - MYT
+          - NAM
+          - NCL
+          - NER
+          - NFK
+          - NGA
+          - NIC
+          - NIU
+          - NLD
+          - NOR
+          - NPL
+          - NRU
+          - NZL
+          - OMN
+          - PAK
+          - PAN
+          - PCN
+          - PER
+          - PHL
+          - PLW
+          - PNG
+          - POL
+          - PRI
+          - PRK
+          - PRT
+          - PRY
+          - PSE
+          - PYF
+          - QAT
+          - REU
+          - ROU
+          - RUS
+          - RWA
+          - SAU
+          - SDN
+          - SEN
+          - SGP
+          - SGS
+          - SHN
+          - SJM
+          - SLB
+          - SLE
+          - SLV
+          - SMR
+          - SOM
+          - SPM
+          - SRB
+          - SSD
+          - STP
+          - SUR
+          - SVK
+          - SVN
+          - SWE
+          - SWZ
+          - SXM
+          - SYC
+          - SYR
+          - TCA
+          - TCD
+          - TGO
+          - THA
+          - TJK
+          - TKL
+          - TKM
+          - TLS
+          - TON
+          - TTO
+          - TUN
+          - TUR
+          - TUV
+          - TWN
+          - TZA
+          - UGA
+          - UKR
+          - UMI
+          - URY
+          - USA
+          - UZB
+          - VAT
+          - VCT
+          - VEN
+          - VGB
+          - VIR
+          - VNM
+          - VUT
+          - WLF
+          - WSM
+          - YEM
+          - ZAF
+          - ZMB
+          - ZWE
+          type: string
+          description: |-
+            * `ABW` - ABW
+            * `AFG` - AFG
+            * `AGO` - AGO
+            * `AIA` - AIA
+            * `ALA` - ALA
+            * `ALB` - ALB
+            * `AND` - AND
+            * `ARE` - ARE
+            * `ARG` - ARG
+            * `ARM` - ARM
+            * `ASM` - ASM
+            * `ATA` - ATA
+            * `ATF` - ATF
+            * `ATG` - ATG
+            * `AUS` - AUS
+            * `AUT` - AUT
+            * `AZE` - AZE
+            * `BDI` - BDI
+            * `BEL` - BEL
+            * `BEN` - BEN
+            * `BES` - BES
+            * `BFA` - BFA
+            * `BGD` - BGD
+            * `BGR` - BGR
+            * `BHR` - BHR
+            * `BHS` - BHS
+            * `BIH` - BIH
+            * `BLM` - BLM
+            * `BLR` - BLR
+            * `BLZ` - BLZ
+            * `BMU` - BMU
+            * `BOL` - BOL
+            * `BRA` - BRA
+            * `BRB` - BRB
+            * `BRN` - BRN
+            * `BTN` - BTN
+            * `BVT` - BVT
+            * `BWA` - BWA
+            * `CAF` - CAF
+            * `CAN` - CAN
+            * `CCK` - CCK
+            * `CHE` - CHE
+            * `CHL` - CHL
+            * `CHN` - CHN
+            * `CIV` - CIV
+            * `CMR` - CMR
+            * `COD` - COD
+            * `COG` - COG
+            * `COK` - COK
+            * `COL` - COL
+            * `COM` - COM
+            * `CPV` - CPV
+            * `CRI` - CRI
+            * `CUB` - CUB
+            * `CUW` - CUW
+            * `CXR` - CXR
+            * `CYM` - CYM
+            * `CYP` - CYP
+            * `CZE` - CZE
+            * `DEU` - DEU
+            * `DJI` - DJI
+            * `DMA` - DMA
+            * `DNK` - DNK
+            * `DOM` - DOM
+            * `DZA` - DZA
+            * `ECU` - ECU
+            * `EGY` - EGY
+            * `ERI` - ERI
+            * `ESH` - ESH
+            * `ESP` - ESP
+            * `EST` - EST
+            * `ETH` - ETH
+            * `FIN` - FIN
+            * `FJI` - FJI
+            * `FLK` - FLK
+            * `FRA` - FRA
+            * `FRO` - FRO
+            * `FSM` - FSM
+            * `GAB` - GAB
+            * `GBR` - GBR
+            * `GEO` - GEO
+            * `GGY` - GGY
+            * `GHA` - GHA
+            * `GIB` - GIB
+            * `GIN` - GIN
+            * `GLP` - GLP
+            * `GMB` - GMB
+            * `GNB` - GNB
+            * `GNQ` - GNQ
+            * `GRC` - GRC
+            * `GRD` - GRD
+            * `GRL` - GRL
+            * `GTM` - GTM
+            * `GUF` - GUF
+            * `GUM` - GUM
+            * `GUY` - GUY
+            * `HKG` - HKG
+            * `HMD` - HMD
+            * `HND` - HND
+            * `HRV` - HRV
+            * `HTI` - HTI
+            * `HUN` - HUN
+            * `IDN` - IDN
+            * `IMN` - IMN
+            * `IND` - IND
+            * `IOT` - IOT
+            * `IRL` - IRL
+            * `IRN` - IRN
+            * `IRQ` - IRQ
+            * `ISL` - ISL
+            * `ISR` - ISR
+            * `ITA` - ITA
+            * `JAM` - JAM
+            * `JEY` - JEY
+            * `JOR` - JOR
+            * `JPN` - JPN
+            * `KAZ` - KAZ
+            * `KEN` - KEN
+            * `KGZ` - KGZ
+            * `KHM` - KHM
+            * `KIR` - KIR
+            * `KNA` - KNA
+            * `KOR` - KOR
+            * `KWT` - KWT
+            * `LAO` - LAO
+            * `LBN` - LBN
+            * `LBR` - LBR
+            * `LBY` - LBY
+            * `LCA` - LCA
+            * `LIE` - LIE
+            * `LKA` - LKA
+            * `LSO` - LSO
+            * `LTU` - LTU
+            * `LUX` - LUX
+            * `LVA` - LVA
+            * `MAC` - MAC
+            * `MAF` - MAF
+            * `MAR` - MAR
+            * `MCO` - MCO
+            * `MDA` - MDA
+            * `MDG` - MDG
+            * `MDV` - MDV
+            * `MEX` - MEX
+            * `MHL` - MHL
+            * `MKD` - MKD
+            * `MLI` - MLI
+            * `MLT` - MLT
+            * `MMR` - MMR
+            * `MNE` - MNE
+            * `MNG` - MNG
+            * `MNP` - MNP
+            * `MOZ` - MOZ
+            * `MRT` - MRT
+            * `MSR` - MSR
+            * `MTQ` - MTQ
+            * `MUS` - MUS
+            * `MWI` - MWI
+            * `MYS` - MYS
+            * `MYT` - MYT
+            * `NAM` - NAM
+            * `NCL` - NCL
+            * `NER` - NER
+            * `NFK` - NFK
+            * `NGA` - NGA
+            * `NIC` - NIC
+            * `NIU` - NIU
+            * `NLD` - NLD
+            * `NOR` - NOR
+            * `NPL` - NPL
+            * `NRU` - NRU
+            * `NZL` - NZL
+            * `OMN` - OMN
+            * `PAK` - PAK
+            * `PAN` - PAN
+            * `PCN` - PCN
+            * `PER` - PER
+            * `PHL` - PHL
+            * `PLW` - PLW
+            * `PNG` - PNG
+            * `POL` - POL
+            * `PRI` - PRI
+            * `PRK` - PRK
+            * `PRT` - PRT
+            * `PRY` - PRY
+            * `PSE` - PSE
+            * `PYF` - PYF
+            * `QAT` - QAT
+            * `REU` - REU
+            * `ROU` - ROU
+            * `RUS` - RUS
+            * `RWA` - RWA
+            * `SAU` - SAU
+            * `SDN` - SDN
+            * `SEN` - SEN
+            * `SGP` - SGP
+            * `SGS` - SGS
+            * `SHN` - SHN
+            * `SJM` - SJM
+            * `SLB` - SLB
+            * `SLE` - SLE
+            * `SLV` - SLV
+            * `SMR` - SMR
+            * `SOM` - SOM
+            * `SPM` - SPM
+            * `SRB` - SRB
+            * `SSD` - SSD
+            * `STP` - STP
+            * `SUR` - SUR
+            * `SVK` - SVK
+            * `SVN` - SVN
+            * `SWE` - SWE
+            * `SWZ` - SWZ
+            * `SXM` - SXM
+            * `SYC` - SYC
+            * `SYR` - SYR
+            * `TCA` - TCA
+            * `TCD` - TCD
+            * `TGO` - TGO
+            * `THA` - THA
+            * `TJK` - TJK
+            * `TKL` - TKL
+            * `TKM` - TKM
+            * `TLS` - TLS
+            * `TON` - TON
+            * `TTO` - TTO
+            * `TUN` - TUN
+            * `TUR` - TUR
+            * `TUV` - TUV
+            * `TWN` - TWN
+            * `TZA` - TZA
+            * `UGA` - UGA
+            * `UKR` - UKR
+            * `UMI` - UMI
+            * `URY` - URY
+            * `USA` - USA
+            * `UZB` - UZB
+            * `VAT` - VAT
+            * `VCT` - VCT
+            * `VEN` - VEN
+            * `VGB` - VGB
+            * `VIR` - VIR
+            * `VNM` - VNM
+            * `VUT` - VUT
+            * `WLF` - WLF
+            * `WSM` - WSM
+            * `YEM` - YEM
+            * `ZAF` - ZAF
+            * `ZMB` - ZMB
+            * `ZWE` - ZWE
+          x-spec-enum-id: 1ff0374a807f6f03
+          example: FRA
+      required:
+      - code
+      - name
+    Geolocation:
+      type: object
+      properties:
+        countries:
+          type: array
+          items:
+            enum:
+            - ABW
+            - AFG
+            - AGO
+            - AIA
+            - ALA
+            - ALB
+            - AND
+            - ARE
+            - ARG
+            - ARM
+            - ASM
+            - ATA
+            - ATF
+            - ATG
+            - AUS
+            - AUT
+            - AZE
+            - BDI
+            - BEL
+            - BEN
+            - BES
+            - BFA
+            - BGD
+            - BGR
+            - BHR
+            - BHS
+            - BIH
+            - BLM
+            - BLR
+            - BLZ
+            - BMU
+            - BOL
+            - BRA
+            - BRB
+            - BRN
+            - BTN
+            - BVT
+            - BWA
+            - CAF
+            - CAN
+            - CCK
+            - CHE
+            - CHL
+            - CHN
+            - CIV
+            - CMR
+            - COD
+            - COG
+            - COK
+            - COL
+            - COM
+            - CPV
+            - CRI
+            - CUB
+            - CUW
+            - CXR
+            - CYM
+            - CYP
+            - CZE
+            - DEU
+            - DJI
+            - DMA
+            - DNK
+            - DOM
+            - DZA
+            - ECU
+            - EGY
+            - ERI
+            - ESH
+            - ESP
+            - EST
+            - ETH
+            - FIN
+            - FJI
+            - FLK
+            - FRA
+            - FRO
+            - FSM
+            - GAB
+            - GBR
+            - GEO
+            - GGY
+            - GHA
+            - GIB
+            - GIN
+            - GLP
+            - GMB
+            - GNB
+            - GNQ
+            - GRC
+            - GRD
+            - GRL
+            - GTM
+            - GUF
+            - GUM
+            - GUY
+            - HKG
+            - HMD
+            - HND
+            - HRV
+            - HTI
+            - HUN
+            - IDN
+            - IMN
+            - IND
+            - IOT
+            - IRL
+            - IRN
+            - IRQ
+            - ISL
+            - ISR
+            - ITA
+            - JAM
+            - JEY
+            - JOR
+            - JPN
+            - KAZ
+            - KEN
+            - KGZ
+            - KHM
+            - KIR
+            - KNA
+            - KOR
+            - KWT
+            - LAO
+            - LBN
+            - LBR
+            - LBY
+            - LCA
+            - LIE
+            - LKA
+            - LSO
+            - LTU
+            - LUX
+            - LVA
+            - MAC
+            - MAF
+            - MAR
+            - MCO
+            - MDA
+            - MDG
+            - MDV
+            - MEX
+            - MHL
+            - MKD
+            - MLI
+            - MLT
+            - MMR
+            - MNE
+            - MNG
+            - MNP
+            - MOZ
+            - MRT
+            - MSR
+            - MTQ
+            - MUS
+            - MWI
+            - MYS
+            - MYT
+            - NAM
+            - NCL
+            - NER
+            - NFK
+            - NGA
+            - NIC
+            - NIU
+            - NLD
+            - NOR
+            - NPL
+            - NRU
+            - NZL
+            - OMN
+            - PAK
+            - PAN
+            - PCN
+            - PER
+            - PHL
+            - PLW
+            - PNG
+            - POL
+            - PRI
+            - PRK
+            - PRT
+            - PRY
+            - PSE
+            - PYF
+            - QAT
+            - REU
+            - ROU
+            - RUS
+            - RWA
+            - SAU
+            - SDN
+            - SEN
+            - SGP
+            - SGS
+            - SHN
+            - SJM
+            - SLB
+            - SLE
+            - SLV
+            - SMR
+            - SOM
+            - SPM
+            - SRB
+            - SSD
+            - STP
+            - SUR
+            - SVK
+            - SVN
+            - SWE
+            - SWZ
+            - SXM
+            - SYC
+            - SYR
+            - TCA
+            - TCD
+            - TGO
+            - THA
+            - TJK
+            - TKL
+            - TKM
+            - TLS
+            - TON
+            - TTO
+            - TUN
+            - TUR
+            - TUV
+            - TWN
+            - TZA
+            - UGA
+            - UKR
+            - UMI
+            - URY
+            - USA
+            - UZB
+            - VAT
+            - VCT
+            - VEN
+            - VGB
+            - VIR
+            - VNM
+            - VUT
+            - WLF
+            - WSM
+            - YEM
+            - ZAF
+            - ZMB
+            - ZWE
+            type: string
+            description: |-
+              * `ABW` - ABW
+              * `AFG` - AFG
+              * `AGO` - AGO
+              * `AIA` - AIA
+              * `ALA` - ALA
+              * `ALB` - ALB
+              * `AND` - AND
+              * `ARE` - ARE
+              * `ARG` - ARG
+              * `ARM` - ARM
+              * `ASM` - ASM
+              * `ATA` - ATA
+              * `ATF` - ATF
+              * `ATG` - ATG
+              * `AUS` - AUS
+              * `AUT` - AUT
+              * `AZE` - AZE
+              * `BDI` - BDI
+              * `BEL` - BEL
+              * `BEN` - BEN
+              * `BES` - BES
+              * `BFA` - BFA
+              * `BGD` - BGD
+              * `BGR` - BGR
+              * `BHR` - BHR
+              * `BHS` - BHS
+              * `BIH` - BIH
+              * `BLM` - BLM
+              * `BLR` - BLR
+              * `BLZ` - BLZ
+              * `BMU` - BMU
+              * `BOL` - BOL
+              * `BRA` - BRA
+              * `BRB` - BRB
+              * `BRN` - BRN
+              * `BTN` - BTN
+              * `BVT` - BVT
+              * `BWA` - BWA
+              * `CAF` - CAF
+              * `CAN` - CAN
+              * `CCK` - CCK
+              * `CHE` - CHE
+              * `CHL` - CHL
+              * `CHN` - CHN
+              * `CIV` - CIV
+              * `CMR` - CMR
+              * `COD` - COD
+              * `COG` - COG
+              * `COK` - COK
+              * `COL` - COL
+              * `COM` - COM
+              * `CPV` - CPV
+              * `CRI` - CRI
+              * `CUB` - CUB
+              * `CUW` - CUW
+              * `CXR` - CXR
+              * `CYM` - CYM
+              * `CYP` - CYP
+              * `CZE` - CZE
+              * `DEU` - DEU
+              * `DJI` - DJI
+              * `DMA` - DMA
+              * `DNK` - DNK
+              * `DOM` - DOM
+              * `DZA` - DZA
+              * `ECU` - ECU
+              * `EGY` - EGY
+              * `ERI` - ERI
+              * `ESH` - ESH
+              * `ESP` - ESP
+              * `EST` - EST
+              * `ETH` - ETH
+              * `FIN` - FIN
+              * `FJI` - FJI
+              * `FLK` - FLK
+              * `FRA` - FRA
+              * `FRO` - FRO
+              * `FSM` - FSM
+              * `GAB` - GAB
+              * `GBR` - GBR
+              * `GEO` - GEO
+              * `GGY` - GGY
+              * `GHA` - GHA
+              * `GIB` - GIB
+              * `GIN` - GIN
+              * `GLP` - GLP
+              * `GMB` - GMB
+              * `GNB` - GNB
+              * `GNQ` - GNQ
+              * `GRC` - GRC
+              * `GRD` - GRD
+              * `GRL` - GRL
+              * `GTM` - GTM
+              * `GUF` - GUF
+              * `GUM` - GUM
+              * `GUY` - GUY
+              * `HKG` - HKG
+              * `HMD` - HMD
+              * `HND` - HND
+              * `HRV` - HRV
+              * `HTI` - HTI
+              * `HUN` - HUN
+              * `IDN` - IDN
+              * `IMN` - IMN
+              * `IND` - IND
+              * `IOT` - IOT
+              * `IRL` - IRL
+              * `IRN` - IRN
+              * `IRQ` - IRQ
+              * `ISL` - ISL
+              * `ISR` - ISR
+              * `ITA` - ITA
+              * `JAM` - JAM
+              * `JEY` - JEY
+              * `JOR` - JOR
+              * `JPN` - JPN
+              * `KAZ` - KAZ
+              * `KEN` - KEN
+              * `KGZ` - KGZ
+              * `KHM` - KHM
+              * `KIR` - KIR
+              * `KNA` - KNA
+              * `KOR` - KOR
+              * `KWT` - KWT
+              * `LAO` - LAO
+              * `LBN` - LBN
+              * `LBR` - LBR
+              * `LBY` - LBY
+              * `LCA` - LCA
+              * `LIE` - LIE
+              * `LKA` - LKA
+              * `LSO` - LSO
+              * `LTU` - LTU
+              * `LUX` - LUX
+              * `LVA` - LVA
+              * `MAC` - MAC
+              * `MAF` - MAF
+              * `MAR` - MAR
+              * `MCO` - MCO
+              * `MDA` - MDA
+              * `MDG` - MDG
+              * `MDV` - MDV
+              * `MEX` - MEX
+              * `MHL` - MHL
+              * `MKD` - MKD
+              * `MLI` - MLI
+              * `MLT` - MLT
+              * `MMR` - MMR
+              * `MNE` - MNE
+              * `MNG` - MNG
+              * `MNP` - MNP
+              * `MOZ` - MOZ
+              * `MRT` - MRT
+              * `MSR` - MSR
+              * `MTQ` - MTQ
+              * `MUS` - MUS
+              * `MWI` - MWI
+              * `MYS` - MYS
+              * `MYT` - MYT
+              * `NAM` - NAM
+              * `NCL` - NCL
+              * `NER` - NER
+              * `NFK` - NFK
+              * `NGA` - NGA
+              * `NIC` - NIC
+              * `NIU` - NIU
+              * `NLD` - NLD
+              * `NOR` - NOR
+              * `NPL` - NPL
+              * `NRU` - NRU
+              * `NZL` - NZL
+              * `OMN` - OMN
+              * `PAK` - PAK
+              * `PAN` - PAN
+              * `PCN` - PCN
+              * `PER` - PER
+              * `PHL` - PHL
+              * `PLW` - PLW
+              * `PNG` - PNG
+              * `POL` - POL
+              * `PRI` - PRI
+              * `PRK` - PRK
+              * `PRT` - PRT
+              * `PRY` - PRY
+              * `PSE` - PSE
+              * `PYF` - PYF
+              * `QAT` - QAT
+              * `REU` - REU
+              * `ROU` - ROU
+              * `RUS` - RUS
+              * `RWA` - RWA
+              * `SAU` - SAU
+              * `SDN` - SDN
+              * `SEN` - SEN
+              * `SGP` - SGP
+              * `SGS` - SGS
+              * `SHN` - SHN
+              * `SJM` - SJM
+              * `SLB` - SLB
+              * `SLE` - SLE
+              * `SLV` - SLV
+              * `SMR` - SMR
+              * `SOM` - SOM
+              * `SPM` - SPM
+              * `SRB` - SRB
+              * `SSD` - SSD
+              * `STP` - STP
+              * `SUR` - SUR
+              * `SVK` - SVK
+              * `SVN` - SVN
+              * `SWE` - SWE
+              * `SWZ` - SWZ
+              * `SXM` - SXM
+              * `SYC` - SYC
+              * `SYR` - SYR
+              * `TCA` - TCA
+              * `TCD` - TCD
+              * `TGO` - TGO
+              * `THA` - THA
+              * `TJK` - TJK
+              * `TKL` - TKL
+              * `TKM` - TKM
+              * `TLS` - TLS
+              * `TON` - TON
+              * `TTO` - TTO
+              * `TUN` - TUN
+              * `TUR` - TUR
+              * `TUV` - TUV
+              * `TWN` - TWN
+              * `TZA` - TZA
+              * `UGA` - UGA
+              * `UKR` - UKR
+              * `UMI` - UMI
+              * `URY` - URY
+              * `USA` - USA
+              * `UZB` - UZB
+              * `VAT` - VAT
+              * `VCT` - VCT
+              * `VEN` - VEN
+              * `VGB` - VGB
+              * `VIR` - VIR
+              * `VNM` - VNM
+              * `VUT` - VUT
+              * `WLF` - WLF
+              * `WSM` - WSM
+              * `YEM` - YEM
+              * `ZAF` - ZAF
+              * `ZMB` - ZMB
+              * `ZWE` - ZWE
+            x-spec-enum-id: 1ff0374a807f6f03
+          description: List of countries.
+          example:
+          - FRA
+        subdivisions:
+          type: array
+          items:
+            enum:
+            - US-AK
+            - US-AL
+            - US-AR
+            - US-AS
+            - US-AZ
+            - US-CA
+            - US-CO
+            - US-CT
+            - US-DC
+            - US-DE
+            - US-FL
+            - US-GA
+            - US-GU
+            - US-HI
+            - US-IA
+            - US-ID
+            - US-IL
+            - US-IN
+            - US-KS
+            - US-KY
+            - US-LA
+            - US-MA
+            - US-MD
+            - US-ME
+            - US-MI
+            - US-MN
+            - US-MO
+            - US-MP
+            - US-MS
+            - US-MT
+            - US-NC
+            - US-ND
+            - US-NE
+            - US-NH
+            - US-NJ
+            - US-NM
+            - US-NV
+            - US-NY
+            - US-OH
+            - US-OK
+            - US-OR
+            - US-PA
+            - US-PR
+            - US-RI
+            - US-SC
+            - US-SD
+            - US-TN
+            - US-TX
+            - US-UM
+            - US-UT
+            - US-VA
+            - US-VI
+            - US-VT
+            - US-WA
+            - US-WI
+            - US-WV
+            - US-WY
+            type: string
+            description: |-
+              * `US-AK` - US-AK
+              * `US-AL` - US-AL
+              * `US-AR` - US-AR
+              * `US-AS` - US-AS
+              * `US-AZ` - US-AZ
+              * `US-CA` - US-CA
+              * `US-CO` - US-CO
+              * `US-CT` - US-CT
+              * `US-DC` - US-DC
+              * `US-DE` - US-DE
+              * `US-FL` - US-FL
+              * `US-GA` - US-GA
+              * `US-GU` - US-GU
+              * `US-HI` - US-HI
+              * `US-IA` - US-IA
+              * `US-ID` - US-ID
+              * `US-IL` - US-IL
+              * `US-IN` - US-IN
+              * `US-KS` - US-KS
+              * `US-KY` - US-KY
+              * `US-LA` - US-LA
+              * `US-MA` - US-MA
+              * `US-MD` - US-MD
+              * `US-ME` - US-ME
+              * `US-MI` - US-MI
+              * `US-MN` - US-MN
+              * `US-MO` - US-MO
+              * `US-MP` - US-MP
+              * `US-MS` - US-MS
+              * `US-MT` - US-MT
+              * `US-NC` - US-NC
+              * `US-ND` - US-ND
+              * `US-NE` - US-NE
+              * `US-NH` - US-NH
+              * `US-NJ` - US-NJ
+              * `US-NM` - US-NM
+              * `US-NV` - US-NV
+              * `US-NY` - US-NY
+              * `US-OH` - US-OH
+              * `US-OK` - US-OK
+              * `US-OR` - US-OR
+              * `US-PA` - US-PA
+              * `US-PR` - US-PR
+              * `US-RI` - US-RI
+              * `US-SC` - US-SC
+              * `US-SD` - US-SD
+              * `US-TN` - US-TN
+              * `US-TX` - US-TX
+              * `US-UM` - US-UM
+              * `US-UT` - US-UT
+              * `US-VA` - US-VA
+              * `US-VI` - US-VI
+              * `US-VT` - US-VT
+              * `US-WA` - US-WA
+              * `US-WI` - US-WI
+              * `US-WV` - US-WV
+              * `US-WY` - US-WY
+            x-spec-enum-id: 624dfc7573702d12
+          description: List of subdivisions.
+          example:
+          - US-OH
+    GeolocationRequest:
+      type: object
+      properties:
+        countries:
+          type: array
+          items:
+            enum:
+            - ABW
+            - AFG
+            - AGO
+            - AIA
+            - ALA
+            - ALB
+            - AND
+            - ARE
+            - ARG
+            - ARM
+            - ASM
+            - ATA
+            - ATF
+            - ATG
+            - AUS
+            - AUT
+            - AZE
+            - BDI
+            - BEL
+            - BEN
+            - BES
+            - BFA
+            - BGD
+            - BGR
+            - BHR
+            - BHS
+            - BIH
+            - BLM
+            - BLR
+            - BLZ
+            - BMU
+            - BOL
+            - BRA
+            - BRB
+            - BRN
+            - BTN
+            - BVT
+            - BWA
+            - CAF
+            - CAN
+            - CCK
+            - CHE
+            - CHL
+            - CHN
+            - CIV
+            - CMR
+            - COD
+            - COG
+            - COK
+            - COL
+            - COM
+            - CPV
+            - CRI
+            - CUB
+            - CUW
+            - CXR
+            - CYM
+            - CYP
+            - CZE
+            - DEU
+            - DJI
+            - DMA
+            - DNK
+            - DOM
+            - DZA
+            - ECU
+            - EGY
+            - ERI
+            - ESH
+            - ESP
+            - EST
+            - ETH
+            - FIN
+            - FJI
+            - FLK
+            - FRA
+            - FRO
+            - FSM
+            - GAB
+            - GBR
+            - GEO
+            - GGY
+            - GHA
+            - GIB
+            - GIN
+            - GLP
+            - GMB
+            - GNB
+            - GNQ
+            - GRC
+            - GRD
+            - GRL
+            - GTM
+            - GUF
+            - GUM
+            - GUY
+            - HKG
+            - HMD
+            - HND
+            - HRV
+            - HTI
+            - HUN
+            - IDN
+            - IMN
+            - IND
+            - IOT
+            - IRL
+            - IRN
+            - IRQ
+            - ISL
+            - ISR
+            - ITA
+            - JAM
+            - JEY
+            - JOR
+            - JPN
+            - KAZ
+            - KEN
+            - KGZ
+            - KHM
+            - KIR
+            - KNA
+            - KOR
+            - KWT
+            - LAO
+            - LBN
+            - LBR
+            - LBY
+            - LCA
+            - LIE
+            - LKA
+            - LSO
+            - LTU
+            - LUX
+            - LVA
+            - MAC
+            - MAF
+            - MAR
+            - MCO
+            - MDA
+            - MDG
+            - MDV
+            - MEX
+            - MHL
+            - MKD
+            - MLI
+            - MLT
+            - MMR
+            - MNE
+            - MNG
+            - MNP
+            - MOZ
+            - MRT
+            - MSR
+            - MTQ
+            - MUS
+            - MWI
+            - MYS
+            - MYT
+            - NAM
+            - NCL
+            - NER
+            - NFK
+            - NGA
+            - NIC
+            - NIU
+            - NLD
+            - NOR
+            - NPL
+            - NRU
+            - NZL
+            - OMN
+            - PAK
+            - PAN
+            - PCN
+            - PER
+            - PHL
+            - PLW
+            - PNG
+            - POL
+            - PRI
+            - PRK
+            - PRT
+            - PRY
+            - PSE
+            - PYF
+            - QAT
+            - REU
+            - ROU
+            - RUS
+            - RWA
+            - SAU
+            - SDN
+            - SEN
+            - SGP
+            - SGS
+            - SHN
+            - SJM
+            - SLB
+            - SLE
+            - SLV
+            - SMR
+            - SOM
+            - SPM
+            - SRB
+            - SSD
+            - STP
+            - SUR
+            - SVK
+            - SVN
+            - SWE
+            - SWZ
+            - SXM
+            - SYC
+            - SYR
+            - TCA
+            - TCD
+            - TGO
+            - THA
+            - TJK
+            - TKL
+            - TKM
+            - TLS
+            - TON
+            - TTO
+            - TUN
+            - TUR
+            - TUV
+            - TWN
+            - TZA
+            - UGA
+            - UKR
+            - UMI
+            - URY
+            - USA
+            - UZB
+            - VAT
+            - VCT
+            - VEN
+            - VGB
+            - VIR
+            - VNM
+            - VUT
+            - WLF
+            - WSM
+            - YEM
+            - ZAF
+            - ZMB
+            - ZWE
+            type: string
+            description: |-
+              * `ABW` - ABW
+              * `AFG` - AFG
+              * `AGO` - AGO
+              * `AIA` - AIA
+              * `ALA` - ALA
+              * `ALB` - ALB
+              * `AND` - AND
+              * `ARE` - ARE
+              * `ARG` - ARG
+              * `ARM` - ARM
+              * `ASM` - ASM
+              * `ATA` - ATA
+              * `ATF` - ATF
+              * `ATG` - ATG
+              * `AUS` - AUS
+              * `AUT` - AUT
+              * `AZE` - AZE
+              * `BDI` - BDI
+              * `BEL` - BEL
+              * `BEN` - BEN
+              * `BES` - BES
+              * `BFA` - BFA
+              * `BGD` - BGD
+              * `BGR` - BGR
+              * `BHR` - BHR
+              * `BHS` - BHS
+              * `BIH` - BIH
+              * `BLM` - BLM
+              * `BLR` - BLR
+              * `BLZ` - BLZ
+              * `BMU` - BMU
+              * `BOL` - BOL
+              * `BRA` - BRA
+              * `BRB` - BRB
+              * `BRN` - BRN
+              * `BTN` - BTN
+              * `BVT` - BVT
+              * `BWA` - BWA
+              * `CAF` - CAF
+              * `CAN` - CAN
+              * `CCK` - CCK
+              * `CHE` - CHE
+              * `CHL` - CHL
+              * `CHN` - CHN
+              * `CIV` - CIV
+              * `CMR` - CMR
+              * `COD` - COD
+              * `COG` - COG
+              * `COK` - COK
+              * `COL` - COL
+              * `COM` - COM
+              * `CPV` - CPV
+              * `CRI` - CRI
+              * `CUB` - CUB
+              * `CUW` - CUW
+              * `CXR` - CXR
+              * `CYM` - CYM
+              * `CYP` - CYP
+              * `CZE` - CZE
+              * `DEU` - DEU
+              * `DJI` - DJI
+              * `DMA` - DMA
+              * `DNK` - DNK
+              * `DOM` - DOM
+              * `DZA` - DZA
+              * `ECU` - ECU
+              * `EGY` - EGY
+              * `ERI` - ERI
+              * `ESH` - ESH
+              * `ESP` - ESP
+              * `EST` - EST
+              * `ETH` - ETH
+              * `FIN` - FIN
+              * `FJI` - FJI
+              * `FLK` - FLK
+              * `FRA` - FRA
+              * `FRO` - FRO
+              * `FSM` - FSM
+              * `GAB` - GAB
+              * `GBR` - GBR
+              * `GEO` - GEO
+              * `GGY` - GGY
+              * `GHA` - GHA
+              * `GIB` - GIB
+              * `GIN` - GIN
+              * `GLP` - GLP
+              * `GMB` - GMB
+              * `GNB` - GNB
+              * `GNQ` - GNQ
+              * `GRC` - GRC
+              * `GRD` - GRD
+              * `GRL` - GRL
+              * `GTM` - GTM
+              * `GUF` - GUF
+              * `GUM` - GUM
+              * `GUY` - GUY
+              * `HKG` - HKG
+              * `HMD` - HMD
+              * `HND` - HND
+              * `HRV` - HRV
+              * `HTI` - HTI
+              * `HUN` - HUN
+              * `IDN` - IDN
+              * `IMN` - IMN
+              * `IND` - IND
+              * `IOT` - IOT
+              * `IRL` - IRL
+              * `IRN` - IRN
+              * `IRQ` - IRQ
+              * `ISL` - ISL
+              * `ISR` - ISR
+              * `ITA` - ITA
+              * `JAM` - JAM
+              * `JEY` - JEY
+              * `JOR` - JOR
+              * `JPN` - JPN
+              * `KAZ` - KAZ
+              * `KEN` - KEN
+              * `KGZ` - KGZ
+              * `KHM` - KHM
+              * `KIR` - KIR
+              * `KNA` - KNA
+              * `KOR` - KOR
+              * `KWT` - KWT
+              * `LAO` - LAO
+              * `LBN` - LBN
+              * `LBR` - LBR
+              * `LBY` - LBY
+              * `LCA` - LCA
+              * `LIE` - LIE
+              * `LKA` - LKA
+              * `LSO` - LSO
+              * `LTU` - LTU
+              * `LUX` - LUX
+              * `LVA` - LVA
+              * `MAC` - MAC
+              * `MAF` - MAF
+              * `MAR` - MAR
+              * `MCO` - MCO
+              * `MDA` - MDA
+              * `MDG` - MDG
+              * `MDV` - MDV
+              * `MEX` - MEX
+              * `MHL` - MHL
+              * `MKD` - MKD
+              * `MLI` - MLI
+              * `MLT` - MLT
+              * `MMR` - MMR
+              * `MNE` - MNE
+              * `MNG` - MNG
+              * `MNP` - MNP
+              * `MOZ` - MOZ
+              * `MRT` - MRT
+              * `MSR` - MSR
+              * `MTQ` - MTQ
+              * `MUS` - MUS
+              * `MWI` - MWI
+              * `MYS` - MYS
+              * `MYT` - MYT
+              * `NAM` - NAM
+              * `NCL` - NCL
+              * `NER` - NER
+              * `NFK` - NFK
+              * `NGA` - NGA
+              * `NIC` - NIC
+              * `NIU` - NIU
+              * `NLD` - NLD
+              * `NOR` - NOR
+              * `NPL` - NPL
+              * `NRU` - NRU
+              * `NZL` - NZL
+              * `OMN` - OMN
+              * `PAK` - PAK
+              * `PAN` - PAN
+              * `PCN` - PCN
+              * `PER` - PER
+              * `PHL` - PHL
+              * `PLW` - PLW
+              * `PNG` - PNG
+              * `POL` - POL
+              * `PRI` - PRI
+              * `PRK` - PRK
+              * `PRT` - PRT
+              * `PRY` - PRY
+              * `PSE` - PSE
+              * `PYF` - PYF
+              * `QAT` - QAT
+              * `REU` - REU
+              * `ROU` - ROU
+              * `RUS` - RUS
+              * `RWA` - RWA
+              * `SAU` - SAU
+              * `SDN` - SDN
+              * `SEN` - SEN
+              * `SGP` - SGP
+              * `SGS` - SGS
+              * `SHN` - SHN
+              * `SJM` - SJM
+              * `SLB` - SLB
+              * `SLE` - SLE
+              * `SLV` - SLV
+              * `SMR` - SMR
+              * `SOM` - SOM
+              * `SPM` - SPM
+              * `SRB` - SRB
+              * `SSD` - SSD
+              * `STP` - STP
+              * `SUR` - SUR
+              * `SVK` - SVK
+              * `SVN` - SVN
+              * `SWE` - SWE
+              * `SWZ` - SWZ
+              * `SXM` - SXM
+              * `SYC` - SYC
+              * `SYR` - SYR
+              * `TCA` - TCA
+              * `TCD` - TCD
+              * `TGO` - TGO
+              * `THA` - THA
+              * `TJK` - TJK
+              * `TKL` - TKL
+              * `TKM` - TKM
+              * `TLS` - TLS
+              * `TON` - TON
+              * `TTO` - TTO
+              * `TUN` - TUN
+              * `TUR` - TUR
+              * `TUV` - TUV
+              * `TWN` - TWN
+              * `TZA` - TZA
+              * `UGA` - UGA
+              * `UKR` - UKR
+              * `UMI` - UMI
+              * `URY` - URY
+              * `USA` - USA
+              * `UZB` - UZB
+              * `VAT` - VAT
+              * `VCT` - VCT
+              * `VEN` - VEN
+              * `VGB` - VGB
+              * `VIR` - VIR
+              * `VNM` - VNM
+              * `VUT` - VUT
+              * `WLF` - WLF
+              * `WSM` - WSM
+              * `YEM` - YEM
+              * `ZAF` - ZAF
+              * `ZMB` - ZMB
+              * `ZWE` - ZWE
+            x-spec-enum-id: 1ff0374a807f6f03
+          description: List of countries.
+          example:
+          - FRA
+        subdivisions:
+          type: array
+          items:
+            enum:
+            - US-AK
+            - US-AL
+            - US-AR
+            - US-AS
+            - US-AZ
+            - US-CA
+            - US-CO
+            - US-CT
+            - US-DC
+            - US-DE
+            - US-FL
+            - US-GA
+            - US-GU
+            - US-HI
+            - US-IA
+            - US-ID
+            - US-IL
+            - US-IN
+            - US-KS
+            - US-KY
+            - US-LA
+            - US-MA
+            - US-MD
+            - US-ME
+            - US-MI
+            - US-MN
+            - US-MO
+            - US-MP
+            - US-MS
+            - US-MT
+            - US-NC
+            - US-ND
+            - US-NE
+            - US-NH
+            - US-NJ
+            - US-NM
+            - US-NV
+            - US-NY
+            - US-OH
+            - US-OK
+            - US-OR
+            - US-PA
+            - US-PR
+            - US-RI
+            - US-SC
+            - US-SD
+            - US-TN
+            - US-TX
+            - US-UM
+            - US-UT
+            - US-VA
+            - US-VI
+            - US-VT
+            - US-WA
+            - US-WI
+            - US-WV
+            - US-WY
+            type: string
+            description: |-
+              * `US-AK` - US-AK
+              * `US-AL` - US-AL
+              * `US-AR` - US-AR
+              * `US-AS` - US-AS
+              * `US-AZ` - US-AZ
+              * `US-CA` - US-CA
+              * `US-CO` - US-CO
+              * `US-CT` - US-CT
+              * `US-DC` - US-DC
+              * `US-DE` - US-DE
+              * `US-FL` - US-FL
+              * `US-GA` - US-GA
+              * `US-GU` - US-GU
+              * `US-HI` - US-HI
+              * `US-IA` - US-IA
+              * `US-ID` - US-ID
+              * `US-IL` - US-IL
+              * `US-IN` - US-IN
+              * `US-KS` - US-KS
+              * `US-KY` - US-KY
+              * `US-LA` - US-LA
+              * `US-MA` - US-MA
+              * `US-MD` - US-MD
+              * `US-ME` - US-ME
+              * `US-MI` - US-MI
+              * `US-MN` - US-MN
+              * `US-MO` - US-MO
+              * `US-MP` - US-MP
+              * `US-MS` - US-MS
+              * `US-MT` - US-MT
+              * `US-NC` - US-NC
+              * `US-ND` - US-ND
+              * `US-NE` - US-NE
+              * `US-NH` - US-NH
+              * `US-NJ` - US-NJ
+              * `US-NM` - US-NM
+              * `US-NV` - US-NV
+              * `US-NY` - US-NY
+              * `US-OH` - US-OH
+              * `US-OK` - US-OK
+              * `US-OR` - US-OR
+              * `US-PA` - US-PA
+              * `US-PR` - US-PR
+              * `US-RI` - US-RI
+              * `US-SC` - US-SC
+              * `US-SD` - US-SD
+              * `US-TN` - US-TN
+              * `US-TX` - US-TX
+              * `US-UM` - US-UM
+              * `US-UT` - US-UT
+              * `US-VA` - US-VA
+              * `US-VI` - US-VI
+              * `US-VT` - US-VT
+              * `US-WA` - US-WA
+              * `US-WI` - US-WI
+              * `US-WV` - US-WV
+              * `US-WY` - US-WY
+            x-spec-enum-id: 624dfc7573702d12
+          description: List of subdivisions.
+          example:
+          - US-OH
+    MuxProvider:
+      type: object
+      properties:
+        access_token:
+          type: string
+          description: MUX access token.
+          example: e0405c20-59a7-41d9-8978-43c134975931
+        secret_key:
+          type: string
+          description: MUX secret key.
+          example: seLLMHc7OW1zhOEbz2XNqzhGAyQg6E7j8SK2QFQ4P4hwiou61HwY8lSZGi+0Oqd5q113D+s4QqT
+      required:
+      - access_token
+      - secret_key
+    MuxProviderRequest:
+      type: object
+      properties:
+        access_token:
+          type: string
+          minLength: 1
+          description: MUX access token.
+          example: e0405c20-59a7-41d9-8978-43c134975931
+        secret_key:
+          type: string
+          minLength: 1
+          description: MUX secret key.
+          example: seLLMHc7OW1zhOEbz2XNqzhGAyQg6E7j8SK2QFQ4P4hwiou61HwY8lSZGi+0Oqd5q113D+s4QqT
+      required:
+      - access_token
+      - secret_key
+    Network:
+      type: object
+      properties:
+        asns:
+          type: array
+          items:
+            $ref: '#/components/schemas/Asn'
+          description: List of ASNS. All values should match pattern ^AS[0-9]+$ if
+            type is asn.
+    NetworkRequestRequest:
+      type: object
+      properties:
+        asns:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          writeOnly: true
+          description: List of ASNS. All values must exists in the ASN API.
+          example:
+          - AS1345
+    OverallCdnStatistics:
+      type: object
+      properties:
+        viewers_per_cdn:
+          type: array
+          items:
+            $ref: '#/components/schemas/ViewersRepartition'
+          description: Viewers repartition percentage
+        bandwidth_per_cdn:
+          type: array
+          items:
+            $ref: '#/components/schemas/BandwidthRepartition'
+          description: Bandwidth repartition percentage
+    OverallQoE:
+      type: object
+      properties:
+        qoe_status:
+          enum:
+          - DISABLED
+          - NO_DATA
+          - READY
+          - HEALTHY
+          - WARNING
+          - ERROR
+          type: string
+          x-spec-enum-id: dad346cd766394e1
+          description: |-
+            QoE status
+
+            * `DISABLED` - DISABLED
+            * `NO_DATA` - NO_DATA
+            * `READY` - READY
+            * `HEALTHY` - HEALTHY
+            * `WARNING` - WARNING
+            * `ERROR` - ERROR
+        impacted_segments_count:
+          type: integer
+          description: Impacted segments count
+          example: 2
+        impacted_viewers_percentage:
+          type: number
+          format: double
+          description: Impacted viewers percentage
+          example: 50.1
+      required:
+      - impacted_segments_count
+      - impacted_viewers_percentage
+      - qoe_status
+    OverallStatistics:
+      type: object
+      properties:
+        overall_viewers:
+          allOf:
+          - $ref: '#/components/schemas/OverallViewers'
+          description: Overall viewers
+        viewers_per_segment:
+          type: array
+          items:
+            $ref: '#/components/schemas/ViewersPerSegment'
+          description: Top viewers per geolocation segments
+        overall_qoe:
+          allOf:
+          - $ref: '#/components/schemas/OverallQoE'
+          description: Overall QoE
+        overall_estimated_used_bandwidth:
+          type: number
+          format: double
+          description: Overall used bandwidth in Gbps
+          example: 25.0
+      required:
+      - overall_estimated_used_bandwidth
+      - overall_qoe
+      - overall_viewers
+      - viewers_per_segment
+    OverallViewers:
+      type: object
+      properties:
+        viewers_count:
+          type: integer
+          description: Overall viewers count
+          example: 4000000
+        trend:
+          enum:
+          - up
+          - down
+          - stable
+          type: string
+          x-spec-enum-id: 791eafcb1bd43df1
+          description: |-
+            Viewers trend
+
+            * `up` - up
+            * `down` - down
+            * `stable` - stable
+          example: up
+      required:
+      - trend
+      - viewers_count
+    PaginatedAsnList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Asn'
+    PaginatedCdnList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cdn'
+    PaginatedWorkspaceList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Workspace'
+    PatchedCdnRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Name of the CDN.
+          example: myCdn
+          maxLength: 100
+        pathway_id:
+          type: string
+          minLength: 1
+          description: Pathway identifier of the CDN
+          example: my-pathway123
+          pattern: ^[\w-]+$
+          maxLength: 100
+    PatchedQoeProviderUpdateRequest:
+      type: object
+      properties:
+        mux:
+          allOf:
+          - $ref: '#/components/schemas/MuxProviderRequest'
+          description: MUX credentials. Only valid if type is mux.
+        enabled:
+          type: boolean
+          description: True if the monitoring is enabled. False otherwise.
+    PatchedWorkspaceRequest:
+      type: object
+      properties:
+        ttl:
+          type: integer
+          maximum: 600
+          minimum: 30
+          description: Time to live in seconds for the workspace.
+          example: 300
+        capacity_balancing_enabled:
+          type: boolean
+          description: True if the capacity balancing is enabled.
+        average_bitrates:
+          allOf:
+          - $ref: '#/components/schemas/WorkspaceBitratesRequest'
+          description: Average bitrates for devices.
+    QoEConfiguration:
+      type: object
+      properties:
+        alerts_enabled:
+          type: boolean
+          description: If true, sends an email when the CDN status changes to healthy
+            or warning.
+        metrics:
+          allOf:
+          - $ref: '#/components/schemas/QoEMetrics'
+          description: Set of metrics to configure.
+      required:
+      - alerts_enabled
+      - metrics
+    QoEConfigurationRequest:
+      type: object
+      properties:
+        alerts_enabled:
+          type: boolean
+          description: If true, sends an email when the CDN status changes to healthy
+            or warning.
+        metrics:
+          allOf:
+          - $ref: '#/components/schemas/QoEMetricsRequest'
+          description: Set of metrics to configure.
+      required:
+      - alerts_enabled
+      - metrics
+    QoEMetric:
+      type: object
+      properties:
+        threshold_value:
+          type: number
+          format: double
+          nullable: true
+          description: Threshold value of the QoE metric.
+        current_value:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+          description: Current value of the QoE metric.
+        operator:
+          enum:
+          - max
+          - min
+          type: string
+          x-spec-enum-id: 9899593b537ac7be
+          readOnly: true
+          description: |-
+            Operator of the QoE metric threshold value.
+
+            * `max` - Max
+            * `min` - Min
+        enabled:
+          type: boolean
+          description: Enable or disable the QoE metric.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date when the provider was created.
+        modified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date when the provider was last updated.
+      required:
+      - created_at
+      - current_value
+      - enabled
+      - modified_at
+      - operator
+      - threshold_value
+    QoEMetricRequest:
+      type: object
+      properties:
+        threshold_value:
+          type: number
+          format: double
+          nullable: true
+          description: Threshold value of the QoE metric.
+        enabled:
+          type: boolean
+          description: Enable or disable the QoE metric.
+      required:
+      - enabled
+      - threshold_value
+    QoEMetrics:
+      type: object
+      properties:
+        current_rebuffering_percentage:
+          $ref: '#/components/schemas/QoEMetric'
+      required:
+      - current_rebuffering_percentage
+    QoEMetricsRequest:
+      type: object
+      properties:
+        current_rebuffering_percentage:
+          $ref: '#/components/schemas/QoEMetricRequest'
+      required:
+      - current_rebuffering_percentage
+    QoeProvider:
+      type: object
+      properties:
+        type:
+          enum:
+          - mux
+          type: string
+          x-spec-enum-id: a005551ad75d981b
+          description: |-
+            Type of the QoE provider.
+
+            * `mux` - Mux
+        mux:
+          allOf:
+          - $ref: '#/components/schemas/MuxProvider'
+          description: MUX credentials. Mandatory if type is "mux".
+        enabled:
+          type: boolean
+          readOnly: true
+          description: True if the monitoring is enabled. False otherwise.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date when the provider was created.
+        modified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date when the provider was last updated.
+      required:
+      - created_at
+      - enabled
+      - modified_at
+      - type
+    QoeProviderRequest:
+      type: object
+      properties:
+        type:
+          enum:
+          - mux
+          type: string
+          x-spec-enum-id: a005551ad75d981b
+          description: |-
+            Type of the QoE provider.
+
+            * `mux` - Mux
+        mux:
+          allOf:
+          - $ref: '#/components/schemas/MuxProviderRequest'
+          description: MUX credentials. Mandatory if type is "mux".
+      required:
+      - type
+    QoeProviderUpdate:
+      type: object
+      properties:
+        type:
+          enum:
+          - mux
+          type: string
+          x-spec-enum-id: a005551ad75d981b
+          readOnly: true
+          description: |-
+            Type of the QoE provider.
+
+            * `mux` - Mux
+        mux:
+          allOf:
+          - $ref: '#/components/schemas/MuxProvider'
+          description: MUX credentials. Only valid if type is mux.
+        enabled:
+          type: boolean
+          description: True if the monitoring is enabled. False otherwise.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date when the provider was created.
+        modified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date when the provider was last updated.
+      required:
+      - created_at
+      - modified_at
+      - type
+    Segment:
+      type: object
+      properties:
+        uuid:
+          type: string
+          readOnly: true
+          description: Universal unique identifier of the segment.
+          example: seg_sw_yunWQ04F
+        name:
+          type: string
+          nullable: true
+          description: Name of the segment.
+          example: mySegment
+          maxLength: 100
+        type:
+          enum:
+          - geolocation
+          - network
+          - protocol
+          - device
+          - root
+          - geolocation_fallback
+          - network_fallback
+          - protocol_fallback
+          - device_fallback
+          type: string
+          x-spec-enum-id: aa27e7d189ca4606
+          description: |-
+            Type of segment.
+
+            * `geolocation` - Geolocation
+            * `network` - Network
+            * `protocol` - Protocol
+            * `device` - Device
+            * `root` - Root
+            * `geolocation_fallback` - Geolocation Fallback
+            * `network_fallback` - Network Fallback
+            * `protocol_fallback` - Protocol Fallback
+            * `device_fallback` - Device Fallback
+        parent_uuid:
+          type: string
+          nullable: true
+          description: UUID of the parent segment. Mandatory if the workspace already
+            contains one or more segments.
+          example: seg_sw_yunWQ04F
+        children_uuids:
+          type: array
+          items: {}
+          readOnly: true
+          description: UUIDs of the child segments.
+          example:
+          - seg_sw_yunWQ04F
+        balancings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Balancing'
+          description: List of balancings.
+        geolocation:
+          allOf:
+          - $ref: '#/components/schemas/Geolocation'
+          description: List of geolocations. Mandatory if type is geolocation.
+        network:
+          allOf:
+          - $ref: '#/components/schemas/Network'
+          description: List of networks. Mandatory if type is network.
+        protocol:
+          enum:
+          - hls
+          - dash
+          type: string
+          x-spec-enum-id: b5ce626c7d5ad319
+          description: |-
+            Protocol of the segment. Mandatory if type is protocol.
+
+            * `hls` - Hls
+            * `dash` - Dash
+        devices:
+          type: array
+          items:
+            enum:
+            - android
+            - ios
+            - desktop
+            - mobile
+            - smarttv
+            - tablet
+            type: string
+            description: |-
+              * `android` - Android
+              * `ios` - Ios
+              * `desktop` - Desktop
+              * `mobile` - Mobile
+              * `smarttv` - Smarttv
+              * `tablet` - Tablet
+            x-spec-enum-id: 5846aab685a27b36
+          description: Devices of the segment. Mandatory if type is device.
+        balancing_mode:
+          enum:
+          - capacity
+          - percentage
+          type: string
+          x-spec-enum-id: d23e27d331091002
+          description: |-
+            Balancing mode of the segment.
+
+            * `capacity` - Capacity
+            * `percentage` - Percentage
+          example: percentage
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date when the segment was created.
+        modified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date when the segment was last updated.
+      required:
+      - balancing_mode
+      - balancings
+      - children_uuids
+      - created_at
+      - modified_at
+      - type
+      - uuid
+    SegmentCheck:
+      type: object
+      properties:
+        valid:
+          type: boolean
+          readOnly: true
+          description: True if all values are valids.
+      required:
+      - valid
+    SegmentCheckRequest:
+      type: object
+      properties:
+        geolocation:
+          allOf:
+          - $ref: '#/components/schemas/GeolocationRequest'
+          writeOnly: true
+          description: List of geolocations to check.
+        network:
+          allOf:
+          - $ref: '#/components/schemas/NetworkRequestRequest'
+          writeOnly: true
+          description: List of networks to check.
+    SegmentRequestRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+          description: Name of the segment.
+          example: mySegment
+          maxLength: 100
+        type:
+          enum:
+          - geolocation
+          - network
+          - protocol
+          - device
+          - root
+          - geolocation_fallback
+          - network_fallback
+          - protocol_fallback
+          - device_fallback
+          type: string
+          x-spec-enum-id: aa27e7d189ca4606
+          description: |-
+            Type of segment.
+
+            * `geolocation` - Geolocation
+            * `network` - Network
+            * `protocol` - Protocol
+            * `device` - Device
+            * `root` - Root
+            * `geolocation_fallback` - Geolocation Fallback
+            * `network_fallback` - Network Fallback
+            * `protocol_fallback` - Protocol Fallback
+            * `device_fallback` - Device Fallback
+        parent_uuid:
+          type: string
+          nullable: true
+          minLength: 1
+          description: UUID of the parent segment. Mandatory if the workspace already
+            contains one or more segments.
+          example: seg_sw_yunWQ04F
+        balancings:
+          type: array
+          items:
+            $ref: '#/components/schemas/BalancingRequest'
+          description: List of balancings.
+        geolocation:
+          allOf:
+          - $ref: '#/components/schemas/GeolocationRequest'
+          description: List of geolocations. Mandatory if type is geolocation.
+        network:
+          allOf:
+          - $ref: '#/components/schemas/NetworkRequestRequest'
+          description: List of networks. Mandatory if type is network.
+        protocol:
+          enum:
+          - hls
+          - dash
+          type: string
+          x-spec-enum-id: b5ce626c7d5ad319
+          description: |-
+            Protocol of the segment. Mandatory if type is protocol.
+
+            * `hls` - Hls
+            * `dash` - Dash
+        devices:
+          type: array
+          items:
+            enum:
+            - android
+            - ios
+            - desktop
+            - mobile
+            - smarttv
+            - tablet
+            type: string
+            description: |-
+              * `android` - Android
+              * `ios` - Ios
+              * `desktop` - Desktop
+              * `mobile` - Mobile
+              * `smarttv` - Smarttv
+              * `tablet` - Tablet
+            x-spec-enum-id: 5846aab685a27b36
+          description: Devices of the segment. Mandatory if type is device.
+        balancing_mode:
+          enum:
+          - capacity
+          - percentage
+          type: string
+          x-spec-enum-id: d23e27d331091002
+          description: |-
+            Balancing mode of the segment.
+
+            * `capacity` - Capacity
+            * `percentage` - Percentage
+          example: percentage
+      required:
+      - balancing_mode
+      - balancings
+      - type
+    SegmentStatistics:
+      type: object
+      properties:
+        overall_viewers:
+          allOf:
+          - $ref: '#/components/schemas/OverallViewers'
+          description: Overall segment viewers
+        viewers_per_cdn:
+          type: array
+          items:
+            $ref: '#/components/schemas/ViewersRepartition'
+          description: Viewers repartition percentage
+        bandwidth_per_cdn:
+          type: array
+          items:
+            $ref: '#/components/schemas/BandwidthRepartition'
+          description: Bandwidth repartition percentage
+        overall_estimated_used_bandwidth:
+          type: number
+          format: double
+          description: Overall segment used bandwidth in Gbps
+          example: 25.0
+      required:
+      - overall_estimated_used_bandwidth
+      - overall_viewers
+    SegmentUpdate:
+      type: object
+      properties:
+        uuid:
+          type: string
+          readOnly: true
+          description: Universal unique identifier of the segment.
+          example: seg_sw_yunWQ04F
+        name:
+          type: string
+          nullable: true
+          description: Name of the segment.
+          example: mySegment
+          maxLength: 100
+        type:
+          enum:
+          - geolocation
+          - network
+          - protocol
+          - device
+          - root
+          - geolocation_fallback
+          - network_fallback
+          - protocol_fallback
+          - device_fallback
+          type: string
+          x-spec-enum-id: aa27e7d189ca4606
+          readOnly: true
+          description: |-
+            Type of segment.
+
+            * `geolocation` - Geolocation
+            * `network` - Network
+            * `protocol` - Protocol
+            * `device` - Device
+            * `root` - Root
+            * `geolocation_fallback` - Geolocation Fallback
+            * `network_fallback` - Network Fallback
+            * `protocol_fallback` - Protocol Fallback
+            * `device_fallback` - Device Fallback
+        parent_uuid:
+          type: string
+          nullable: true
+          description: UUID of the parent segment. Mandatory if the workspace already
+            contains one or more segments.
+          example: seg_sw_yunWQ04F
+        children_uuids:
+          type: array
+          items: {}
+          readOnly: true
+          description: UUIDs of the child segments.
+          example:
+          - seg_sw_yunWQ04F
+        balancings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Balancing'
+          description: List of balancings.
+        geolocation:
+          allOf:
+          - $ref: '#/components/schemas/Geolocation'
+          description: List of geolocations. Mandatory if type is geolocation.
+        network:
+          allOf:
+          - $ref: '#/components/schemas/Network'
+          description: List of networks. Mandatory if type is network.
+        protocol:
+          enum:
+          - hls
+          - dash
+          type: string
+          x-spec-enum-id: b5ce626c7d5ad319
+          description: |-
+            Protocol of the segment. Mandatory if type is protocol.
+
+            * `hls` - Hls
+            * `dash` - Dash
+        devices:
+          type: array
+          items:
+            enum:
+            - android
+            - ios
+            - desktop
+            - mobile
+            - smarttv
+            - tablet
+            type: string
+            description: |-
+              * `android` - Android
+              * `ios` - Ios
+              * `desktop` - Desktop
+              * `mobile` - Mobile
+              * `smarttv` - Smarttv
+              * `tablet` - Tablet
+            x-spec-enum-id: 5846aab685a27b36
+          description: Devices of the segment. Mandatory if type is device.
+        balancing_mode:
+          enum:
+          - capacity
+          - percentage
+          type: string
+          x-spec-enum-id: d23e27d331091002
+          description: |-
+            Balancing mode of the segment.
+
+            * `capacity` - Capacity
+            * `percentage` - Percentage
+          example: percentage
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date when the segment was created.
+        modified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date when the segment was last updated.
+      required:
+      - balancing_mode
+      - balancings
+      - children_uuids
+      - created_at
+      - modified_at
+      - type
+      - uuid
+    SegmentValidationError:
+      type: object
+      properties:
+        field:
+          type: string
+          description: JSON path of the field on error.
+          example: $.name
+        message:
+          type: string
+          description: Description of the error.
+          example: This name is already used.
+        error_code:
+          enum:
+          - conflict
+          - required
+          - invalid
+          - max_length
+          - empty
+          - 'null'
+          - bad_balancings_percentage
+          - required_geolocation_value
+          - required_network_value
+          - required_cdn_value
+          - first_segment_must_be_root
+          - root_type_cannot_be_modified
+          - cannot_set_parent_for_root
+          - fallback_type_cannot_be_created
+          - fallback_type_cannot_be_deleted
+          - intermediate_node_cannot_have_balancings
+          - same_type_as_siblings
+          - country_used_in_child
+          - country_cannot_be_parent_of_itself
+          - subdivision_cannot_be_parent_of_itself
+          - subdivision_used_in_child
+          - country_must_be_in_parent
+          - asn_not_found
+          - bad_child_type
+          - subdivision_must_be_in_parent
+          type: string
+          x-spec-enum-id: edfbb4bb73a11c7f
+          description: |-
+            Error code of the error.
+
+            * `conflict` - Conflict
+            * `required` - Required
+            * `invalid` - Invalid
+            * `max_length` - Max Length
+            * `empty` - Empty
+            * `null` - Null
+            * `bad_balancings_percentage` - Bad Balancing Percentage
+            * `required_geolocation_value` - Required Geolocation Value
+            * `required_network_value` - Required Network Value
+            * `required_cdn_value` - Required Cdn Value
+            * `first_segment_must_be_root` - First Segment Must Be Root
+            * `root_type_cannot_be_modified` - Root Type Cannot Be Modified
+            * `cannot_set_parent_for_root` - Cannot Set Parent For Root
+            * `fallback_type_cannot_be_created` - Fallback Type Cannot Be Created
+            * `fallback_type_cannot_be_deleted` - Fallback Type Cannot Be Deleted
+            * `intermediate_node_cannot_have_balancings` - Intermediate Node Cannot Have Balancings
+            * `same_type_as_siblings` - Same Type As Siblings
+            * `country_used_in_child` - Country Used In Child
+            * `country_cannot_be_parent_of_itself` - Country Cannot Be Parent Of Itself
+            * `subdivision_cannot_be_parent_of_itself` - Subdivision Cannot Be Parent Of Itself
+            * `subdivision_used_in_child` - Subdivision Used In Child
+            * `country_must_be_in_parent` - Country Must Be In Parent
+            * `asn_not_found` - Asn Not Found
+            * `bad_child_type` - Bad Child Type
+            * `subdivision_must_be_in_parent` - Subdivision Must Be In Parent
+          example: conflict
+        error_data:
+          oneOf:
+          - type: string
+          - type: integer
+          - type: object
+          - type: array
+            items:
+              oneOf:
+              - type: string
+              - type: integer
+              - type: object
+          readOnly: true
+          description: Error data of the error.
+          example:
+          - FRA
+          - BEL
+      required:
+      - error_code
+      - error_data
+      - field
+      - message
+    SubdivisionValue:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Ohio
+          maxLength: 200
+        code:
+          enum:
+          - US-AK
+          - US-AL
+          - US-AR
+          - US-AS
+          - US-AZ
+          - US-CA
+          - US-CO
+          - US-CT
+          - US-DC
+          - US-DE
+          - US-FL
+          - US-GA
+          - US-GU
+          - US-HI
+          - US-IA
+          - US-ID
+          - US-IL
+          - US-IN
+          - US-KS
+          - US-KY
+          - US-LA
+          - US-MA
+          - US-MD
+          - US-ME
+          - US-MI
+          - US-MN
+          - US-MO
+          - US-MP
+          - US-MS
+          - US-MT
+          - US-NC
+          - US-ND
+          - US-NE
+          - US-NH
+          - US-NJ
+          - US-NM
+          - US-NV
+          - US-NY
+          - US-OH
+          - US-OK
+          - US-OR
+          - US-PA
+          - US-PR
+          - US-RI
+          - US-SC
+          - US-SD
+          - US-TN
+          - US-TX
+          - US-UM
+          - US-UT
+          - US-VA
+          - US-VI
+          - US-VT
+          - US-WA
+          - US-WI
+          - US-WV
+          - US-WY
+          type: string
+          description: |-
+            * `US-AK` - US-AK
+            * `US-AL` - US-AL
+            * `US-AR` - US-AR
+            * `US-AS` - US-AS
+            * `US-AZ` - US-AZ
+            * `US-CA` - US-CA
+            * `US-CO` - US-CO
+            * `US-CT` - US-CT
+            * `US-DC` - US-DC
+            * `US-DE` - US-DE
+            * `US-FL` - US-FL
+            * `US-GA` - US-GA
+            * `US-GU` - US-GU
+            * `US-HI` - US-HI
+            * `US-IA` - US-IA
+            * `US-ID` - US-ID
+            * `US-IL` - US-IL
+            * `US-IN` - US-IN
+            * `US-KS` - US-KS
+            * `US-KY` - US-KY
+            * `US-LA` - US-LA
+            * `US-MA` - US-MA
+            * `US-MD` - US-MD
+            * `US-ME` - US-ME
+            * `US-MI` - US-MI
+            * `US-MN` - US-MN
+            * `US-MO` - US-MO
+            * `US-MP` - US-MP
+            * `US-MS` - US-MS
+            * `US-MT` - US-MT
+            * `US-NC` - US-NC
+            * `US-ND` - US-ND
+            * `US-NE` - US-NE
+            * `US-NH` - US-NH
+            * `US-NJ` - US-NJ
+            * `US-NM` - US-NM
+            * `US-NV` - US-NV
+            * `US-NY` - US-NY
+            * `US-OH` - US-OH
+            * `US-OK` - US-OK
+            * `US-OR` - US-OR
+            * `US-PA` - US-PA
+            * `US-PR` - US-PR
+            * `US-RI` - US-RI
+            * `US-SC` - US-SC
+            * `US-SD` - US-SD
+            * `US-TN` - US-TN
+            * `US-TX` - US-TX
+            * `US-UM` - US-UM
+            * `US-UT` - US-UT
+            * `US-VA` - US-VA
+            * `US-VI` - US-VI
+            * `US-VT` - US-VT
+            * `US-WA` - US-WA
+            * `US-WI` - US-WI
+            * `US-WV` - US-WV
+            * `US-WY` - US-WY
+          x-spec-enum-id: 624dfc7573702d12
+          example: US-OH
+      required:
+      - code
+      - name
+    UsedBandwidthCapacity:
+      type: object
+      properties:
+        timestamp:
+          type: integer
+          description: Timestamp of the viewers count
+          example: 1753116055
+        estimated_used_bandwidth:
+          type: number
+          format: double
+          description: Used bandwidth on this CDN
+          example: 2987.0
+      required:
+      - estimated_used_bandwidth
+      - timestamp
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type: string
+          description: JSON path of the field on error.
+          example: $.name
+        message:
+          type: string
+          description: Description of the error.
+          example: This name is already used.
+        error_code:
+          enum:
+          - conflict
+          - required
+          - invalid
+          - empty
+          - 'null'
+          - max_length
+          - min_value
+          type: string
+          x-spec-enum-id: 04f451b7182e05f8
+          description: |-
+            Error code of the error.
+
+            * `conflict` - Conflict
+            * `required` - Required
+            * `invalid` - Invalid
+            * `empty` - Empty
+            * `null` - Null
+            * `max_length` - Max Length
+            * `min_value` - Min Value
+          example: conflict
+        error_data:
+          oneOf:
+          - type: string
+          - type: integer
+          - type: object
+          - type: array
+            items:
+              oneOf:
+              - type: string
+              - type: integer
+              - type: object
+          readOnly: true
+          description: Error data of the error.
+          example:
+          - FRA
+          - BEL
+      required:
+      - error_code
+      - error_data
+      - field
+      - message
+    ViewersCounts:
+      type: object
+      properties:
+        timestamp:
+          type: integer
+          description: Timestamp of the viewers count
+          example: 1753116055
+        viewers_count:
+          type: integer
+          description: Viewers count on this CDN
+          example: 2987
+      required:
+      - timestamp
+      - viewers_count
+    ViewersPerSegment:
+      type: object
+      properties:
+        segment_name:
+          type: string
+          description: Segment's name
+          example: France
+          maxLength: 200
+        segment_uuid:
+          type: string
+          description: Segment's uuid
+          example: seg_sw_yunWQ04F
+          maxLength: 200
+        viewers_count:
+          type: integer
+          description: Viewers count for this segment
+          example: 2987
+      required:
+      - segment_name
+      - segment_uuid
+      - viewers_count
+    ViewersRepartition:
+      type: object
+      properties:
+        timestamp:
+          type: integer
+          description: Timestamp of the repartition
+          example: 1753116055
+        repartition:
+          type: array
+          items:
+            $ref: '#/components/schemas/ViewersRepartitionPerCdn'
+          description: Viewers repartition percentage per CDN
+      required:
+      - repartition
+      - timestamp
+    ViewersRepartitionPerCdn:
+      type: object
+      properties:
+        cdn_name:
+          type: string
+          description: CDN's name
+          example: France
+          maxLength: 200
+        cdn_uuid:
+          type: string
+          description: CDN's uuid
+          example: seg_sw_yunWQ04F
+          maxLength: 200
+        percentage:
+          type: number
+          format: double
+          description: Viewers repartition percentage on this CDN
+          example: 50.0
+        viewers_count:
+          type: integer
+          description: Viewers count on this CDN
+          example: 2987
+      required:
+      - cdn_name
+      - percentage
+      - viewers_count
+    Workspace:
+      type: object
+      properties:
+        name:
+          type: string
+          readOnly: true
+          description: Name of the workspace.
+          example: myWorkspace
+        uuid:
+          type: string
+          readOnly: true
+          description: Universal unique identifier of the workspace.
+          example: work_sw_yunWQ04F
+        enabled:
+          type: boolean
+          readOnly: true
+          description: True if the workspace is enabled, false otherwise.
+        urls:
+          allOf:
+          - $ref: '#/components/schemas/WorkspaceUrls'
+          readOnly: true
+          description: URL to use in playlists.
+        ttl:
+          type: integer
+          maximum: 600
+          minimum: 30
+          description: Time to live in seconds for the workspace.
+          example: 300
+        capacity_balancing_enabled:
+          type: boolean
+          description: True if the capacity balancing is enabled.
+        average_bitrates:
+          allOf:
+          - $ref: '#/components/schemas/WorkspaceBitrates'
+          description: Average bitrates for devices.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date when the workspace was created.
+        modified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date when the workspace was last updated.
+      required:
+      - average_bitrates
+      - created_at
+      - enabled
+      - modified_at
+      - name
+      - urls
+      - uuid
+    WorkspaceBitrates:
+      type: object
+      properties:
+        default:
+          type: number
+          format: double
+          nullable: true
+          description: Default average bitrate in mbps
+          example: 3000.0
+        desktop:
+          type: number
+          format: double
+          nullable: true
+          description: Average bitrate for desktop devices in mbps
+          example: 3000.0
+        mobile:
+          type: number
+          format: double
+          nullable: true
+          description: Average bitrate for mobile devices in mbps
+          example: 3000.0
+        smarttv:
+          type: number
+          format: double
+          nullable: true
+          description: Average bitrate for smart tv devices in mbps
+          example: 3000.0
+        tablet:
+          type: number
+          format: double
+          nullable: true
+          description: Average bitrate for tablet devices in mbps
+          example: 3000.0
+      required:
+      - default
+      - desktop
+      - mobile
+      - smarttv
+      - tablet
+    WorkspaceBitratesRequest:
+      type: object
+      properties:
+        default:
+          type: number
+          format: double
+          nullable: true
+          description: Default average bitrate in mbps
+          example: 3000.0
+        desktop:
+          type: number
+          format: double
+          nullable: true
+          description: Average bitrate for desktop devices in mbps
+          example: 3000.0
+        mobile:
+          type: number
+          format: double
+          nullable: true
+          description: Average bitrate for mobile devices in mbps
+          example: 3000.0
+        smarttv:
+          type: number
+          format: double
+          nullable: true
+          description: Average bitrate for smart tv devices in mbps
+          example: 3000.0
+        tablet:
+          type: number
+          format: double
+          nullable: true
+          description: Average bitrate for tablet devices in mbps
+          example: 3000.0
+      required:
+      - default
+      - desktop
+      - mobile
+      - smarttv
+      - tablet
+    WorkspaceUrls:
+      type: object
+      properties:
+        hls:
+          type: string
+          readOnly: true
+          description: URL for HLS playlists.
+          example: https://08aj7r.switch.quortex.io/hls.hcsm
+        dash:
+          type: string
+          readOnly: true
+          description: URL for DASH playlists.
+          example: https://08aj7r.switch.quortex.io/dash.dcsm
+      required:
+      - dash
+      - hls
+  securitySchemes:
+    GeneralApi:
+      type: apiKey
+      in: header
+      name: Authorization
+servers:
+- url: https://api.quortex.io/
+x-tagGroups:
+- name: Resources
+  tags:
+  - workspace
+  - cdn
+  - segment
+  - qoe
+  - countries
+  - autonomous_system
+  - statistics
