@@ -129,8 +129,11 @@ def create_mcp_server():
 
     return mcp
 
+# Create the MCP server instance globally
+# This allows 'fastmcp run server.py' to find the 'mcp' object automatically
+mcp = create_mcp_server()
+
 def main():
-    mcp = create_mcp_server()
     if mcp:
         logger.info("Starting Quortex MCP server...")
         mcp.run()
