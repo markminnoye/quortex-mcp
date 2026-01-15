@@ -7,7 +7,8 @@ from typing import Any, Optional
 import httpx
 import yaml
 from fastmcp import FastMCP
-from fastmcp.server.auth.providers.google import GoogleProvider
+# GoogleProvider removed
+from fastmcp.server.auth.providers.jwt import StaticTokenVerifier
 from fastmcp.server.openapi import MCPType, RouteMap
 from fastmcp.tools.tool_transform import ArgTransformConfig, ToolTransformConfig
 
@@ -168,15 +169,19 @@ def create_mcp_server():
 
     # Configure Auth Provider for MCP Server access
     mcp_auth_provider = None
-    google_client_id = os.environ.get("GOOGLE_CLIENT_ID")
-    google_client_secret = os.environ.get("GOOGLE_CLIENT_SECRET")
     
-    if google_client_id and google_client_secret:
-        logger.info("Configuring Google OAuth Provider for MCP Server")
-        mcp_auth_provider = GoogleProvider(
-            client_id=google_client_id,
-            client_secret=google_client_secret,
-            base_url="http://localhost:8000"
+    # Support Static Token (e.g. from 1Password injection)
+    mcp_server_token = os.environ.get("MCP_SERVER_TOKEN")
+    
+    if mcp_server_token:
+        logger.info("Configuring Static Token Auth for MCP Server")
+        mcp_auth_provider = StaticTokenVerifier(
+            tokens={
+                mcp_server_token: {
+                    "username": "authorized_client",
+                    "role": "admin"
+                }
+            }
         )
 
     # httpx client is required for making requests
